@@ -38,7 +38,7 @@ function compile-libccd {
     cd libccd-$TAG
 
     # Apply patches.
-    patch -Nbp1 -i $PATCHES_DIR/0001-nolibm.patch
+    patch -Nbp1 -i $PATCHES_DIR/0001-no-libm.patch
     find . -name "*.orig" -delete
 
     # Build and install.

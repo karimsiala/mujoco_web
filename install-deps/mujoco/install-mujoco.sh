@@ -38,8 +38,11 @@ function compile-libccd {
     cd mujoco-$TAG
 
     # Apply patches.
-    # patch -Nbp1 -i $PATCHES_DIR/0001-nolibm.patch
-    # find . -name "*.orig" -delete
+    patch -Nbp1 -i $PATCHES_DIR/0001-no-png.patch
+    patch -Nbp1 -i $PATCHES_DIR/0002-quicksort.patch
+    patch -Nbp1 -i $PATCHES_DIR/0003-static-asserts.patch
+    patch -Nbp1 -i $PATCHES_DIR/0004-time.patch
+    find . -name "*.orig" -delete
 
     # Build and install.
     emcmake cmake -Bbuild -H. \
