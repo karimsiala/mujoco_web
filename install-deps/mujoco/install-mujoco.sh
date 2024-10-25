@@ -45,6 +45,8 @@ function compile-libccd {
     emcmake cmake -Bbuild -H. \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=$DST_DIR/mujoco \
+      -DCMAKE_CXX_FLAGS="-Wno-int-in-bool-context" \
+      -DCMAKE_C_FLAGS="-Wno-int-in-bool-context" \
       -DMUJOCO_BUILD_EXAMPLES=OFF \
       -DMUJOCO_BUILD_SIMULATE=OFF \
       -DMUJOCO_BUILD_TESTS=OFF \
