@@ -2,7 +2,11 @@
 
 This repository is to compile MuJoCo to WASM (WebAssembly) on Linux Ubuntu 22.04 so it can be run inside a browser.
 
-This is a work-in-progress.
+This is a work-in-progress, inspired by:
+
+https://github.com/stillonearth/MuJoCo-WASM
+
+https://github.com/zalo/mujoco_wasm
 
 ## Steps
 
