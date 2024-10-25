@@ -42,6 +42,7 @@ function compile-libccd {
     patch -Nbp1 -i $PATCHES_DIR/0002-quicksort.patch
     patch -Nbp1 -i $PATCHES_DIR/0003-static-asserts.patch
     patch -Nbp1 -i $PATCHES_DIR/0004-time.patch
+    patch -Nbp1 -i $PATCHES_DIR/0005-no-ccd-fetch.patch
     find . -name "*.orig" -delete
 
     # Build and install.
@@ -50,12 +51,13 @@ function compile-libccd {
       -DCMAKE_INSTALL_PREFIX=$DST_DIR/mujoco \
       -DCMAKE_CXX_FLAGS="-Wno-int-in-bool-context" \
       -DCMAKE_C_FLAGS="-Wno-int-in-bool-context" \
+      -Dccd_DIR=$DST_DIR/libccd \
       -DMUJOCO_BUILD_EXAMPLES=OFF \
       -DMUJOCO_BUILD_SIMULATE=OFF \
       -DMUJOCO_BUILD_TESTS=OFF \
       -DMUJOCO_TEST_PYTHON_UTIL=OFF
-    # cmake --build build
-    # cmake --install build
+    cmake --build build
+    cmake --install build
 }
 
 compile-libccd

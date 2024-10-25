@@ -45,9 +45,12 @@ function compile-libccd {
     # Tests are disabled because they need librt, not available in Emscripten.
     emcmake cmake -Bbuild -H. \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=$DST_DIR/libccd\
+      -DCMAKE_INSTALL_PREFIX=$DST_DIR/libccd \
+      -DENABLE_DOUBLE_PRECISION=ON \
+      -DCCD_HIDE_ALL_SYMBOLS=ON \
       -DBUILD_SHARED_LIBS=OFF \
       -DBUILD_TESTING=OFF
+
     cmake --build build
     cmake --install build
 }
