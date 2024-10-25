@@ -1,0 +1,12 @@
+diff -Naur A/src/engine/engine_collision_driver.c B/src/engine/engine_collision_driver.c
+--- A/src/engine/engine_collision_driver.c	2023-03-20 16:33:36.000000000 +0100
++++ B/src/engine/engine_collision_driver.c	2024-10-25 11:58:45.722533995 +0200
+@@ -207,8 +207,6 @@
+ 
+ static mjCollisionTree* mj_stackAllocTree(mjData* d, int max_stack) {
+   // check that the quotient is an integer
+-  _Static_assert(sizeof(mjCollisionTree*) % sizeof(mjtNum) == 0,
+-                 "mjCollisionTree has a different size from mjtNum");
+   return (mjCollisionTree*)mj_stackAlloc(
+       d, max_stack * sizeof(mjCollisionTree*) / sizeof(mjtNum));
+ }

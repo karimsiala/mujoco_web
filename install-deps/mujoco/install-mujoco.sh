@@ -3,8 +3,8 @@ set -e
 
 function compile-libccd {
 
-    TAG=2.3.3
-    PATCHES_DIR=$CURRENT_DIR/install-deps/mujoco/patch
+    TAG=2.3.7
+    PATCHES_DIR=$CURRENT_DIR/install-deps/mujoco/patch-$TAG
 
     # Where C finds include files at compile time.
     export C_INCLUDE_PATH=$DST_DIR/mujoco/include:$C_INCLUDE_PATH
