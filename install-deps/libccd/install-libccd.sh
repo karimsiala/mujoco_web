@@ -38,8 +38,7 @@ function compile-libccd {
     cd libccd-$TAG
 
     # Apply patches.
-    patch -Nbp1 -i $PATCHES_DIR/0001-no-libm.patch
-    find . -name "*.orig" -delete
+    apply_patches "$PATCHES_DIR"
 
     # Build and install.
     # Tests are disabled because they need librt, not available in Emscripten.
