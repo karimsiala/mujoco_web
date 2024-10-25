@@ -1,21 +1,51 @@
 # MuJoCo Web
 
-This repository is to compile MuJoCo to WASM (WebAssembly) on Linux Ubuntu 22.04 so it can be run inside a browser.
+MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within web browsers. This project is tailored for Linux Ubuntu 22.04 environments and aims to facilitate interactive physics simulations directly in the browser.
 
-This is a work-in-progress, inspired by:
+## Inspiration
+
+This project draws inspiration from the following repositories:
 
 https://github.com/stillonearth/MuJoCo-WASM
 
 https://github.com/zalo/mujoco_wasm
 
-## Issues
+These projects provided foundational insights and methodologies that have been adapted and expanded upon to suit the objectives of MuJoCo Web.
 
-MuJoCo requires the [CCD](https://github.com/danfis/libccd) library and it fetches it out automatically as part of the CMake building process. The CCD library must be patched in order to remove the external dependency to the LM library, which is already included in EmScripten.
+## Prerequisites
 
-We must either instruct MuJoCo to use our patched CCD library, or we must patch the one donwloaded automatically by MuJoCo.
+Before proceeding with the installation and build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed.
 
-## Steps
+## Installation
 
-To compile MoJoCo to WASM, you must install [Emscripten](https://emscripten.org/index.html), which is a compiler of C++ code that generates WASM code.
+Navigate to the root directory of the repository and execute the install-deps.sh script:
 
-Then, run the script `install-deps.sh` in the root folder. The script downloads all required packages, applies the necessary patches and compile MuJoCo.
+```bash
+./install-deps.sh
+```
+
+This script performs the following actions:
+
+* Downloads all required packages.
+* Applies necessary patches to the source code.
+* Compiles MuJoCo using the configured environment.
+
+
+
+### Key Steps in the Build Process:
+
+**Dependency Management**
+
+MuJoCo relies on the [CCD](https://github.com/danfis/libccd) (Collision Detection) library for its physics computations. By default, MuJoCo fetches and builds the CCD library as part of its CMake build process.
+
+**Patching the CCD Library**
+
+To eliminate external dependencies on the LM (Linear Math) library—which is already included in Emscripten—the CCD library must be patched. This involves modifying the CCD source code to remove references to the external LM library.
+
+**Precompiling the CCD Library**
+
+To streamline the build process and avoid fetching and building CCD from source each time, the CCD library is compiled separately. MuJoCo is then configured to utilize this precompiled version instead of fetching it during the build.
+
+**Configuring MuJoCo to Use the Precompiled CCD Library**
+
+The build scripts are adjusted to prevent MuJoCo from fetching the CCD library automatically. Instead, MuJoCo is instructed to link against the precompiled CCD library, ensuring compatibility and reducing build times.
