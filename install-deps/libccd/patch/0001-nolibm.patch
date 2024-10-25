@@ -1,0 +1,12 @@
+diff -Naur libccd-2.1.src/src/CMakeLists.txt libccd-2.1.dst/src/CMakeLists.txt
+--- libccd-2.1.src/src/CMakeLists.txt	2018-12-22 13:13:45.000000000 +0100
++++ libccd-2.1.dst/src/CMakeLists.txt	2024-10-24 22:05:41.443675267 +0200
+@@ -48,7 +48,7 @@
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+ 
+-if(NOT WIN32)
++if(NOT WIN32 AND NOT (CMAKE_SYSTEM_NAME STREQUAL "Emscripten"))
+   find_library(LIBM_LIBRARY NAMES m)
+   if(NOT LIBM_LIBRARY)
+     message(FATAL_ERROR "Could NOT find required library LibM")
