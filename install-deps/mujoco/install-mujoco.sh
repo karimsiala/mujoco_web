@@ -5,24 +5,25 @@ function compile-libccd {
 
     TAG=3.2.0
     PATCHES_DIR=$CURRENT_DIR/install-deps/mujoco/patch-$TAG
+    INSTALL_PREFIX=$DST_DIR/mujoco-$TAG
 
     # Where C finds include files at compile time.
-    export C_INCLUDE_PATH=$DST_DIR/mujoco/include:$C_INCLUDE_PATH
+    export C_INCLUDE_PATH=$INSTALL_PREFIX/include:$C_INCLUDE_PATH
 
     # Where C++ finds include files at compile time.
-    export CPLUS_INCLUDE_PATH=$DST_DIR/mujoco/include:$CPLUS_INCLUDE_PATH
+    export CPLUS_INCLUDE_PATH=$INSTALL_PREFIX/include:$CPLUS_INCLUDE_PATH
     
     # Where to find libraries at compile time.
-    export LIBRARY_PATH=$DST_DIR/mujoco/lib:$LIBRARY_PATH
+    export LIBRARY_PATH=$INSTALL_PREFIX/lib:$LIBRARY_PATH
 
     # Where to find libraries at runtime.
-    export LD_LIBRARY_PATH=$DST_DIR/mujoco/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=$DINSTALL_PREFIX/lib:$LD_LIBRARY_PATH
 
     # Where CMake find additional packages.
-    export CMAKE_PREFIX_PATH=$DST_DIR/mujoco:$CMAKE_PREFIX_PATH
+    export CMAKE_PREFIX_PATH=$INSTALL_PREFIX:$CMAKE_PREFIX_PATH
 
-    if [ -d "$DST_DIR/mujoco" ]; then
-        echo "Library mujoco already installed."
+    if [ -d "$INSTALL_PREFIX" ]; then
+        echo "Library mujoco $TAG already installed."
         return
     fi
 
@@ -43,10 +44,9 @@ function compile-libccd {
     # Build and install.
     emcmake cmake -Bbuild -H. \
       -DCMAKE_BUILD_TYPE=Release \
-      -DCMAKE_INSTALL_PREFIX=$DST_DIR/mujoco \
+      -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
       -DCMAKE_CXX_FLAGS="-Wno-int-in-bool-context -Wno-newline-eof" \
       -DCMAKE_C_FLAGS="-Wno-int-in-bool-context -Wno-newline-eof" \
-      -Dccd_DIR=$DST_DIR/libccd \
       -DMUJOCO_BUILD_EXAMPLES=OFF \
       -DMUJOCO_BUILD_SIMULATE=OFF \
       -DMUJOCO_BUILD_TESTS=OFF \
@@ -56,4 +56,3 @@ function compile-libccd {
 }
 
 compile-libccd
-
