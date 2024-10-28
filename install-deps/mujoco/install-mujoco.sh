@@ -3,7 +3,7 @@ set -e
 
 function compile-libccd {
 
-    TAG=3.2.0
+    TAG=3.2.4
     PATCHES_DIR=$CURRENT_DIR/install-deps/mujoco/patch-$TAG
     INSTALL_PREFIX=$DST_DIR/mujoco-$TAG
 

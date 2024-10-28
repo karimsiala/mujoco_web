@@ -1,7 +1,7 @@
-diff -Naur mujoco-3.2.0.src/CMakeLists.txt mujoco-3.2.0.dst/CMakeLists.txt
---- mujoco-3.2.0.src/CMakeLists.txt	2024-07-15 23:11:44.000000000 +0200
-+++ mujoco-3.2.0.dst/CMakeLists.txt	2024-10-28 10:51:21.991641228 +0100
-@@ -116,7 +116,6 @@
+diff -Naur mujoco-3.2.4.src/CMakeLists.txt mujoco-3.2.4.dst/CMakeLists.txt
+--- mujoco-3.2.4.src/CMakeLists.txt	2024-10-16 00:34:09.000000000 +0200
++++ mujoco-3.2.4.dst/CMakeLists.txt	2024-10-28 11:13:13.666810613 +0100
+@@ -117,7 +117,6 @@
  target_link_libraries(
    mujoco
    PRIVATE ccd
@@ -9,20 +9,20 @@ diff -Naur mujoco-3.2.0.src/CMakeLists.txt mujoco-3.2.0.dst/CMakeLists.txt
            qhullstatic_r
            tinyobjloader
            tinyxml2
-diff -Naur mujoco-3.2.0.src/src/user/user_objects.cc mujoco-3.2.0.dst/src/user/user_objects.cc
---- mujoco-3.2.0.src/src/user/user_objects.cc	2024-07-15 23:11:44.000000000 +0200
-+++ mujoco-3.2.0.dst/src/user/user_objects.cc	2024-10-28 10:52:18.651919111 +0100
-@@ -32,7 +32,6 @@
+diff -Naur mujoco-3.2.4.src/src/user/user_objects.cc mujoco-3.2.4.dst/src/user/user_objects.cc
+--- mujoco-3.2.4.src/src/user/user_objects.cc	2024-10-16 00:34:09.000000000 +0200
++++ mujoco-3.2.4.dst/src/user/user_objects.cc	2024-10-28 11:14:32.611353724 +0100
+@@ -34,7 +34,6 @@
  #include <utility>
  #include <vector>
  
 -#include "lodepng.h"
- #include <mujoco/mjmacro.h>
  #include <mujoco/mjmodel.h>
  #include <mujoco/mjplugin.h>
-@@ -50,88 +49,6 @@
- namespace {
+ #include <mujoco/mjtnum.h>
+@@ -52,88 +51,6 @@
  namespace mju = ::mujoco::util;
+ using mujoco::user::FilePath;
  
 -class PNGImage {
 - public:
@@ -109,7 +109,7 @@ diff -Naur mujoco-3.2.0.src/src/user/user_objects.cc mujoco-3.2.0.dst/src/user/u
  }  // namespace
  
  
-@@ -3101,18 +3018,7 @@
+@@ -3564,18 +3481,7 @@
  
  // load elevation data from PNG format
  void mjCHField::LoadPNG(mjResource* resource) {
@@ -129,15 +129,26 @@ diff -Naur mujoco-3.2.0.src/src/user/user_objects.cc mujoco-3.2.0.dst/src/user/u
  }
  
  
-@@ -3522,10 +3428,7 @@
+@@ -4027,21 +3933,7 @@
  void mjCTexture::LoadPNG(mjResource* resource,
                           std::vector<unsigned char>& image,
                           unsigned int& w, unsigned int& h) {
--  PNGImage png_image = PNGImage::Load(this, resource, LCT_RGB);
+-  LodePNGColorType color_type;
+-  if (nchannel == 4) {
+-    color_type = LCT_RGBA;
+-  } else if (nchannel == 3) {
+-    color_type = LCT_RGB;
+-  } else if (nchannel == 1) {
+-    color_type = LCT_GREY;
+-  } else {
+-    throw mjCError(this, "Unsupported number of channels: %s",
+-                   std::to_string(nchannel).c_str());
+-  }
+-  PNGImage png_image = PNGImage::Load(this, resource, color_type);
 -  w = png_image.Width();
 -  h = png_image.Height();
 -  image = png_image.MoveData();
 +  return;
  }
  
- 
+ // load custom file
