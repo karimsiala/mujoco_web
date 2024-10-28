@@ -3,7 +3,7 @@ set -e
 
 function compile-libccd {
 
-    TAG=3.0.0
+    TAG=3.2.0
     PATCHES_DIR=$CURRENT_DIR/install-deps/mujoco/patch-$TAG
 
     # Where C finds include files at compile time.
