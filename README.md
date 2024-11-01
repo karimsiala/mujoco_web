@@ -17,7 +17,7 @@ These projects provided foundational insights and methodologies that have been a
 
 ## Prerequisites
 
-Before proceeding with the installation and build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed.
+Before proceeding with the installation and build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed and the EMSDK environment variable set.
 
 ## Installation
 
