@@ -4,6 +4,9 @@ project(mujoco_web)
 set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/external")
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 
+# Generate the compile_commands.json that can be used to configure clangd.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 ###############################################################################
 # libccd
 #
