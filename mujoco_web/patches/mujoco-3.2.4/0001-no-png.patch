@@ -1,7 +1,7 @@
-diff -Naur mujoco-3.2.4.src/CMakeLists.txt mujoco-3.2.4.dst/CMakeLists.txt
---- mujoco-3.2.4.src/CMakeLists.txt	2024-10-16 00:34:09.000000000 +0200
-+++ mujoco-3.2.4.dst/CMakeLists.txt	2024-10-28 11:13:13.666810613 +0100
-@@ -117,7 +117,6 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -117,7 +117,6 @@ target_link_options(
  target_link_libraries(
    mujoco
    PRIVATE ccd
@@ -9,9 +9,9 @@ diff -Naur mujoco-3.2.4.src/CMakeLists.txt mujoco-3.2.4.dst/CMakeLists.txt
            qhullstatic_r
            tinyobjloader
            tinyxml2
-diff -Naur mujoco-3.2.4.src/src/user/user_objects.cc mujoco-3.2.4.dst/src/user/user_objects.cc
---- mujoco-3.2.4.src/src/user/user_objects.cc	2024-10-16 00:34:09.000000000 +0200
-+++ mujoco-3.2.4.dst/src/user/user_objects.cc	2024-10-28 11:14:32.611353724 +0100
+diff --git a/src/user/user_objects.cc b/src/user/user_objects.cc
+--- a/src/user/user_objects.cc
++++ b/src/user/user_objects.cc
 @@ -34,7 +34,6 @@
  #include <utility>
  #include <vector>
@@ -20,7 +20,7 @@ diff -Naur mujoco-3.2.4.src/src/user/user_objects.cc mujoco-3.2.4.dst/src/user/u
  #include <mujoco/mjmodel.h>
  #include <mujoco/mjplugin.h>
  #include <mujoco/mjtnum.h>
-@@ -52,88 +51,6 @@
+@@ -52,88 +51,6 @@ namespace {
  namespace mju = ::mujoco::util;
  using mujoco::user::FilePath;
  
@@ -109,7 +109,7 @@ diff -Naur mujoco-3.2.4.src/src/user/user_objects.cc mujoco-3.2.4.dst/src/user/u
  }  // namespace
  
  
-@@ -3564,18 +3481,7 @@
+@@ -3564,18 +3481,7 @@ void mjCHField::LoadCustom(mjResource* resource) {
  
  // load elevation data from PNG format
  void mjCHField::LoadPNG(mjResource* resource) {
@@ -129,7 +129,7 @@ diff -Naur mujoco-3.2.4.src/src/user/user_objects.cc mujoco-3.2.4.dst/src/user/u
  }
  
  
-@@ -4027,21 +3933,7 @@
+@@ -4027,21 +3933,7 @@ void mjCTexture::BuiltinCube(void) {
  void mjCTexture::LoadPNG(mjResource* resource,
                           std::vector<unsigned char>& image,
                           unsigned int& w, unsigned int& h) {

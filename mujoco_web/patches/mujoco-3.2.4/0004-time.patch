@@ -1,7 +1,7 @@
-diff -Naur A/src/engine/engine_util_errmem.c B/src/engine/engine_util_errmem.c
---- A/src/engine/engine_util_errmem.c	2023-03-20 16:33:36.000000000 +0100
-+++ B/src/engine/engine_util_errmem.c	2024-10-25 12:01:50.352196121 +0200
-@@ -106,7 +106,7 @@
+diff --git a/src/engine/engine_util_errmem.c b/src/engine/engine_util_errmem.c
+--- a/src/engine/engine_util_errmem.c
++++ b/src/engine/engine_util_errmem.c
+@@ -97,7 +97,7 @@ void mju_writeLog(const char* type, const char* msg) {
      // get time
      time(&rawtime);
  

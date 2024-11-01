@@ -1,7 +1,7 @@
-diff -Naur A/src/CMakeLists.txt B/src/CMakeLists.txt
---- A/src/CMakeLists.txt	2018-12-22 13:13:45.000000000 +0100
-+++ B/src/CMakeLists.txt	2024-10-24 22:05:41.443675267 +0200
-@@ -48,7 +48,7 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -48,7 +48,7 @@ target_include_directories(ccd PUBLIC
    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
  

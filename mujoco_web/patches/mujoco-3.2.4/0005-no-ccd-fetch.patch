@@ -1,7 +1,7 @@
-diff -Naur A/cmake/MujocoDependencies.cmake B/cmake/MujocoDependencies.cmake
---- A/cmake/MujocoDependencies.cmake	2024-10-25 15:24:38.147033000 +0200
-+++ B/cmake/MujocoDependencies.cmake	2024-10-25 15:28:58.051425863 +0200
-@@ -161,34 +161,34 @@
+diff --git a/cmake/MujocoDependencies.cmake b/cmake/MujocoDependencies.cmake
+--- a/cmake/MujocoDependencies.cmake
++++ b/cmake/MujocoDependencies.cmake
+@@ -207,34 +207,34 @@ target_link_options(SdfLib PRIVATE ${MUJOCO_MACOS_LINK_OPTIONS})
  
  set(ENABLE_DOUBLE_PRECISION ON)
  set(CCD_HIDE_ALL_SYMBOLS ON)
