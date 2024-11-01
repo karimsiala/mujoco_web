@@ -1,6 +1,19 @@
 cmake_minimum_required(VERSION 3.22)
 project(mujoco_web)
 
+# Check if EMSDK environment variable is defined.
+if(NOT DEFINED ENV{EMSDK})
+    message(FATAL_ERROR "EMSDK environment variable is not set. Please set EMSDK to the root of your Emscripten SDK installation.")
+endif()
+
+# Get EMSDK path from environment variable
+set(EMSDK_PATH $ENV{EMSDK})
+
+# Verify that EMSDK_PATH exists and contains necessary directories
+if(NOT EXISTS "${EMSDK_PATH}/upstream/emscripten")
+    message(FATAL_ERROR "EMSDK path '${EMSDK_PATH}' does not contain 'upstream/emscripten'. Please verify your EMSDK path.")
+endif()
+
 set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/external")
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 
@@ -24,12 +37,13 @@ set(BUILD_TESTING OFF CACHE BOOL "Build testing" FORCE)
 include(FetchContent)
 
 # Declare the external project with FetchContent
+message(STATUS "Fetching  libccd ${LIBCCD_VERSION}...")
 FetchContent_Declare(
   libccd
-  GIT_REPOSITORY git@github.com:danfis/libccd.git
+  GIT_REPOSITORY https://github.com/danfis/libccd.git
   GIT_TAG v${LIBCCD_VERSION}
   PATCH_COMMAND
-    git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/libccd-${LIBCCD_VERSION}/0001-no-libm.patch
+    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/libccd-${LIBCCD_VERSION}/0001-no-libm.patch"
 )
 
 # Fetch the content
@@ -59,14 +73,15 @@ option(MUJOCO_TEST_PYTHON_UTIL "Build MuJoCo Python util tests" OFF)
 include(FetchContent)
 
 # Declare the external project with FetchContent
+message(STATUS "Fetching  mujoco ${MUJOCO_VERSION}...")
 FetchContent_Declare(
   mujoco
-  GIT_REPOSITORY git@github.com:google-deepmind/mujoco.git
+  GIT_REPOSITORY https://github.com/google-deepmind/mujoco.git
   GIT_TAG ${MUJOCO_VERSION}
   PATCH_COMMAND
-    git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch &&
-    git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0004-time.patch &&
-    git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0005-no-ccd-fetch.patch
+    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch" &&
+    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0004-time.patch" &&
+    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0005-no-ccd-fetch.patch"
 )
 
 # Fetch the content
@@ -84,6 +99,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Compile flags
+add_compile_options(-pthread)
+set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] -s EXPORT_NAME=load_mujoco -s EXCEPTION_CATCHING_ALLOWED=['load_from_xml']")
+set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
+
 # option(JS_ONLY "Compiles to native JS (No WASM)" OFF)
 
 # Specify the directory where executable files are placed after they are built.
@@ -93,15 +113,24 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/dist")
 # run make install. 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-add_compile_options(-pthread)
-set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] -s EXPORT_NAME=load_mujoco -s EXCEPTION_CATCHING_ALLOWED=['load_from_xml']")
-set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
+# Define installation directories
+# set(MUJOCO_WEB_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+# set(MUJOCO_WEB_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
+# set(MUJOCO_WEB_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
+# Define Emscripten include directories using EMSDK_PATH
+set(EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/include")
+set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/include/emscripten")
+
+# Add the executable target.
 add_executable(mujoco_web src/main.cpp)
 set_target_properties(mujoco_web PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
-
-target_link_libraries(mujoco_web 
-  PRIVATE
+target_include_directories(mujoco_web PUBLIC
+    # ${MUJOCO_INSTALL_INCLUDE_DIR}
+    "${EMSCRIPTEN_INCLUDE_DIR}"
+    "${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}"
+)
+target_link_libraries(mujoco_web PRIVATE
   ccd
   elasticity
   lodepng
