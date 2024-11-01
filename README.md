@@ -21,19 +21,20 @@ Before proceeding with the installation and build process, ensure you have the [
 
 ## Installation
 
-Navigate to the root directory of the repository and execute the install-deps.sh script:
+Navigate to the mujoco_web directory and execute the following commands:
 
 ```bash
-./install-deps.sh
+emcmake cmake -Bbuild -H.
+cmake --build build
+cmake --install build
 ```
 
-This script performs the following actions:
+These commands will performs the following actions:
 
 * Downloads all required packages.
 * Applies necessary patches to the source code.
-* Compiles MuJoCo using the configured environment.
-
-
+* Compiles MuJoCo web into WebAssembly including all libraries.
+* Install the binary into the dist folder.
 
 ### Key Steps in the Build Process:
 
