@@ -13,19 +13,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     message(FATAL_ERROR "Please run CMake from the top-level directory.")
 endif()
 
-# Check if EMSDK environment variable is defined.
-if(NOT DEFINED ENV{EMSDK})
-    message(FATAL_ERROR "EMSDK environment variable is not set. Please set EMSDK to the root of your Emscripten SDK installation.")
-endif()
-
-# Get EMSDK path from environment variable
-set(EMSDK_PATH $ENV{EMSDK})
-
-# Verify that EMSDK_PATH exists and contains necessary directories
-if(NOT EXISTS "${EMSDK_PATH}/upstream/emscripten")
-    message(FATAL_ERROR "EMSDK path '${EMSDK_PATH}' does not contain 'upstream/emscripten'. Please verify your EMSDK path.")
-endif()
-
 set(FETCHCONTENT_BASE_DIR "${CMAKE_BINARY_DIR}/external")
 set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 
@@ -115,20 +102,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-pthread)
 set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] -s EXPORT_NAME=load_mujoco -s EXCEPTION_CATCHING_ALLOWED=['load_from_xml']")
 set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
-
-# option(JS_ONLY "Compiles to native JS (No WASM)" OFF)
-
-# Specify the directory where executable files are placed after they are built.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/dist")
-
-# Specifies the default directory where the project will be installed when you
-# run make install. 
-set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
-
-# Define installation directories
-# set(MUJOCO_WEB_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-# set(MUJOCO_WEB_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
-# set(MUJOCO_WEB_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
 # Define Emscripten include directories using EMSDK_PATH
 set(EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/include")
