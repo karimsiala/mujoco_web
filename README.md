@@ -22,7 +22,7 @@ Before proceeding with the installation and build process, ensure you have the [
 
 ## Installation
 
-Navigate to the mujoco_web directory and execute the following commands:
+In the root folder, execute the following commands:
 
 ```bash
 emcmake cmake -Bbuild -H.

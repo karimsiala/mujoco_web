@@ -1,5 +1,17 @@
-cmake_minimum_required(VERSION 3.22)
-project(mujoco_web)
+# This is a CMakeLists.txt file for building the mujoco_web project.
+# 
+# First, it checks if Emscripten is installed by inspecting the  EMSDK
+# environment variable.
+# 
+# Second, it fetches all required dependencies using FetchContent and applies
+# patches.
+#
+# Finally, it compiles the project using Emscripten.
+
+# Ensure this CMakeLists.txt is included by a parent project.
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    message(FATAL_ERROR "Please run CMake from the top-level directory.")
+endif()
 
 # Check if EMSDK environment variable is defined.
 if(NOT DEFINED ENV{EMSDK})
