@@ -116,8 +116,9 @@ public:
     }
   }
 
-  // DEFINITIONS FROM MJDATA.H
   // clang-format off
+
+  // DEFINITIONS FROM MJDATA.H
 
   // State
   val qpos() const { return val(typed_memory_view(_model->ptr()->nq * 1 , _state->ptr()->qpos )); }
@@ -279,10 +280,12 @@ public:
   val cfrc_int() const { return val(typed_memory_view(_model->ptr()->nbody * 6 , _state->ptr()->cfrc_int )); }
   val cfrc_ext() const { return val(typed_memory_view(_model->ptr()->nbody * 6 , _state->ptr()->cfrc_ext )); }
   
-  // XML API
+  // DEFINITIONS FROM XML API
+
   void   freeLastXML () { return mj_freeLastXML (); }
 
-  // Engine Forward API
+  // DEFINITIONS FROM ENGINE FORWARD API
+
   void step () { return mj_step (_model->ptr(), _state->ptr()); }
   void step1 () { return mj_step1 (_model->ptr(), _state->ptr()); }
   void step2 () { return mj_step2 (_model->ptr(), _state->ptr()); }
@@ -299,7 +302,8 @@ public:
   void checkVel () { return mj_checkVel (_model->ptr(), _state->ptr()); }
   void checkAcc () { return mj_checkAcc (_model->ptr(), _state->ptr()); }
 
-  // Engine Inverse API
+  // DEFINITIONS FROM ENGINE INVERSE API
+
   void inverse () { return mj_inverse (_model->ptr(), _state->ptr()); }
   void inverseSkip (int skipstage, int skipsensor) { return mj_inverseSkip (_model->ptr(), _state->ptr(), skipstage, skipsensor); }
   void invPosition () { return mj_invPosition (_model->ptr(), _state->ptr()); }
@@ -307,7 +311,8 @@ public:
   void invConstraint () { return mj_invConstraint (_model->ptr(), _state->ptr()); }
   void compareFwdInv () { return mj_compareFwdInv (_model->ptr(), _state->ptr()); }
 
-  // Engine IO API
+  // DEFINITIONS FROM ENGINE IO API
+
   void defaultSolRefImp    (val solref, val solimp) { return mj_defaultSolRefImp (reinterpret_cast<mjtNum*>(solref["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(solimp["byteOffset"].as<int>())); }
   int sizeModel () { return mj_sizeModel (_model->ptr() ); }
   void resetData () { return mj_resetData (_model->ptr(), _state->ptr()); }
@@ -315,26 +320,31 @@ public:
   void resetDataKeyframe   (int key ) { return mj_resetDataKeyframe (_model->ptr(), _state->ptr(), key); }
   void deleteData () { return mj_deleteData (_state->ptr() ); }
 
-  // Engine Callback API
+  // DEFINITIONS FROM ENGINE CALLBACK API
+
   void resetCallbacks () { return mj_resetCallbacks (); }
 
-  // Engine Print API
+  // ENGINE PRINT API
+
   void printFormattedModel (std::string filename, std::string float_format) { return mj_printFormattedModel (_model->ptr(), filename.c_str(), float_format.c_str()); }
   void printModel (std::string filename) { return mj_printModel (_model->ptr(), filename.c_str()); }
   void printFormattedData  (std::string filename, std::string float_format) { return mj_printFormattedData (_model->ptr(), _state->ptr(), filename.c_str(), float_format.c_str()); }
   void printData (std::string filename) { return mj_printData (_model->ptr(), _state->ptr(), filename.c_str()); }
    
-  // Engine Util API
+  // DEFINITIONS FROM ENGINE UTIL API
+
   void printMat (val mat, int nr, int nc) { return mju_printMat (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), nr, nc); }
    
-  // Engine Sensors API
+  // DEFINITIONS FROM ENGINE SENSORS API
+
   void sensorPos () { return mj_sensorPos (_model->ptr(), _state->ptr()); }
   void sensorVel () { return mj_sensorVel (_model->ptr(), _state->ptr()); }
   void sensorAcc () { return mj_sensorAcc (_model->ptr(), _state->ptr()); }
   void energyPos () { return mj_energyPos (_model->ptr(), _state->ptr()); }
   void energyVel () { return mj_energyVel (_model->ptr(), _state->ptr()); }
 
-  // Engine Core Smooth API
+  // DEFINITIONS FROM ENGINE CORE SMOOTH API
+
   void kinematics () { return mj_kinematics (_model->ptr(), _state->ptr()); }
   void comPos () { return mj_comPos (_model->ptr(), _state->ptr()); }
   void camlight () { return mj_camlight (_model->ptr(), _state->ptr()); }
@@ -349,13 +359,16 @@ public:
   void rne (int flg_acc, val result) { return mj_rne (_model->ptr(), _state->ptr(), flg_acc, reinterpret_cast<mjtNum*>(result["byteOffset"].as<int>())); }
   void rnePostConstraint   () { return mj_rnePostConstraint (_model->ptr(), _state->ptr()); }
 
-  // Engine Passive API
+  // DEFINITIONS FROM ENGINE PASSIVE API
+
   void passive () { return mj_passive (_model->ptr(), _state->ptr()); }
 
-  // Engine Collision Driver API
+  // DEFINITIONS FROM ENGINE COLLISION DRIVER API
+
   void collision () { return mj_collision (_model->ptr(), _state->ptr()); }
 
-  // Engine Core Contraints API
+  // DEFINITIONS FROM ENGINE CORE CONSTRAINTS API
+
   void makeConstraint () { return mj_makeConstraint (_model->ptr(), _state->ptr()); }
   void projectConstraint   () { return mj_projectConstraint (_model->ptr(), _state->ptr()); }
   void referenceConstraint () { return mj_referenceConstraint (_model->ptr(), _state->ptr()); }
@@ -365,7 +378,8 @@ public:
   void mulJacVec (val res, val vec    ) { return mj_mulJacVec (_model->ptr(), _state->ptr(), reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>())); }
   void mulJacTVec (val res, val vec    ) { return mj_mulJacTVec (_model->ptr(), _state->ptr(), reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>())); }
   
-  // Engine Support API
+  // DEFINITIONS FROM ENGINE SUPPORT API
+
   void jacSubtreeCom (val jacp, int body  ) { return mj_jacSubtreeCom (_model->ptr(), _state->ptr(), reinterpret_cast<mjtNum*>(jacp["byteOffset"].as<int>()), body); }
   void differentiatePos    (val qvel, mjtNum dt, val qpos1, val qpos2) { return mj_differentiatePos (_model->ptr(), reinterpret_cast<mjtNum*>(qvel["byteOffset"].as<int>()), dt, reinterpret_cast<mjtNum*>(qpos1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(qpos2["byteOffset"].as<int>())); }
   void integratePos (val qpos, val qvel, mjtNum dt) { return mj_integratePos (_model->ptr(), reinterpret_cast<mjtNum*>(qpos["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(qvel["byteOffset"].as<int>()), dt); }
@@ -375,24 +389,29 @@ public:
   int version () { return mj_version (); }
   std::string versionString () { return std::string(mj_versionString ()); }
 
-  // Engine Name API
+  // DEFINITIONS FROM ENGINE NAME API
+
   int name2id (int type, std::string name) { return mj_name2id (_model->ptr(), type, name.c_str()); }
   std::string id2name (int type, int id    ) { return std::string(mj_id2name (_model->ptr(), type, id)); }
 
-  // Engine Plugin API
+  // DEFINITIONS FROM ENGINE PLUGIN API
+
   std::string getPluginConfig (int plugin_id, std::string attrib) { return std::string(mj_getPluginConfig (_model->ptr(), plugin_id, attrib.c_str())); }
   void loadPluginLibrary   (std::string path    ) { return mj_loadPluginLibrary (path.c_str() ); }
   
-  // Render API
+  // DEFINITIONS FROM RENDER API
+
   void rectangle (mjrRect viewport, float r, float g, float b, float a) { return mjr_rectangle (viewport, r, g, b, a); }
   void finish () { return mjr_finish (); }
   int getError () { return mjr_getError (); }
 
-  // UI API
+  // DEFINITIONS FROM UI API
+
   mjuiThemeSpacing themeSpacing (int ind ) { return mjui_themeSpacing (ind ); }
   mjuiThemeColor themeColor (int ind ) { return mjui_themeColor (ind ); }
   
-  // Engine Error and Memory API
+  // DEFINITIONS FROM ENGINE ERROR AND MEMORY API
+
   void error (std::string msg ) { return mju_error (msg.c_str() ); }
   void error_i (std::string msg, int i) { return mju_error_i (msg.c_str(), i ); }
   void error_s (std::string msg, std::string text) { return mju_error_s (msg.c_str(), text.c_str()); }
@@ -402,7 +421,8 @@ public:
   void clearHandlers () { return mju_clearHandlers (); }
   void writeLog (std::string type, std::string msg) { return mju_writeLog (type.c_str(), msg.c_str()); }
 
-  // MuJoCo API
+  // DEFINITIONS MUJOCO API
+
   void zero (val res, int n ) { return mju_zero (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
   void fill (val res, mjtNum val, int n) { return mju_fill (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), val, n); }
   void copy (val res, val data, int n) { return mju_copy (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(data["byteOffset"].as<int>()), n); }
@@ -451,6 +471,7 @@ public:
   mjtNum sigmoid (mjtNum x ) { return mju_sigmoid (x ); }
   void transitionFD (mjtNum eps, mjtByte centered, val A, val B, val C, val D) { return mjd_transitionFD (_model->ptr(), _state->ptr(), eps, centered, reinterpret_cast<mjtNum*>(A["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(B["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(C["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(D["byteOffset"].as<int>())); }
   int pluginCount () { return mjp_pluginCount (); }
+
   // clang-format on
 
 private:

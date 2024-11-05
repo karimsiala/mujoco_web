@@ -79,8 +79,10 @@ public:
   mjOption getOptions() { return (*m).opt; }
   void free() { return mju_free(m); }
 
-  // DEFINITIONS FROM MJMODEL.H
   // clang-format off
+
+  // DEFINITIONS FROM MJMODEL.H
+
   int nq() const { return m->nq; }
   int nv() const { return m->nv; }
   int nu() const { return m->nu; }
@@ -544,6 +546,7 @@ public:
   val names() const { return val(typed_memory_view(m->nnames * 1, m->names)); }
   val names_map() const { return val(typed_memory_view(m->nnames_map * 1, m->names_map)); }
   val paths() const { return val(typed_memory_view(m->npaths * 1, m->paths)); }
+
   // clang-format on
 
 private:
