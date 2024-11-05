@@ -24,10 +24,10 @@ endif()
 
 # Specifies the default directory where the project will be installed when you
 # run make install. 
-set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/dist")
+set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}//public/wasm")
 
 # Optionally, set the runtime output directory for all targets to 'dist'
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/dist")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/public/wasm")
 
 # Include the 'mujoco_web' subdirectory
 add_subdirectory(mujoco_web)
