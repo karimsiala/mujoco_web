@@ -110,8 +110,19 @@ set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/
 # Add the executable target.
 add_executable(mujoco_web src/main.cpp)
 set_target_properties(mujoco_web PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
+
+
+# target_include_directories(
+#     stepit_driver
+#     PUBLIC
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#     $<INSTALL_INTERFACE:include>
+# )
+
+
 target_include_directories(mujoco_web PUBLIC
-    # ${MUJOCO_INSTALL_INCLUDE_DIR}
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     "${EMSCRIPTEN_INCLUDE_DIR}"
     "${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}"
 )
