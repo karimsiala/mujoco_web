@@ -104,21 +104,12 @@ set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -s ALLOW_MEMORY_GROWTH=1 -s EXPORT
 set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
 
 # Define Emscripten include directories using EMSDK_PATH
-set(EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/include")
-set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/system/include/emscripten")
+set(EMSCRIPTEN_SYSROOT_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/cache/sysroot/include")
+set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSCRIPTEN_SYSROOT_INCLUDE_DIR}/emscripten")
 
 # Add the executable target.
 add_executable(mujoco_web src/main.cpp)
 set_target_properties(mujoco_web PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
-
-
-# target_include_directories(
-#     stepit_driver
-#     PUBLIC
-#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-#     $<INSTALL_INTERFACE:include>
-# )
-
 
 target_include_directories(mujoco_web PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
