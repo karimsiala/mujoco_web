@@ -16,9 +16,9 @@ https://github.com/zalo/mujoco_wasm
 
 These projects provided foundational insights and methodologies that have been adapted and expanded upon to suit the objectives of MuJoCo Web.
 
-## Prerequisites
+## Prerequisites to compile MuJoCo into WebAssembly
 
-Before proceeding with the installation and build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed and the EMSDK environment variable set.
+Before proceeding with the build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed and the EMSDK environment variable set.
 
 ```bash
 git clone https://github.com/emscripten-core/emsdk.git
@@ -35,7 +35,7 @@ Append a command at the end of your `.bash_profile` to source EMSDK automaticall
 source "/path-ro-emsdk//emsdk_env.sh"
 ```
 
-## Installation
+## How to compile and install MuJoCo WebAssembly binary
 
 In the root folder, execute the following commands:
 
@@ -50,7 +50,7 @@ These commands will performs the following actions:
 * Downloads all required packages.
 * Applies necessary patches to the source code.
 * Compiles MuJoCo web into WebAssembly including all libraries.
-* Install the binary into the dist folder.
+* Install the binary into the /public/wasm/ folder.
 
 ### Key Steps in the Build Process:
 
