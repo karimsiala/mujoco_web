@@ -9,6 +9,8 @@
 #include <emscripten/fetch.h>
 #include <emscripten/val.h>
 
+#include <model.h>
+
 using namespace emscripten;
 
 /**
@@ -45,10 +47,10 @@ using namespace emscripten;
  */
 class State {
 public:
-  State(Model m)  { d = mj_makeData(m.ptr()); }
-  mjData *ptr () { return d; }
+  State(Model m) { d = mj_makeData(m.ptr()); }
+  mjData *ptr() { return d; }
   mjData getVal() { return *d; }
-  void free   () { return mju_free(d); }
+  void free() { return mju_free(d); }
 
 private:
   mjData *d;

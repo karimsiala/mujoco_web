@@ -28,42 +28,51 @@ using namespace emscripten;
 class Model {
 
 private:
-    /**
-    * @brief Cleans up and deletes a MuJoCo model.
-    *
-    * This function is used to handle errors that occur during the loading of a MuJoCo model.
-    * It will delete the model if it was successfully loaded, and print an error message if provided.
-    *
-    * @param msg An optional error message to print.
-    * @param m The MuJoCo model to delete, if it was successfully loaded.
-    * @return 0 to indicate the function completed successfully.
-    */
-    int finish(const char* msg = NULL, mjModel* m = NULL) {
+  /**
+   * @brief Cleans up and deletes a MuJoCo model.
+   *
+   * This function is used to handle errors that occur during the loading of a
+   * MuJoCo model. It will delete the model if it was successfully loaded, and
+   * print an error message if provided.
+   *
+   * @param msg An optional error message to print.
+   * @param m The MuJoCo model to delete, if it was successfully loaded.
+   * @return 0 to indicate the function completed successfully.
+   */
+  int finish(const char *msg = NULL, mjModel *m = NULL) {
     if (m) {
-        mj_deleteModel(m);
+      mj_deleteModel(m);
     }
     if (msg) {
-        std::printf("%s\n", msg);
+      std::printf("%s\n", msg);
     }
     return 0;
-    }
+  }
 
 public:
   Model() { m = NULL; }
   Model(const std::string filename) {
-    if(0 == filename.compare(filename.length() - 3, 3, "mjb")){
-        char error[1000] = "Could not load mjb model";
-        m = mj_loadModel(filename.c_str(), 0); 
-        if (!m) { finish(error, m); }
+    if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
+      char error[1000] = "Could not load mjb model";
+      m = mj_loadModel(filename.c_str(), 0);
+      if (!m) {
+        finish(error, m);
+      }
     } else {
-        char error[1000] = "Could not load xml model";
-        m = mj_loadXML(filename.c_str(), 0, error, 1000); 
-        if (!m) { finish(error, m); }
+      char error[1000] = "Could not load xml model";
+      m = mj_loadXML(filename.c_str(), 0, error, 1000);
+      if (!m) {
+        finish(error, m);
+      }
     }
   }
 
-  static Model load_from_xml(const std::string filename) { return Model(filename); }
-  static Model load_from_mjb(const std::string filename) { return Model(filename); }
+  static Model load_from_xml(const std::string filename) {
+    return Model(filename);
+  }
+  static Model load_from_mjb(const std::string filename) {
+    return Model(filename);
+  }
 
   mjModel *ptr() { return m; }
   mjModel getVal() { return *m; }

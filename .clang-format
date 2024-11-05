@@ -1,1 +1,49 @@
-BasedOnStyle: None
+# Use Google style as the base
+BasedOnStyle: Google
+
+# Specify the language (optional, Clang-Format usually detects automatically)
+Language: Cpp
+
+# Additional Google style configurations (optional overrides)
+# Indentation settings
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+
+# Column limit
+ColumnLimit: 200
+
+# Brace wrapping style
+BreakBeforeBraces: Attach
+
+# Pointer and reference alignment
+PointerAlignment: Left
+
+# Control statement formatting
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# Spaces around operators
+SpaceBeforeParens: ControlStatements
+
+# Align consecutive assignments or declarations
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+
+# Include sorting
+SortIncludes: true
+
+# Header file styling
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '^<.*\.h>'
+    Priority: 1
+  - Regex: '^".*\.h"'
+    Priority: 2
+
+# Disable some features if not needed
+EnableExperimentalAutoFormatting: false
+
+# Other common Google style settings
+IndentCaseLabels: false
+AllowAllParametersOfDeclarationOnNextLine: false

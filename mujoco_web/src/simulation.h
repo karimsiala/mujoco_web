@@ -41,79 +41,82 @@ public:
 
   State *state() { return _state; }
   Model *model() { return _model; }
-  void free() { mju_free(_state); mju_free(_model); }
+  void free() {
+    mju_free(_state);
+    mju_free(_model);
+  }
 
-  void applyForce(
-    mjtNum fx, mjtNum fy, mjtNum fz, 
-    mjtNum tx, mjtNum ty, mjtNum tz,  
-    mjtNum px, mjtNum py, mjtNum pz, int body) {
-          mjtNum force [3] = {fx, fy, fz};
-          mjtNum torque[3] = {tx, ty, tz};
-          mjtNum point [3] = {px, py, pz};
-          mj_applyFT(_model->ptr(), _state->ptr(), 
-      force, torque, point, body, 
-      _state->ptr()->qfrc_applied);
+  void applyForce(mjtNum fx, mjtNum fy, mjtNum fz, mjtNum tx, mjtNum ty,
+                  mjtNum tz, mjtNum px, mjtNum py, mjtNum pz, int body) {
+    mjtNum force[3] = {fx, fy, fz};
+    mjtNum torque[3] = {tx, ty, tz};
+    mjtNum point[3] = {px, py, pz};
+    mj_applyFT(_model->ptr(), _state->ptr(), force, torque, point, body,
+               _state->ptr()->qfrc_applied);
   }
 
   // copied from the source of mjv_applyPerturbPose
-  // sets perturb pos,quat in d->mocap when selected body is mocap, and in d->qpos otherwise
-  //  d->qpos written only if flg_paused and subtree root for selected body has free joint
-  void applyPose(int bodyID,
- mjtNum refPosX,  mjtNum refPosY,  mjtNum refPosZ,
- mjtNum refQuat1, mjtNum refQuat2, mjtNum refQuat3, mjtNum refQuat4,
- int flg_paused) {
-    int rootid = 0, sel = bodyID;//pert->select;
+  // sets perturb pos,quat in d->mocap when selected body is mocap, and in
+  // d->qpos otherwise
+  //  d->qpos written only if flg_paused and subtree root for selected body has
+  //  free joint
+  void applyPose(int bodyID, mjtNum refPosX, mjtNum refPosY, mjtNum refPosZ,
+                 mjtNum refQuat1, mjtNum refQuat2, mjtNum refQuat3,
+                 mjtNum refQuat4, int flg_paused) {
+    int rootid = 0, sel = bodyID; // pert->select;
     mjtNum pos1[3], quat1[4], pos2[3], quat2[4], refpos[3], refquat[4];
     mjtNum *Rpos, *Rquat, *Cpos, *Cquat;
-    mjtNum inrefpos [3] = { refPosX , refPosY , refPosZ };
-    mjtNum inrefquat[4] = { refQuat1, refQuat2, refQuat3, refQuat4 };
+    mjtNum inrefpos[3] = {refPosX, refPosY, refPosZ};
+    mjtNum inrefquat[4] = {refQuat1, refQuat2, refQuat3, refQuat4};
     mjModel *m = _model->ptr();
-    mjData  *d = _state->ptr();
+    mjData *d = _state->ptr();
 
     // exit if nothing to do
-    //if (sel<=0 || sel>=m->nbody || !(pert->active | pert->active2)) { return; }
+    // if (sel<=0 || sel>=m->nbody || !(pert->active | pert->active2)) { return;
+    // }
 
     // get rootid above selected body
     rootid = m->body_rootid[sel];
 
     // transform refpos,refquat from I-frame to X-frame of body[sel]
-    mju_negPose(pos1, quat1, m->body_ipos+3*sel, m->body_iquat+4*sel);
+    mju_negPose(pos1, quat1, m->body_ipos + 3 * sel, m->body_iquat + 4 * sel);
     mju_mulPose(refpos, refquat, inrefpos, inrefquat, pos1, quat1);
 
     // mocap body
-    if (m->body_mocapid[sel]>=0) {
+    if (m->body_mocapid[sel] >= 0) {
       // copy ref pose into mocap pose
-      mju_copy3(d->mocap_pos + 3*m->body_mocapid[sel], refpos);
-      mju_copy4(d->mocap_quat + 4*m->body_mocapid[sel], refquat);
+      mju_copy3(d->mocap_pos + 3 * m->body_mocapid[sel], refpos);
+      mju_copy4(d->mocap_quat + 4 * m->body_mocapid[sel], refquat);
     }
 
     // floating body, paused
-    else if (flg_paused && m->body_jntnum[sel]==1 &&
-      m->jnt_type[m->body_jntadr[sel]]==mjJNT_FREE) {
+    else if (flg_paused && m->body_jntnum[sel] == 1 &&
+             m->jnt_type[m->body_jntadr[sel]] == mjJNT_FREE) {
       // copy ref pose into qpos
       mju_copy3(d->qpos + m->jnt_qposadr[m->body_jntadr[sel]], refpos);
       mju_copy4(d->qpos + m->jnt_qposadr[m->body_jntadr[sel]] + 3, refquat);
     }
 
     // child of floating body, paused
-    else if (flg_paused && m->body_jntnum[rootid]==1 &&
-      m->jnt_type[m->body_jntadr[rootid]]==mjJNT_FREE) {
+    else if (flg_paused && m->body_jntnum[rootid] == 1 &&
+             m->jnt_type[m->body_jntadr[rootid]] == mjJNT_FREE) {
       // get pointers to root
       Rpos = d->qpos + m->jnt_qposadr[m->body_jntadr[rootid]];
       Rquat = Rpos + 3;
 
       // get pointers to child
-      Cpos = d->xpos + 3*sel;
-      Cquat = d->xquat + 4*sel;
+      Cpos = d->xpos + 3 * sel;
+      Cquat = d->xquat + 4 * sel;
 
       // set root <- ref*neg(child)*root
-      mju_negPose(pos1, quat1, Cpos, Cquat); // neg(child)
+      mju_negPose(pos1, quat1, Cpos, Cquat);              // neg(child)
       mju_mulPose(pos2, quat2, pos1, quat1, Rpos, Rquat); // neg(child)*root
-      mju_mulPose(Rpos, Rquat, refpos, refquat, pos2, quat2); // ref*neg(child)*root
+      mju_mulPose(Rpos, Rquat, refpos, refquat, pos2,
+                  quat2); // ref*neg(child)*root
     }
   }
 
-  // DEFINITIONS FROM MJDATA.H 
+  // DEFINITIONS FROM MJDATA.H
   // clang-format off
 
   // State
@@ -267,7 +270,7 @@ public:
   
   // computed by mj_fwdAcceleration
   val qfrc_constraint() const { return val(typed_memory_view(_model->ptr()->nv * 1 , _state->ptr()->qfrc_constraint )); }
-  
+   
   // computed by mj_inverse
   val qfrc_inverse() const { return val(typed_memory_view(_model->ptr()->nv * 1 , _state->ptr()->qfrc_inverse )); }
   
@@ -320,10 +323,10 @@ public:
   void printModel (std::string filename) { return mj_printModel (_model->ptr(), filename.c_str()); }
   void printFormattedData  (std::string filename, std::string float_format) { return mj_printFormattedData (_model->ptr(), _state->ptr(), filename.c_str(), float_format.c_str()); }
   void printData (std::string filename) { return mj_printData (_model->ptr(), _state->ptr(), filename.c_str()); }
-  
+   
   // Engine Util API
   void printMat (val mat, int nr, int nc) { return mju_printMat (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), nr, nc); }
-  
+   
   // Engine Sensors API
   void sensorPos () { return mj_sensorPos (_model->ptr(), _state->ptr()); }
   void sensorVel () { return mj_sensorVel (_model->ptr(), _state->ptr()); }
