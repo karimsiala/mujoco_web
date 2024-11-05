@@ -968,61 +968,57 @@ public:
   void warning_i (std::string msg, int i) { return mju_warning_i (msg.c_str(), i ); }
   void warning_s (std::string msg, std::string text) { return mju_warning_s (msg.c_str(), text.c_str()); }
   void clearHandlers () { return mju_clearHandlers (); }
-  void warning (int warning, int info) { return mj_warning (_state->ptr(), warning, info); }
   void writeLog (std::string type, std::string msg) { return mju_writeLog (type.c_str(), msg.c_str()); }
 
-
-  int    activate (std::string filename) { return mj_activate (filename.c_str()    ); }
-  void   deactivate () { return mj_deactivate (); }
-  
-  void   _zero (val res, int n ) { return mju_zero (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
-  void   _fill (val res, mjtNum val, int n) { return mju_fill (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), val, n); }
-  void   _copy (val res, val data, int n) { return mju_copy (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(data["byteOffset"].as<int>()), n); }
-  mjtNum _sum (val vec, int n ) { return mju_sum (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  mjtNum _L1 (val vec, int n ) { return mju_L1 (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  void   _scl (val res, val vec, mjtNum scl, int n) { return mju_scl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), scl, n); }
-  void   _add (val res, val vec1, val vec2, int n) { return mju_add (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
-  void   _sub (val res, val vec1, val vec2, int n) { return mju_sub (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
-  void   _addTo (val res, val vec, int n) { return mju_addTo (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  void   _subFrom (val res, val vec, int n) { return mju_subFrom (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  void   _addToScl (val res, val vec, mjtNum scl, int n) { return mju_addToScl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), scl, n); }
-  void   _addScl (val res, val vec1, val vec2, mjtNum scl, int n) { return mju_addScl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), scl, n); }
-  mjtNum _normalize (val res, int n ) { return mju_normalize (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
-  mjtNum _norm (val res, int n ) { return mju_norm (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
-  mjtNum _dot (val vec1, val vec2, int n) { return mju_dot (reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
-  void   _mulMatVec (val res, val mat, val vec, int nr, int nc) { return mju_mulMatVec (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), nr, nc); }
-  void   _mulMatTVec (val res, val mat, val vec, int nr, int nc) { return mju_mulMatTVec (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), nr, nc); }
-  mjtNum _mulVecMatVec (val vec1, val mat, val vec2, int n) { return mju_mulVecMatVec (reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
-  void   _transpose (val res, val mat, int nr, int nc) { return mju_transpose (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), nr, nc); }
-  void   _symmetrize (val res, val mat, int n) { return mju_symmetrize (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n); }
-  void   _eye (val mat, int n ) { return mju_eye (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n); }
-  void   _mulMatMat (val res, val mat1, val mat2, int r1, int c1, int c2) { return mju_mulMatMat (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, c2); }
-  void   _mulMatMatT (val res, val mat1, val mat2, int r1, int c1, int r2) { return mju_mulMatMatT (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, r2); }
-  void   _mulMatTMat (val res, val mat1, val mat2, int r1, int c1, int c2) { return mju_mulMatTMat (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, c2); }
-  void   _sqrMatTD (val res, val mat, val diag, int nr, int nc) { return mju_sqrMatTD (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(diag["byteOffset"].as<int>()), nr, nc); }
-  int    _cholFactor (val mat, int n, mjtNum mindiag) { return mju_cholFactor (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n, mindiag); }
-  void   _cholSolve (val res, val mat, val vec, int n) { return mju_cholSolve (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  int    _cholUpdate (val mat, val x, int n, int flg_plus) { return mju_cholUpdate (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(x["byteOffset"].as<int>()), n, flg_plus); }
-  void   _encodePyramid (val pyramid, val force, val mu, int dim) { return mju_encodePyramid (reinterpret_cast<mjtNum*>(pyramid["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(force["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mu["byteOffset"].as<int>()), dim); }
-  void   _decodePyramid (val force, val pyramid, val mu, int dim) { return mju_decodePyramid (reinterpret_cast<mjtNum*>(force["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(pyramid["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mu["byteOffset"].as<int>()), dim); }
-  mjtNum _springDamper (mjtNum pos0, mjtNum vel0, mjtNum Kp, mjtNum Kv, mjtNum dt) { return mju_springDamper (pos0, vel0, Kp, Kv, dt); }
-  mjtNum _min (mjtNum a, mjtNum b  ) { return mju_min (a, b ); }
-  mjtNum _max (mjtNum a, mjtNum b  ) { return mju_max (a, b ); }
-  mjtNum _clip (mjtNum x, mjtNum min, mjtNum max) { return mju_clip (x, min, max ); }
-  mjtNum _sign (mjtNum x ) { return mju_sign (x ); }
-  int    _round (mjtNum x ) { return mju_round (x ); }
-  std::string _type2Str (int type ) { return std::string(mju_type2Str (type )); }
-  int    _str2Type (std::string str ) { return mju_str2Type (str.c_str() ); }
-  std::string _writeNumBytes (size_t nbytes ) { return std::string(mju_writeNumBytes (nbytes )); }
-  std::string _warningText (int warning, size_t info) { return std::string(mju_warningText (warning, info )); }
-  int    _isBad (mjtNum x ) { return mju_isBad (x ); }
-  int    _isZero (val vec, int n ) { return mju_isZero (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
-  mjtNum _standardNormal (val num2 ) { return mju_standardNormal (reinterpret_cast<mjtNum*>(num2["byteOffset"].as<int>())); }
-  void   _insertionSort (val list, int n ) { return mju_insertionSort (reinterpret_cast<mjtNum*>(list["byteOffset"].as<int>()), n); }
-  mjtNum _Halton (int index, int base ) { return mju_Halton (index, base ); }
-  mjtNum _sigmoid (mjtNum x ) { return mju_sigmoid (x ); }
-  void   _transitionFD (mjtNum eps, mjtByte centered, val A, val B, val C, val D) { return mjd_transitionFD (_model->ptr(), _state->ptr(), eps, centered, reinterpret_cast<mjtNum*>(A["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(B["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(C["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(D["byteOffset"].as<int>())); }
-  int    _pluginCount () { return mjp_pluginCount (); }
+  // MuJoCo API
+  void zero (val res, int n ) { return mju_zero (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
+  void fill (val res, mjtNum val, int n) { return mju_fill (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), val, n); }
+  void copy (val res, val data, int n) { return mju_copy (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(data["byteOffset"].as<int>()), n); }
+  mjtNum sum (val vec, int n ) { return mju_sum (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  mjtNum L1 (val vec, int n ) { return mju_L1 (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  void scl (val res, val vec, mjtNum scl, int n) { return mju_scl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), scl, n); }
+  void add (val res, val vec1, val vec2, int n) { return mju_add (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
+  void sub (val res, val vec1, val vec2, int n) { return mju_sub (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
+  void addTo (val res, val vec, int n) { return mju_addTo (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  void subFrom (val res, val vec, int n) { return mju_subFrom (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  void addToScl (val res, val vec, mjtNum scl, int n) { return mju_addToScl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), scl, n); }
+  void addScl (val res, val vec1, val vec2, mjtNum scl, int n) { return mju_addScl (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), scl, n); }
+  mjtNum normalize (val res, int n ) { return mju_normalize (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
+  mjtNum norm (val res, int n ) { return mju_norm (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), n); }
+  mjtNum dot (val vec1, val vec2, int n) { return mju_dot (reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
+  void mulMatVec (val res, val mat, val vec, int nr, int nc) { return mju_mulMatVec (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), nr, nc); }
+  void mulMatTVec (val res, val mat, val vec, int nr, int nc) { return mju_mulMatTVec (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), nr, nc); }
+  mjtNum mulVecMatVec (val vec1, val mat, val vec2, int n) { return mju_mulVecMatVec (reinterpret_cast<mjtNum*>(vec1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec2["byteOffset"].as<int>()), n); }
+  void transpose (val res, val mat, int nr, int nc) { return mju_transpose (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), nr, nc); }
+  void symmetrize (val res, val mat, int n) { return mju_symmetrize (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n); }
+  void eye (val mat, int n ) { return mju_eye (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n); }
+  void mulMatMat (val res, val mat1, val mat2, int r1, int c1, int c2) { return mju_mulMatMat (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, c2); }
+  void mulMatMatT (val res, val mat1, val mat2, int r1, int c1, int r2) { return mju_mulMatMatT (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, r2); }
+  void mulMatTMat (val res, val mat1, val mat2, int r1, int c1, int c2) { return mju_mulMatTMat (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat1["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat2["byteOffset"].as<int>()), r1, c1, c2); }
+  void sqrMatTD (val res, val mat, val diag, int nr, int nc) { return mju_sqrMatTD (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(diag["byteOffset"].as<int>()), nr, nc); }
+  int  cholFactor (val mat, int n, mjtNum mindiag) { return mju_cholFactor (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), n, mindiag); }
+  void cholSolve (val res, val mat, val vec, int n) { return mju_cholSolve (reinterpret_cast<mjtNum*>(res["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  int  cholUpdate (val mat, val x, int n, int flg_plus) { return mju_cholUpdate (reinterpret_cast<mjtNum*>(mat["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(x["byteOffset"].as<int>()), n, flg_plus); }
+  void encodePyramid (val pyramid, val force, val mu, int dim) { return mju_encodePyramid (reinterpret_cast<mjtNum*>(pyramid["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(force["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mu["byteOffset"].as<int>()), dim); }
+  void decodePyramid (val force, val pyramid, val mu, int dim) { return mju_decodePyramid (reinterpret_cast<mjtNum*>(force["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(pyramid["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(mu["byteOffset"].as<int>()), dim); }
+  mjtNum springDamper (mjtNum pos0, mjtNum vel0, mjtNum Kp, mjtNum Kv, mjtNum dt) { return mju_springDamper (pos0, vel0, Kp, Kv, dt); }
+  mjtNum min (mjtNum a, mjtNum b  ) { return mju_min (a, b ); }
+  mjtNum max (mjtNum a, mjtNum b  ) { return mju_max (a, b ); }
+  mjtNum clip (mjtNum x, mjtNum min, mjtNum max) { return mju_clip (x, min, max ); }
+  mjtNum sign (mjtNum x ) { return mju_sign (x ); }
+  int round (mjtNum x ) { return mju_round (x ); }
+  std::string type2Str (int type ) { return std::string(mju_type2Str (type )); }
+  int str2Type (std::string str ) { return mju_str2Type (str.c_str() ); }
+  std::string writeNumBytes (size_t nbytes ) { return std::string(mju_writeNumBytes (nbytes )); }
+  std::string warningText (int warning, size_t info) { return std::string(mju_warningText (warning, info )); }
+  int isBad (mjtNum x ) { return mju_isBad (x ); }
+  int isZero (val vec, int n ) { return mju_isZero (reinterpret_cast<mjtNum*>(vec["byteOffset"].as<int>()), n); }
+  mjtNum standardNormal (val num2 ) { return mju_standardNormal (reinterpret_cast<mjtNum*>(num2["byteOffset"].as<int>())); }
+  void insertionSort (val list, int n ) { return mju_insertionSort (reinterpret_cast<mjtNum*>(list["byteOffset"].as<int>()), n); }
+  mjtNum Halton (int index, int base ) { return mju_Halton (index, base ); }
+  mjtNum sigmoid (mjtNum x ) { return mju_sigmoid (x ); }
+  void transitionFD (mjtNum eps, mjtByte centered, val A, val B, val C, val D) { return mjd_transitionFD (_model->ptr(), _state->ptr(), eps, centered, reinterpret_cast<mjtNum*>(A["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(B["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(C["byteOffset"].as<int>()), reinterpret_cast<mjtNum*>(D["byteOffset"].as<int>())); }
+  int pluginCount () { return mjp_pluginCount (); }
   // clang-format on
 
 private:
@@ -1052,15 +1048,20 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjDSBL_FILTERPARENT"    , mjtDisableBit ::mjDSBL_FILTERPARENT )
  .value("mjDSBL_ACTUATION" , mjtDisableBit ::mjDSBL_ACTUATION )
  .value("mjDSBL_REFSAFE" , mjtDisableBit ::mjDSBL_REFSAFE )
- .value("mjDSBL_SENSOR" , mjtDisableBit ::mjDSBL_SENSOR )
+ .value("mjDSBL_SENSOR"  , mjtDisableBit ::mjDSBL_SENSOR )
+ .value("mjDSBL_MIDPHASE" , mjtDisableBit ::mjDSBL_MIDPHASE )      
+ .value("mjDSBL_EULERDAMP" ,  mjtDisableBit ::mjDSBL_EULERDAMP )  
+ .value("mjDSBL_AUTORESET" ,  mjtDisableBit ::mjDSBL_AUTORESET )  
  .value("mjNDISABLE" , mjtDisableBit ::mjNDISABLE )
   ;
   enum_<mjtEnableBit>("mjtEnableBit")
  .value("mjENBL_OVERRIDE" , mjtEnableBit ::mjENBL_OVERRIDE )
  .value("mjENBL_ENERGY" , mjtEnableBit ::mjENBL_ENERGY )
  .value("mjENBL_FWDINV" , mjtEnableBit ::mjENBL_FWDINV )
- .value("mjENBL_SENSORNOISE" , mjtEnableBit ::mjENBL_SENSORNOISE )
+ .value("mjENBL_INVDISCRETE" , mjtEnableBit ::mjENBL_INVDISCRETE )
  .value("mjENBL_MULTICCD" , mjtEnableBit ::mjENBL_MULTICCD )
+ .value("mjENBL_ISLAND" , mjtEnableBit ::mjENBL_ISLAND )
+ .value("mjENBL_NATIVECCD" , mjtEnableBit ::mjENBL_NATIVECCD )
  .value("mjNENABLE" , mjtEnableBit ::mjNENABLE )
   ;
   enum_<mjtJoint>("mjtJoint")
@@ -1078,13 +1079,17 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjGEOM_CYLINDER" , mjtGeom ::mjGEOM_CYLINDER )
  .value("mjGEOM_BOX" , mjtGeom ::mjGEOM_BOX )
  .value("mjGEOM_MESH" , mjtGeom ::mjGEOM_MESH )
+ .value("mjGEOM_SDF" , mjtGeom ::mjGEOM_SDF )
  .value("mjNGEOMTYPES" , mjtGeom ::mjNGEOMTYPES )
  .value("mjGEOM_ARROW" , mjtGeom ::mjGEOM_ARROW )
  .value("mjGEOM_ARROW1" , mjtGeom ::mjGEOM_ARROW1 )
  .value("mjGEOM_ARROW2" , mjtGeom ::mjGEOM_ARROW2 )
  .value("mjGEOM_LINE" , mjtGeom ::mjGEOM_LINE )
+ .value("mjGEOM_LINEBOX" , mjtGeom ::mjGEOM_LINEBOX )
+ .value("mjGEOM_FLEX" , mjtGeom ::mjGEOM_FLEX )
  .value("mjGEOM_SKIN" , mjtGeom ::mjGEOM_SKIN )
  .value("mjGEOM_LABEL" , mjtGeom ::mjGEOM_LABEL )
+ .value("mjGEOM_TRIANGLE" , mjtGeom ::mjGEOM_TRIANGLE )
  .value("mjGEOM_NONE" , mjtGeom ::mjGEOM_NONE )
   ;
   enum_<mjtCamLight>("mjtCamLight")
@@ -1099,15 +1104,24 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjTEXTURE_CUBE" , mjtTexture ::mjTEXTURE_CUBE )
  .value("mjTEXTURE_SKYBOX" , mjtTexture ::mjTEXTURE_SKYBOX )
   ;
+  enum_<mjtTextureRole>("mjtTextureRole")
+ .value("mjTEXROLE_USER" , mjtTextureRole ::mjTEXROLE_USER )
+ .value("mjTEXROLE_RGB" , mjtTextureRole ::mjTEXROLE_RGB )
+ .value("mjTEXROLE_OCCLUSION" , mjtTextureRole ::mjTEXROLE_OCCLUSION )
+ .value("mjTEXROLE_ROUGHNESS" , mjtTextureRole ::mjTEXROLE_ROUGHNESS )
+ .value("mjTEXROLE_METALLIC" , mjtTextureRole ::mjTEXROLE_METALLIC )
+ .value("mjTEXROLE_NORMAL" , mjtTextureRole ::mjTEXROLE_NORMAL )
+ .value("mjTEXROLE_OPACITY" , mjtTextureRole ::mjTEXROLE_OPACITY )
+ .value("mjTEXROLE_EMISSIVE" , mjtTextureRole ::mjTEXROLE_EMISSIVE )
+ .value("mjTEXROLE_RGBA" , mjtTextureRole ::mjTEXROLE_RGBA )
+ .value("mjTEXROLE_ORM" , mjtTextureRole ::mjTEXROLE_ORM )
+ .value("mjNTEXROLE" , mjtTextureRole ::mjNTEXROLE )
+  ;
   enum_<mjtIntegrator>("mjtIntegrator")
  .value("mjINT_EULER" , mjtIntegrator ::mjINT_EULER )
  .value("mjINT_RK4" , mjtIntegrator ::mjINT_RK4 )
  .value("mjINT_IMPLICIT" , mjtIntegrator ::mjINT_IMPLICIT )
-  ;
-  enum_<mjtCollision>("mjtCollision")
- .value("mjCOL_ALL" , mjtCollision ::mjCOL_ALL )
- .value("mjCOL_PAIR" , mjtCollision ::mjCOL_PAIR )
- .value("mjCOL_DYNAMIC" , mjtCollision ::mjCOL_DYNAMIC )
+ .value("mjINT_IMPLICITFAST" , mjtIntegrator ::mjINT_IMPLICITFAST )
   ;
   enum_<mjtCone>("mjtCone")
  .value("mjCONE_PYRAMIDAL" , mjtCone ::mjCONE_PYRAMIDAL )
@@ -1128,6 +1142,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjEQ_WELD" , mjtEq ::mjEQ_WELD )
  .value("mjEQ_JOINT" , mjtEq ::mjEQ_JOINT )
  .value("mjEQ_TENDON" , mjtEq ::mjEQ_TENDON )
+ .value("mjEQ_FLEX" , mjtEq ::mjEQ_FLEX )
  .value("mjEQ_DISTANCE" , mjtEq ::mjEQ_DISTANCE )
   ;
   enum_<mjtWrap>("mjtWrap")
@@ -1151,7 +1166,9 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjDYN_NONE" , mjtDyn ::mjDYN_NONE )
  .value("mjDYN_INTEGRATOR" , mjtDyn ::mjDYN_INTEGRATOR )
  .value("mjDYN_FILTER" , mjtDyn ::mjDYN_FILTER )
- .value("mjDYN_MUSCLE" , mjtDyn ::mjDYN_MUSCLE )
+ .value("mjDYN_FILTER" , mjtDyn ::mjDYN_FILTER )
+ .value("mjDYN_FILTEREXACT" , mjtDyn ::mjDYN_FILTEREXACT )
+ .value("mjDYN_MUSCLE" , mjtDyn ::mjDYN_MUSCLE ) 
  .value("mjDYN_USER" , mjtDyn ::mjDYN_USER )
   ;
   enum_<mjtGain>("mjtGain")
@@ -1219,6 +1236,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjSENS_TORQUE" , mjtSensor ::mjSENS_TORQUE )
  .value("mjSENS_MAGNETOMETER"    , mjtSensor ::mjSENS_MAGNETOMETER )
  .value("mjSENS_RANGEFINDER" , mjtSensor ::mjSENS_RANGEFINDER )
+ .value("mjSENS_CAMPROJECTION" , mjtSensor ::mjSENS_CAMPROJECTION )
  .value("mjSENS_JOINTPOS" , mjtSensor ::mjSENS_JOINTPOS )
  .value("mjSENS_JOINTVEL" , mjtSensor ::mjSENS_JOINTVEL )
  .value("mjSENS_TENDONPOS" , mjtSensor ::mjSENS_TENDONPOS )
@@ -1246,6 +1264,9 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjSENS_SUBTREECOM" , mjtSensor ::mjSENS_SUBTREECOM )
  .value("mjSENS_SUBTREELINVEL"   , mjtSensor ::mjSENS_SUBTREELINVEL )
  .value("mjSENS_SUBTREEANGMOM"   , mjtSensor ::mjSENS_SUBTREEANGMOM )
+ .value("mjSENS_GEOMDIST" , mjtSensor ::mjSENS_GEOMDIST )
+ .value("mjSENS_GEOMNORMAL" , mjtSensor ::mjSENS_GEOMNORMAL )
+ .value("mjSENS_GEOMFROMTO" , mjtSensor ::mjSENS_GEOMFROMTO )
  .value("mjSENS_CLOCK" , mjtSensor ::mjSENS_CLOCK )
  .value("mjSENS_PLUGIN" , mjtSensor ::mjSENS_PLUGIN )
  .value("mjSENS_USER" , mjtSensor ::mjSENS_USER )
@@ -1262,6 +1283,13 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjDATATYPE_AXIS" , mjtDataType ::mjDATATYPE_AXIS )
  .value("mjDATATYPE_QUATERNION"  , mjtDataType ::mjDATATYPE_QUATERNION    )
   ;
+  enum_<mjtSameFrame>("mjtSameFrame")
+ .value("mjSAMEFRAME_NONE" , mjtSameFrame ::mjSAMEFRAME_NONE )
+ .value("mjSAMEFRAME_BODY" , mjtSameFrame ::mjSAMEFRAME_BODY )
+ .value("mjSAMEFRAME_INERTIA"    , mjtSameFrame ::mjSAMEFRAME_INERTIA )
+ .value("mjSAMEFRAME_BODYROT" , mjtSameFrame ::mjSAMEFRAME_BODYROT )
+ .value("mjSAMEFRAME_INERTIAROT" , mjtSameFrame ::mjSAMEFRAME_INERTIAROT )
+  ;
   enum_<mjtLRMode>("mjtLRMode")
  .value("mjLRMODE_NONE" , mjtLRMode ::mjLRMODE_NONE )
  .value("mjLRMODE_MUSCLE" , mjtLRMode ::mjLRMODE_MUSCLE )
@@ -1269,6 +1297,57 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .value("mjLRMODE_ALL" , mjtLRMode ::mjLRMODE_ALL )
   ;
 
+ enum_<mjtFlexSelf>("mjtFlexSelf")
+ .value("mjFLEXSELF_NONE" , mjtFlexSelf ::mjFLEXSELF_NONE )
+ .value("mjFLEXSELF_NARROW" , mjtFlexSelf ::mjFLEXSELF_NARROW )
+ .value("mjFLEXSELF_BVH"    , mjtFlexSelf ::mjFLEXSELF_BVH )
+ .value("mjFLEXSELF_SAP" , mjtFlexSelf ::mjFLEXSELF_SAP )
+ .value("mjFLEXSELF_AUTO" , mjtFlexSelf ::mjFLEXSELF_AUTO )
+  ;
+
+  value_object<mjLROpt>("mjLROpt")
+ .field("mode" , &mjLROpt::mode)
+ .field("useexisting", &mjLROpt::useexisting)
+ .field("uselimit"   , &mjLROpt::uselimit)
+ .field("accel" , &mjLROpt::accel) 
+ .field("maxforce"   , &mjLROpt::maxforce) 
+ .field("timeconst"  , &mjLROpt::timeconst)
+ .field("timestep"   , &mjLROpt::timestep)  
+ .field("inttotal"   , &mjLROpt::inttotal)   
+ .field("interval"    , &mjLROpt::interval) 
+ .field("tolrange"   , &mjLROpt::tolrange);  
+
+  value_object<mjOption>("mjOption")
+ .field("timestep" , &mjOption::timestep) 
+ .field("apirate" , &mjOption::apirate)
+ .field("impratio" , &mjOption::impratio) 
+ .field("tolerance" , &mjOption::tolerance) 
+ .field("ls_tolerance" , &mjOption::ls_tolerance)
+ .field("noslip_tolerance"    , &mjOption::noslip_tolerance) 
+ .field("ccd_tolerance"    , &mjOption::ccd_tolerance) 
+ //.field("gravity" , &mjOption::gravity)
+ //.field("wind" , &mjOption::wind)
+ //.field("magnetic" , &mjOption::magnetic)
+ .field("density" , &mjOption::density)
+ .field("viscosity" , &mjOption::viscosity) 
+ .field("o_margin" , &mjOption::o_margin)
+ //.field("o_solref" , &mjOption::o_solref)
+ //.field("o_solimp" , &mjOption::o_solimp)
+ //.field("o_friction" , &mjOption::o_friction)
+ .field("integrator" , &mjOption::integrator)
+ .field("cone" , &mjOption::cone) 
+ .field("jacobian" , &mjOption::jacobian) 
+ .field("solver" , &mjOption::solver) 
+ .field("iterations" , &mjOption::iterations) 
+ .field("iterations" , &mjOption::iterations) 
+ .field("ls_iterations"   , &mjOption::ls_iterations) 
+ .field("noslip_iterations"   , &mjOption::noslip_iterations)
+ .field("ccd_iterations"   , &mjOption::ccd_iterations)   
+ .field("disableflags" , &mjOption::disableflags) 
+ .field("enableflags" , &mjOption::enableflags)
+ .field("disableactuator" , &mjOption::disableactuator)
+ .field("sdf_initpoints" , &mjOption::sdf_initpoints)
+ .field("sdf_iterations" , &mjOption::sdf_iterations);
 
   class_<Model>("Model")
  .constructor<>(&Model::load_from_xml)
@@ -1278,20 +1357,35 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .function("free" , &Model::free )
  .function("getVal" , &Model::getVal )
  .function("getOptions" , &Model::getOptions  )
+
  // MJMODEL_BINDINGS
+
+ // sizes needed at mjModel construction
  .property("nq" , &Model::nq )
  .property("nv" , &Model::nv )
  .property("nu" , &Model::nu )
  .property("na" , &Model::na )
  .property("nbody" , &Model::nbody )
+ .property("nbvhstatic" , &Model::nbvhstatic )  
+ .property("nbvhdynamic" , &Model::nbvhdynamic )
  .property("njnt" , &Model::njnt )
  .property("ngeom" , &Model::ngeom )
  .property("nsite" , &Model::nsite )
  .property("ncam" , &Model::ncam )
  .property("nlight" , &Model::nlight )
+ .property("nflex" , &Model::nflex )                
+ .property("nflexvert" , &Model::nflexvert )      
+ .property("nflexedge" , &Model::nflexedge )         
+ .property("nflexelem" , &Model::nflexelem )          
+ .property("nflexelemdata" , &Model::nflexelemdata )       
+ .property("nflexelemedge" , &Model::nflexelemedge )            
+ .property("nflexshelldata" , &Model::nflexshelldata )           
+ .property("nflexevpair" , &Model::nflexevpair )               
+ .property("nflextexcoord" , &Model::nflextexcoord )     
  .property("nmesh" , &Model::nmesh )
  .property("nmeshvert" , &Model::nmeshvert )
- .property("nmeshtexvert" , &Model::nmeshtexvert )
+ .property("nmeshnormal" , &Model::nmeshnormal )
+ .property("nmeshtexcoord" , &Model::nmeshtexcoord )
  .property("nmeshface" , &Model::nmeshface )
  .property("nmeshgraph" , &Model::nmeshgraph )
  .property("nskin" , &Model::nskin )
@@ -1330,18 +1424,29 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("nuser_actuator" , &Model::nuser_actuator )
  .property("nuser_sensor" , &Model::nuser_sensor )
  .property("nnames" , &Model::nnames )
+ .property("npaths" , &Model::npaths )
+
+ // sizes set after mjModel construction (only affect mjData)
  .property("nM" , &Model::nM )
+ .property("nB" , &Model::nB )
+ .property("nC" , &Model::nC )
  .property("nD" , &Model::nD )
+ .property("ntree" , &Model::ntree )
+ .property("ngravcomp" , &Model::ngravcomp )
  .property("nemax" , &Model::nemax )
  .property("njmax" , &Model::njmax )
  .property("nconmax" , &Model::nconmax )
- .property("nstack" , &Model::nstack )
  .property("nuserdata" , &Model::nuserdata )
  .property("nsensordata" , &Model::nsensordata )
  .property("npluginstate" , &Model::npluginstate )
+ .property("narena" , &Model::narena )
  .property("nbuffer" , &Model::nbuffer )
+
+ // default generalized coordinates
  .property("qpos0" , &Model::qpos0 )
  .property("qpos_spring" , &Model::qpos_spring )
+
+ // bodies
  .property("body_parentid" , &Model::body_parentid )
  .property("body_rootid" , &Model::body_rootid )
  .property("body_weldid" , &Model::body_weldid )
@@ -1365,23 +1470,41 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("body_gravcomp" , &Model::body_gravcomp )
  .property("body_user" , &Model::body_user )
  .property("body_plugin" , &Model::body_plugin )
+ .property("body_contype" , &Model::body_contype )    
+ .property("body_conaffinity" , &Model::body_conaffinity ) 
+ .property("body_bvhadr" , &Model::body_bvhadr )
+ .property("body_bvhnum", &Model::body_bvhnum )
+
+ // bounding volume hierarchy
+ .property("bvh_depth" , &Model::bvh_depth )
+ .property("bvh_child" , &Model::bvh_child ) 
+ .property("bvh_nodeid" , &Model::bvh_nodeid )
+ .property("bvh_aabb" , &Model::bvh_aabb ) 
+
+ // joints  
  .property("jnt_type" , &Model::jnt_type )
  .property("jnt_qposadr" , &Model::jnt_qposadr )
  .property("jnt_dofadr" , &Model::jnt_dofadr )
  .property("jnt_bodyid" , &Model::jnt_bodyid )
  .property("jnt_group" , &Model::jnt_group )
  .property("jnt_limited" , &Model::jnt_limited )
+ .property("jnt_actfrclimited" , &Model::jnt_actfrclimited )
+ .property("jnt_actgravcomp" , &Model::jnt_actgravcomp )  
  .property("jnt_solref" , &Model::jnt_solref )
  .property("jnt_solimp" , &Model::jnt_solimp )
  .property("jnt_pos" , &Model::jnt_pos )
  .property("jnt_axis" , &Model::jnt_axis )
  .property("jnt_stiffness" , &Model::jnt_stiffness )
  .property("jnt_range" , &Model::jnt_range )
+ .property("jnt_actfrcrange" , &Model::jnt_actfrcrange )
  .property("jnt_margin" , &Model::jnt_margin )
  .property("jnt_user" , &Model::jnt_user )
+
+ // dofs
  .property("dof_bodyid" , &Model::dof_bodyid )
  .property("dof_jntid" , &Model::dof_jntid )
  .property("dof_parentid" , &Model::dof_parentid )
+ .property("dof_treeid" , &Model::dof_treeid )
  .property("dof_Madr" , &Model::dof_Madr )
  .property("dof_simplenum" , &Model::dof_simplenum )
  .property("dof_solref" , &Model::dof_solref )
@@ -1391,6 +1514,8 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("dof_damping" , &Model::dof_damping )
  .property("dof_invweight0" , &Model::dof_invweight0 )
  .property("dof_M0" , &Model::dof_M0 )
+
+  // geoms
  .property("geom_type" , &Model::geom_type )
  .property("geom_contype" , &Model::geom_contype )
  .property("geom_conaffinity" , &Model::geom_conaffinity )
@@ -1405,6 +1530,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("geom_solref" , &Model::geom_solref )
  .property("geom_solimp" , &Model::geom_solimp )
  .property("geom_size" , &Model::geom_size )
+ .property("geom_aabb" , &Model::geom_aabb )
  .property("geom_rbound" , &Model::geom_rbound )
  .property("geom_pos" , &Model::geom_pos )
  .property("geom_quat" , &Model::geom_quat )
@@ -1414,6 +1540,8 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("geom_fluid" , &Model::geom_fluid )
  .property("geom_user" , &Model::geom_user )
  .property("geom_rgba" , &Model::geom_rgba )
+
+ // sites
  .property("site_type" , &Model::site_type )
  .property("site_bodyid" , &Model::site_bodyid )
  .property("site_matid" , &Model::site_matid )
@@ -1424,6 +1552,8 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("site_quat" , &Model::site_quat )
  .property("site_user" , &Model::site_user )
  .property("site_rgba" , &Model::site_rgba )
+
+ // cameras
  .property("cam_mode" , &Model::cam_mode )
  .property("cam_bodyid" , &Model::cam_bodyid )
  .property("cam_targetbodyid" , &Model::cam_targetbodyid )
@@ -1432,9 +1562,15 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("cam_poscom0" , &Model::cam_poscom0 )
  .property("cam_pos0" , &Model::cam_pos0 )
  .property("cam_mat0" , &Model::cam_mat0 )
+ .property("cam_orthographic" , &Model::cam_orthographic )
  .property("cam_fovy" , &Model::cam_fovy )
  .property("cam_ipd" , &Model::cam_ipd )
+ .property("cam_resolution" , &Model::cam_resolution )
+ .property("cam_sensorsize" , &Model::cam_sensorsize )
+ .property("cam_intrinsic" , &Model::cam_intrinsic )
  .property("cam_user" , &Model::cam_user )
+
+  // lights
  .property("light_mode" , &Model::light_mode )
  .property("light_bodyid" , &Model::light_bodyid )
  .property("light_targetbodyid"    , &Model::light_targetbodyid    )
@@ -1452,17 +1588,90 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("light_ambient" , &Model::light_ambient )
  .property("light_diffuse" , &Model::light_diffuse )
  .property("light_specular" , &Model::light_specular )
+
+  // flexes: contact properties
+  .property("flex_contype" , &Model::flex_contype )
+  .property("flex_conaffinity" , &Model::flex_conaffinity )
+  .property("flex_condim" , &Model::flex_condim )
+  .property("flex_priority" , &Model::flex_priority ) 
+  .property("flex_solmix" , &Model::flex_solmix )
+  .property("flex_solref" , &Model::flex_solref )
+  .property("flex_solimp" , &Model::flex_solimp ) 
+  .property("flex_friction" , &Model::flex_friction )
+  .property("flex_margin" , &Model::flex_margin )
+  .property("flex_gap" , &Model::flex_gap )
+  .property("flex_internal" , &Model::flex_internal )
+  .property("flex_selfcollide" , &Model::flex_selfcollide )
+  .property("flex_activelayers" , &Model::flex_activelayers ) 
+
+  // flexes: other properties
+  .property("flex_dim" , &Model::flex_dim ) 
+  .property("flex_matid" , &Model::flex_matid )
+  .property("flex_group" , &Model::flex_group )
+  .property("flex_vertadr" , &Model::flex_vertadr )
+  .property("flex_vertnum" , &Model::flex_vertnum )
+  .property("flex_edgeadr" , &Model::flex_edgeadr )
+  .property("flex_edgenum" , &Model::flex_edgenum )
+  .property("flex_elemadr" , &Model::flex_elemadr )
+  .property("flex_elemnum" , &Model::flex_elemnum ) 
+  .property("flex_elemdataadr" , &Model::flex_elemdataadr )
+  .property("flex_elemedgeadr" , &Model::flex_elemedgeadr )
+  .property("flex_shellnum" , &Model::flex_shellnum )
+  .property("flex_shelldataadr" , &Model::flex_shelldataadr )
+  .property("flex_evpairadr" , &Model::flex_evpairadr )
+  .property("flex_evpairnum" , &Model::flex_evpairnum )
+  .property("flex_texcoordadr" , &Model::flex_texcoordadr )
+  .property("flex_vertbodyid" , &Model::flex_vertbodyid )
+  .property("flex_edge" , &Model::flex_edge )
+  .property("flex_elem" , &Model::flex_elem )
+  .property("flex_elemedge" , &Model::flex_elemedge )
+  .property("flex_elemlayer" , &Model::flex_elemlayer )
+  .property("flex_shell" , &Model::flex_shell )
+  .property("flex_evpair" , &Model::flex_evpair )
+  .property("flex_vert" , &Model::flex_vert )
+  .property("flex_xvert0" , &Model::flex_xvert0 )
+  .property("flexedge_length0" , &Model::flexedge_length0 )
+  .property("flexedge_invweight0" , &Model::flexedge_invweight0 )
+  .property("flex_radius" , &Model::flex_radius )
+  .property("flex_stiffness" , &Model::flex_stiffness )
+  .property("flex_damping" , &Model::flex_damping )
+  .property("flex_edgestiffness" , &Model::flex_edgestiffness )
+  .property("flex_edgedamping" , &Model::flex_edgedamping )
+  .property("flex_edgeequality" , &Model::flex_edgeequality )
+  .property("flex_rigid" , &Model::flex_rigid ) 
+  .property("flexedge_rigid" , &Model::flexedge_rigid )
+  .property("flex_centered" , &Model::flex_centered )
+  .property("flex_flatskin" , &Model::flex_flatskin )
+  .property("flex_bvhadr" , &Model::flex_bvhadr )
+  .property("flex_bvhnum" , &Model::flex_bvhnum )
+  .property("flex_rgba" , &Model::flex_rgba )
+  .property("flex_texcoord" , &Model::flex_texcoord )       
+
+  // meshes
  .property("mesh_vertadr" , &Model::mesh_vertadr )
  .property("mesh_vertnum" , &Model::mesh_vertnum )
- .property("mesh_texcoordadr" , &Model::mesh_texcoordadr )
  .property("mesh_faceadr" , &Model::mesh_faceadr )
  .property("mesh_facenum" , &Model::mesh_facenum )
+ .property("mesh_bvhadr" , &Model::mesh_bvhadr )   
+ .property("mesh_bvhnum" , &Model::mesh_bvhnum )   
+ .property("mesh_normaladr" , &Model::mesh_normaladr )  
+ .property("mesh_normalnum" , &Model::mesh_normalnum ) 
+ .property("mesh_texcoordadr" , &Model::mesh_texcoordadr )
+ .property("mesh_texcoordnum" , &Model::mesh_texcoordnum )
  .property("mesh_graphadr" , &Model::mesh_graphadr )
  .property("mesh_vert" , &Model::mesh_vert )
  .property("mesh_normal" , &Model::mesh_normal )
  .property("mesh_texcoord" , &Model::mesh_texcoord )
  .property("mesh_face" , &Model::mesh_face )
+ .property("mesh_facenormal" , &Model::mesh_facenormal )    
+ .property("mesh_facetexcoord" , &Model::mesh_facetexcoord )
  .property("mesh_graph" , &Model::mesh_graph )
+ .property("mesh_scale" , &Model::mesh_scale )  
+ .property("mesh_pos" , &Model::mesh_pos ) 
+ .property("mesh_quat" , &Model::mesh_quat )
+ .property(" mesh_pathadr" , &Model::mesh_pathadr ) 
+
+  // skins
  .property("skin_matid" , &Model::skin_matid )
  .property("skin_group" , &Model::skin_group )
  .property("skin_rgba" , &Model::skin_rgba )
@@ -1484,41 +1693,62 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("skin_bonebodyid" , &Model::skin_bonebodyid )
  .property("skin_bonevertid" , &Model::skin_bonevertid )
  .property("skin_bonevertweight"   , &Model::skin_bonevertweight   )
+ .property("skin_pathadr"   , &Model::skin_pathadr )
+
+ // height fields
  .property("hfield_size" , &Model::hfield_size )
  .property("hfield_nrow" , &Model::hfield_nrow )
  .property("hfield_ncol" , &Model::hfield_ncol )
  .property("hfield_adr" , &Model::hfield_adr )
  .property("hfield_data" , &Model::hfield_data )
+ .property("hfield_pathadr" , &Model::hfield_pathadr )
+
+ // textures
  .property("tex_type" , &Model::tex_type )
  .property("tex_height" , &Model::tex_height )
  .property("tex_width" , &Model::tex_width )
- .property("tex_adr" , &Model::tex_adr )
- .property("tex_rgb" , &Model::tex_rgb )
+ .property("tex_nchannel" , &Model::tex_nchannel )
+ .property("tex_adr" , &Model::tex_adr ) 
+ .property("tex_data" , &Model::tex_data )
+ .property("tex_pathadr" , &Model::tex_pathadr )
+
+ // materials  
  .property("mat_texid" , &Model::mat_texid )
  .property("mat_texuniform" , &Model::mat_texuniform )
  .property("mat_texrepeat" , &Model::mat_texrepeat )
  .property("mat_emission" , &Model::mat_emission )
  .property("mat_specular" , &Model::mat_specular )
  .property("mat_shininess" , &Model::mat_shininess )
- .property("mat_reflectance" , &Model::mat_reflectance )
+ .property("mat_reflectance" , &Model::mat_reflectance )\
+ .property("mat_metallic" , &Model::mat_metallic )
+ .property("mat_roughness" , &Model::mat_roughness )
  .property("mat_rgba" , &Model::mat_rgba )
+
+ // predefined geom pairs for collision detection; has precedence over exclude
  .property("pair_dim" , &Model::pair_dim )
  .property("pair_geom1" , &Model::pair_geom1 )
  .property("pair_geom2" , &Model::pair_geom2 )
  .property("pair_signature" , &Model::pair_signature )
  .property("pair_solref" , &Model::pair_solref )
+ .property("pair_solreffriction" , &Model::pair_solreffriction )
  .property("pair_solimp" , &Model::pair_solimp )
  .property("pair_margin" , &Model::pair_margin )
  .property("pair_gap" , &Model::pair_gap )
  .property("pair_friction" , &Model::pair_friction )
+
+ // excluded body pairs for collision detection
  .property("exclude_signature" , &Model::exclude_signature )
+
+ // equality constraints
  .property("eq_type" , &Model::eq_type )
  .property("eq_obj1id" , &Model::eq_obj1id )
  .property("eq_obj2id" , &Model::eq_obj2id )
- .property("eq_active" , &Model::eq_active )
+ .property("eq_active0" , &Model::eq_active0 )
  .property("eq_solref" , &Model::eq_solref )
  .property("eq_solimp" , &Model::eq_solimp )
  .property("eq_data" , &Model::eq_data )
+
+ // tendons
  .property("tendon_adr" , &Model::tendon_adr )
  .property("tendon_num" , &Model::tendon_num )
  .property("tendon_matid" , &Model::tendon_matid )
@@ -1539,9 +1769,13 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("tendon_invweight0" , &Model::tendon_invweight0 )
  .property("tendon_user" , &Model::tendon_user )
  .property("tendon_rgba" , &Model::tendon_rgba )
+
+ // list of all wrap objects in tendon paths
  .property("wrap_type" , &Model::wrap_type )
  .property("wrap_objid" , &Model::wrap_objid )
  .property("wrap_prm" , &Model::wrap_prm )
+
+ // actuators
  .property("actuator_trntype" , &Model::actuator_trntype )
  .property("actuator_dyntype" , &Model::actuator_dyntype )
  .property("actuator_gaintype" , &Model::actuator_gaintype )
@@ -1556,6 +1790,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("actuator_dynprm" , &Model::actuator_dynprm )
  .property("actuator_gainprm" , &Model::actuator_gainprm )
  .property("actuator_biasprm" , &Model::actuator_biasprm )
+ .property("actuator_actearly" , &Model::actuator_actearly )
  .property("actuator_ctrlrange"    , &Model::actuator_ctrlrange    )
  .property("actuator_forcerange"   , &Model::actuator_forcerange   )
  .property("actuator_actrange" , &Model::actuator_actrange )
@@ -1566,6 +1801,8 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("actuator_lengthrange"  , &Model::actuator_lengthrange  )
  .property("actuator_user" , &Model::actuator_user )
  .property("actuator_plugin" , &Model::actuator_plugin )
+
+// sensors
  .property("sensor_type" , &Model::sensor_type )
  .property("sensor_datatype" , &Model::sensor_datatype )
  .property("sensor_needstage" , &Model::sensor_needstage )
@@ -1579,22 +1816,32 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("sensor_noise" , &Model::sensor_noise )
  .property("sensor_user" , &Model::sensor_user )
  .property("sensor_plugin" , &Model::sensor_plugin )
+
+ // plugin instances
  .property("plugin" , &Model::plugin )
  .property("plugin_stateadr" , &Model::plugin_stateadr )
  .property("plugin_statenum" , &Model::plugin_statenum )
  .property("plugin_attr" , &Model::plugin_attr )
  .property("plugin_attradr" , &Model::plugin_attradr )
+
+ // custom numeric fields
  .property("numeric_adr" , &Model::numeric_adr )
  .property("numeric_size" , &Model::numeric_size )
  .property("numeric_data" , &Model::numeric_data )
+
+ // custom text fields
  .property("text_adr" , &Model::text_adr )
  .property("text_size" , &Model::text_size )
  .property("text_data" , &Model::text_data )
+
+ // custom tuple fields
  .property("tuple_adr" , &Model::tuple_adr )
  .property("tuple_size" , &Model::tuple_size )
  .property("tuple_objtype" , &Model::tuple_objtype )
  .property("tuple_objid" , &Model::tuple_objid )
  .property("tuple_objprm" , &Model::tuple_objprm )
+
+ // keyframes
  .property("key_time" , &Model::key_time )
  .property("key_qpos" , &Model::key_qpos )
  .property("key_qvel" , &Model::key_qvel )
@@ -1602,12 +1849,15 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("key_mpos" , &Model::key_mpos )
  .property("key_mquat" , &Model::key_mquat )
  .property("key_ctrl" , &Model::key_ctrl )
+
+ // names
  .property("name_bodyadr" , &Model::name_bodyadr )
  .property("name_jntadr" , &Model::name_jntadr )
  .property("name_geomadr" , &Model::name_geomadr )
  .property("name_siteadr" , &Model::name_siteadr )
  .property("name_camadr" , &Model::name_camadr )
  .property("name_lightadr" , &Model::name_lightadr )
+ .property("name_flexadr" , &Model::name_flexadr )
  .property("name_meshadr" , &Model::name_meshadr )
  .property("name_skinadr" , &Model::name_skinadr )
  .property("name_hfieldadr" , &Model::name_hfieldadr )
@@ -1625,6 +1875,10 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("name_keyadr" , &Model::name_keyadr )
  .property("name_pluginadr" , &Model::name_pluginadr )
  .property("names" , &Model::names )
+ .property("names_map" , &Model::names_map )
+
+ // paths
+ .property("paths" , &Model::paths )
 ;
 
   class_<State>("State")
@@ -1640,7 +1894,8 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .function("free" , &Simulation::free )
  .function("applyForce", &Simulation::applyForce)
  .function("applyPose" , &Simulation::applyPose )
- // MJDATA_BINDINGS
+
+  // MJDATA_BINDINGS
  .property("qpos" , &Simulation::qpos )
  .property("qvel" , &Simulation::qvel )
  .property("act" , &Simulation::act )
@@ -1715,26 +1970,16 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .property("cacc" , &Simulation::cacc )
  .property("cfrc_int" , &Simulation::cfrc_int )
  .property("cfrc_ext" , &Simulation::cfrc_ext )
+
+ // XML API
  .function("freeLastXML" , &Simulation::freeLastXML )
+
+ // Engine Forward API
  .function("step" , &Simulation::step )
  .function("step1" , &Simulation::step1 )
  .function("step2" , &Simulation::step2 )
  .function("forward" , &Simulation::forward )
- .function("inverse" , &Simulation::inverse )
  .function("forwardSkip" , &Simulation::forwardSkip )
- .function("inverseSkip" , &Simulation::inverseSkip )
- .function("defaultSolRefImp" , &Simulation::defaultSolRefImp , allow_raw_pointers())
- .function("sizeModel" , &Simulation::sizeModel )
- .function("resetData" , &Simulation::resetData )
- .function("resetDataDebug" , &Simulation::resetDataDebug )
- .function("resetDataKeyframe" , &Simulation::resetDataKeyframe )
- .function("deleteData" , &Simulation::deleteData )
- .function("resetCallbacks" , &Simulation::resetCallbacks )
- .function("printFormattedModel"   , &Simulation::printFormattedModel   )
- .function("printModel" , &Simulation::printModel )
- .function("printFormattedData"    , &Simulation::printFormattedData    )
- .function("printData" , &Simulation::printData )
- .function("_printMat" , &Simulation::_printMat , allow_raw_pointers())
  .function("fwdPosition" , &Simulation::fwdPosition )
  .function("fwdVelocity" , &Simulation::fwdVelocity )
  .function("fwdActuation" , &Simulation::fwdActuation )
@@ -1742,18 +1987,46 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .function("fwdConstraint" , &Simulation::fwdConstraint )
  .function("Euler" , &Simulation::Euler )
  .function("RungeKutta" , &Simulation::RungeKutta )
+ .function("checkPos" , &Simulation::checkPos )
+ .function("checkVel" , &Simulation::checkVel )
+ .function("checkAcc" , &Simulation::checkAcc )
+
+ // Engine Inverse API
+ .function("inverse" , &Simulation::inverse )
+ .function("inverseSkip" , &Simulation::inverseSkip )
  .function("invPosition" , &Simulation::invPosition )
  .function("invVelocity" , &Simulation::invVelocity )
  .function("invConstraint" , &Simulation::invConstraint )
  .function("compareFwdInv" , &Simulation::compareFwdInv )
+
+  // Engine IO API
+ .function("defaultSolRefImp" , &Simulation::defaultSolRefImp , allow_raw_pointers())
+ .function("sizeModel" , &Simulation::sizeModel )
+ .function("resetData" , &Simulation::resetData )
+ .function("resetDataDebug" , &Simulation::resetDataDebug )
+ .function("resetDataKeyframe" , &Simulation::resetDataKeyframe )
+ .function("deleteData" , &Simulation::deleteData )
+
+ // Engine Callback API
+ .function("resetCallbacks" , &Simulation::resetCallbacks )
+
+  // Engine Print API
+ .function("printFormattedModel"   , &Simulation::printFormattedModel   )
+ .function("printModel" , &Simulation::printModel )
+ .function("printFormattedData"    , &Simulation::printFormattedData    )
+ .function("printData" , &Simulation::printData )
+
+ // Engine Util API
+ .function("printMat" , &Simulation::printMat , allow_raw_pointers())
+
+// Engine Sensors API
  .function("sensorPos" , &Simulation::sensorPos )
  .function("sensorVel" , &Simulation::sensorVel )
  .function("sensorAcc" , &Simulation::sensorAcc )
  .function("energyPos" , &Simulation::energyPos )
  .function("energyVel" , &Simulation::energyVel )
- .function("checkPos" , &Simulation::checkPos )
- .function("checkVel" , &Simulation::checkVel )
- .function("checkAcc" , &Simulation::checkAcc )
+
+// Engine Core Smooth API
  .function("kinematics" , &Simulation::kinematics )
  .function("comPos" , &Simulation::comPos )
  .function("camlight" , &Simulation::camlight )
@@ -1764,95 +2037,111 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .function("solveM" , &Simulation::solveM , allow_raw_pointers())
  .function("solveM2" , &Simulation::solveM2 , allow_raw_pointers())
  .function("comVel" , &Simulation::comVel )
- .function("passive" , &Simulation::passive )
  .function("subtreeVel" , &Simulation::subtreeVel )
  .function("rne" , &Simulation::rne , allow_raw_pointers())
  .function("rnePostConstraint" , &Simulation::rnePostConstraint )
+
+// Engine Passive API
+ .function("passive" , &Simulation::passive )
+
+  // Engine Collision Driver API
  .function("collision" , &Simulation::collision )
+
+// Engine Core Contraints API
  .function("makeConstraint" , &Simulation::makeConstraint )
  .function("projectConstraint" , &Simulation::projectConstraint )
  .function("referenceConstraint"   , &Simulation::referenceConstraint   )
  .function("isPyramidal" , &Simulation::isPyramidal )
  .function("isSparse" , &Simulation::isSparse )
  .function("isDual" , &Simulation::isDual )
- .function("mulJacVec" , &Simulation::mulJacVec , allow_raw_pointers())
  .function("mulJacTVec" , &Simulation::mulJacTVec , allow_raw_pointers())
+
+ // Engine Support API
  .function("jacSubtreeCom" , &Simulation::jacSubtreeCom , allow_raw_pointers())
- .function("name2id" , &Simulation::name2id )
- .function("id2name" , &Simulation::id2name )
- .function("fullM" , &Simulation::fullM , allow_raw_pointers())
  .function("differentiatePos" , &Simulation::differentiatePos , allow_raw_pointers())
  .function("integratePos" , &Simulation::integratePos , allow_raw_pointers())
  .function("normalizeQuat" , &Simulation::normalizeQuat , allow_raw_pointers())
  .function("getTotalmass" , &Simulation::getTotalmass )
- .function("getPluginConfig" , &Simulation::getPluginConfig )
- .function("loadPluginLibrary" , &Simulation::loadPluginLibrary )
+ .function("fullM" , &Simulation::fullM , allow_raw_pointers())
  .function("version" , &Simulation::version )
  .function("versionString" , &Simulation::versionString )
- .function("_rectangle" , &Simulation::_rectangle )
- .function("_finish" , &Simulation::_finish )
- .function("_getError" , &Simulation::_getError )
- .function("i_themeSpacing" , &Simulation::i_themeSpacing )
- .function("i_themeColor" , &Simulation::i_themeColor )
- .function("_error" , &Simulation::_error )
- .function("_error_i" , &Simulation::_error_i )
- .function("_error_s" , &Simulation::_error_s )
- .function("_warning" , &Simulation::_warning )
- .function("_warning_i" , &Simulation::_warning_i )
- .function("_warning_s" , &Simulation::_warning_s )
- .function("_clearHandlers" , &Simulation::_clearHandlers )
+
+// Engine Name API
+ .function("name2id" , &Simulation::name2id )
+ .function("id2name" , &Simulation::id2name )
+
+  // Engine Plugin API
+ .function("getPluginConfig" , &Simulation::getPluginConfig )
+ .function("loadPluginLibrary" , &Simulation::loadPluginLibrary )
+
+  // Render API
+ .function("rectangle" , &Simulation::rectangle )
+ .function("finish" , &Simulation::finish )
+ .function("getError" , &Simulation::getError )
+
+   // UI API
+ .function("themeSpacing" , &Simulation::themeSpacing )
+ .function("themeColor" , &Simulation::themeColor )
+
+   // Engine Error and Memory API
+ .function("error" , &Simulation::error )
+ .function("error_i" , &Simulation::error_i )
+ .function("error_s" , &Simulation::error_s )
  .function("warning" , &Simulation::warning )
- .function("_writeLog" , &Simulation::_writeLog )
- .function("activate" , &Simulation::activate )
- .function("deactivate" , &Simulation::deactivate )
- .function("_zero" , &Simulation::_zero , allow_raw_pointers())
- .function("_fill" , &Simulation::_fill , allow_raw_pointers())
- .function("_copy" , &Simulation::_copy , allow_raw_pointers())
- .function("_sum" , &Simulation::_sum , allow_raw_pointers())
- .function("_L1" , &Simulation::_L1 , allow_raw_pointers())
- .function("_scl" , &Simulation::_scl , allow_raw_pointers())
- .function("_add" , &Simulation::_add , allow_raw_pointers())
- .function("_sub" , &Simulation::_sub , allow_raw_pointers())
- .function("_addTo" , &Simulation::_addTo , allow_raw_pointers())
- .function("_subFrom" , &Simulation::_subFrom , allow_raw_pointers())
- .function("_addToScl" , &Simulation::_addToScl , allow_raw_pointers())
- .function("_addScl" , &Simulation::_addScl , allow_raw_pointers())
- .function("_normalize" , &Simulation::_normalize , allow_raw_pointers())
- .function("_norm" , &Simulation::_norm , allow_raw_pointers())
- .function("_dot" , &Simulation::_dot , allow_raw_pointers())
- .function("_mulMatVec" , &Simulation::_mulMatVec , allow_raw_pointers())
- .function("_mulMatTVec" , &Simulation::_mulMatTVec , allow_raw_pointers())
- .function("_mulVecMatVec" , &Simulation::_mulVecMatVec , allow_raw_pointers())
- .function("_transpose" , &Simulation::_transpose , allow_raw_pointers())
- .function("_symmetrize" , &Simulation::_symmetrize , allow_raw_pointers())
- .function("_eye" , &Simulation::_eye , allow_raw_pointers())
- .function("_mulMatMat" , &Simulation::_mulMatMat , allow_raw_pointers())
- .function("_mulMatMatT" , &Simulation::_mulMatMatT , allow_raw_pointers())
- .function("_mulMatTMat" , &Simulation::_mulMatTMat , allow_raw_pointers())
- .function("_sqrMatTD" , &Simulation::_sqrMatTD , allow_raw_pointers())
- .function("_cholFactor" , &Simulation::_cholFactor , allow_raw_pointers())
- .function("_cholSolve" , &Simulation::_cholSolve , allow_raw_pointers())
- .function("_cholUpdate" , &Simulation::_cholUpdate , allow_raw_pointers())
- .function("_encodePyramid" , &Simulation::_encodePyramid , allow_raw_pointers())
- .function("_decodePyramid" , &Simulation::_decodePyramid , allow_raw_pointers())
- .function("_springDamper" , &Simulation::_springDamper )
- .function("_min" , &Simulation::_min )
- .function("_max" , &Simulation::_max )
- .function("_clip" , &Simulation::_clip )
- .function("_sign" , &Simulation::_sign )
- .function("_round" , &Simulation::_round )
- .function("_type2Str" , &Simulation::_type2Str )
- .function("_str2Type" , &Simulation::_str2Type )
- .function("_writeNumBytes" , &Simulation::_writeNumBytes )
- .function("_warningText" , &Simulation::_warningText )
- .function("_isBad" , &Simulation::_isBad )
- .function("_isZero" , &Simulation::_isZero , allow_raw_pointers())
- .function("_standardNormal" , &Simulation::_standardNormal , allow_raw_pointers())
- .function("_insertionSort" , &Simulation::_insertionSort , allow_raw_pointers())
- .function("_Halton" , &Simulation::_Halton )
- .function("_sigmoid" , &Simulation::_sigmoid )
- .function("_transitionFD" , &Simulation::_transitionFD , allow_raw_pointers())
- .function("_pluginCount" , &Simulation::_pluginCount )
+ .function("warning_i" , &Simulation::warning_i )
+ .function("warning_s" , &Simulation::warning_s )
+ .function("clearHandlers" , &Simulation::clearHandlers )
+ .function("writeLog" , &Simulation::writeLog )
+
+// MuJoCo API
+ .function("zero" , &Simulation::zero , allow_raw_pointers())
+ .function("fill" , &Simulation::fill , allow_raw_pointers())
+ .function("copy" , &Simulation::copy , allow_raw_pointers())
+ .function("sum" , &Simulation::sum , allow_raw_pointers())
+ .function("L1" , &Simulation::L1 , allow_raw_pointers())
+ .function("scl" , &Simulation::scl , allow_raw_pointers())
+ .function("add" , &Simulation::add , allow_raw_pointers())
+ .function("sub" , &Simulation::sub , allow_raw_pointers())
+ .function("addTo" , &Simulation::addTo , allow_raw_pointers())
+ .function("subFrom" , &Simulation::subFrom , allow_raw_pointers())
+ .function("addToScl" , &Simulation::addToScl , allow_raw_pointers())
+ .function("addScl" , &Simulation::addScl , allow_raw_pointers())
+ .function("normalize" , &Simulation::normalize , allow_raw_pointers())
+ .function("norm" , &Simulation::norm , allow_raw_pointers())
+ .function("dot" , &Simulation::dot , allow_raw_pointers())
+ .function("mulMatVec" , &Simulation::mulMatVec , allow_raw_pointers())
+ .function("mulMatTVec" , &Simulation::mulMatTVec , allow_raw_pointers())
+ .function("mulVecMatVec" , &Simulation::mulVecMatVec , allow_raw_pointers())
+ .function("transpose" , &Simulation::transpose , allow_raw_pointers())
+ .function("symmetrize" , &Simulation::symmetrize , allow_raw_pointers())
+ .function("eye" , &Simulation::eye , allow_raw_pointers())
+ .function("mulMatMat" , &Simulation::mulMatMat , allow_raw_pointers())
+ .function("mulMatMatT" , &Simulation::mulMatMatT , allow_raw_pointers())
+ .function("mulMatTMat" , &Simulation::mulMatTMat , allow_raw_pointers())
+ .function("sqrMatTD" , &Simulation::sqrMatTD , allow_raw_pointers())
+ .function("cholFactor" , &Simulation::cholFactor , allow_raw_pointers())
+ .function("cholSolve" , &Simulation::cholSolve , allow_raw_pointers())
+ .function("cholUpdate" , &Simulation::cholUpdate , allow_raw_pointers())
+ .function("encodePyramid" , &Simulation::encodePyramid , allow_raw_pointers())
+ .function("decodePyramid" , &Simulation::decodePyramid , allow_raw_pointers())
+ .function("springDamper" , &Simulation::springDamper )
+ .function("min" , &Simulation::min )
+ .function("max" , &Simulation::max )
+ .function("clip" , &Simulation::clip )
+ .function("sign" , &Simulation::sign )
+ .function("round" , &Simulation::round )
+ .function("type2Str" , &Simulation::type2Str )
+ .function("str2Type" , &Simulation::str2Type )
+ .function("writeNumBytes" , &Simulation::writeNumBytes )
+ .function("warningText" , &Simulation::warningText )
+ .function("isBad" , &Simulation::isBad )
+ .function("isZero" , &Simulation::isZero , allow_raw_pointers())
+ .function("standardNormal" , &Simulation::standardNormal , allow_raw_pointers())
+ .function("insertionSort" , &Simulation::insertionSort , allow_raw_pointers())
+ .function("Halton" , &Simulation::Halton )
+ .function("sigmoid" , &Simulation::sigmoid )
+ .function("transitionFD" , &Simulation::transitionFD , allow_raw_pointers())
+ .function("pluginCount" , &Simulation::pluginCount )
  ;
 
   value_object<mjModel>("mjModel")
@@ -1863,75 +2152,37 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
  .field("nu" , &mjModel::nu)
  .field("nbody" , &mjModel::nbody)
  .field("nsensordata", &mjModel::nsensordata)
- //.field("body_rootid", &mjModel::body_rootid, allow_raw_pointers())
  .field("nmesh" , &mjModel::nmesh)
  .field("nmeshvert"  , &mjModel::nmeshvert)
  .field("nmeshface"  , &mjModel::nmeshface);
 
   value_object<mjvPerturb>("mjvPerturb")
- .field("select"    , &mjvPerturb::select) // selected body id; non-positive: none
- .field("skinselect", &mjvPerturb::skinselect) // selected skin id; negative: none
- .field("active"    , &mjvPerturb::active) // perturbation bitmask (mjtPertBit)
- .field("active2"   , &mjvPerturb::active2)    // secondary perturbation bitmask (mjtPertBit)
- .field("refpos"    , &mjvPerturb::refpos) // desired position for selected object
- .field("refquat"   , &mjvPerturb::refquat)    // desired orientation for selected object
- .field("localpos"  , &mjvPerturb::localpos)   // selection point in object coordinates
- .field("scale" , &mjvPerturb::scale) // relative mouse motion-to-space scaling (set by initPerturb)
+ .field("select"    , &mjvPerturb::select) 
+ .field("skinselect", &mjvPerturb::skinselect) 
+ .field("active"    , &mjvPerturb::active) 
+ .field("active2"   , &mjvPerturb::active2) 
+ .field("refpos"    , &mjvPerturb::refpos) 
+ .field("refquat"   , &mjvPerturb::refquat) 
+ .field("localpos"  , &mjvPerturb::localpos) 
+ .field("scale" , &mjvPerturb::scale)
  ;
 
   value_object<mjContact>("mjContact")
- .field("dist" , &mjContact::dist) // distance between nearest points; neg: penetration
- .field("pos" , &mjContact::pos) // position of contact point: midpoint between geoms
- .field("frame" , &mjContact::frame) // normal is in [0-2]
- .field("includemargin", &mjContact::includemargin)    // include if dist<includemargin=margin-gap
- .field("friction" , &mjContact::friction) // tangent1, 2, spin, roll1, 2
- .field("solref" , &mjContact::solref) // constraint solver reference
- .field("solimp" , &mjContact::solimp) // constraint solver impedance
- .field("mu" , &mjContact::mu) // friction of regularized cone, set by mj_makeConstraint
- .field("H" , &mjContact::H) // cone Hessian, set by mj_updateConstraint
- .field("dim" , &mjContact::H) // contact space dimensionality: 1, 3, 4 or 6
- .field("geom1" , &mjContact::H) // id of geom 1
- .field("geom2" , &mjContact::H) // id of geom 2
- .field("exclude" , &mjContact::exclude) // 0: include, 1: in gap, 2: fused, 3: equality, 4: no dofs
- .field("efc_address"  , &mjContact::efc_address); // address in efc; -1: not included, -2-i: distance constraint i
+ .field("dist" , &mjContact::dist)
+ .field("pos" , &mjContact::pos)
+ .field("frame" , &mjContact::frame) 
+ .field("includemargin", &mjContact::includemargin)
+ .field("friction" , &mjContact::friction) 
+ .field("solref" , &mjContact::solref) 
+ .field("solimp" , &mjContact::solimp) 
+ .field("mu" , &mjContact::mu) 
+ .field("H" , &mjContact::H) 
+ .field("dim" , &mjContact::H) 
+ .field("geom1" , &mjContact::H) 
+ .field("geom2" , &mjContact::H) 
+ .field("exclude" , &mjContact::exclude) 
+ .field("efc_address"  , &mjContact::efc_address);
 
-  value_object<mjLROpt>("mjLROpt")
- .field("mode" , &mjLROpt::mode)
- .field("useexisting", &mjLROpt::useexisting)
- .field("uselimit"   , &mjLROpt::uselimit)
- .field("accel" , &mjLROpt::accel) // target acceleration used to compute force
- .field("maxforce"   , &mjLROpt::maxforce)   // maximum force; 0: no limit
- .field("timeconst"  , &mjLROpt::timeconst)  // time constant for velocity reduction; min 0.01
- .field("timestep"   , &mjLROpt::timestep)   // simulation timestep; 0: use mjOption.timestep
- .field("inttotal"   , &mjLROpt::inttotal)   // total simulation time interval
- .field("inteval"    , &mjLROpt::inteval)    // evaluation time interval (at the end)
- .field("tolrange"   , &mjLROpt::tolrange);  // convergence tolerance (relative to range)
-
-  value_object<mjOption>("mjOption")
- .field("timestep" , &mjOption::timestep) // timestep
- .field("apirate" , &mjOption::apirate) // update rate for remote API (Hz)
- .field("impratio" , &mjOption::impratio) // ratio of friction-to-normal contact impedance
- .field("tolerance" , &mjOption::tolerance) // main solver tolerance
- .field("noslip_tolerance"    , &mjOption::noslip_tolerance)  // noslip solver tolerance
- .field("mpr_tolerance" , &mjOption::mpr_tolerance) // MPR solver tolerance
- //.field("gravity" , &mjOption::gravity) // gravitational acceleration
- //.field("wind" , &mjOption::wind) // wind (for lift, drag and viscosity)
- //.field("magnetic" , &mjOption::magnetic) // global magnetic flux
- .field("density" , &mjOption::density) // density of medium
- .field("viscosity" , &mjOption::viscosity) // viscosity of medium
- .field("o_margin" , &mjOption::o_margin) // margin
- //.field("o_solref" , &mjOption::o_solref) // solref
- //.field("o_solimp" , &mjOption::o_solimp) // solimp
- .field("integrator" , &mjOption::integrator) // integration mode (mjtIntegrator)
- .field("collision" , &mjOption::collision) // collision mode (mjtCollision)
- .field("cone" , &mjOption::cone) // type of friction cone (mjtCone)
- .field("jacobian" , &mjOption::jacobian) // type of Jacobian (mjtJacobian)
- .field("solver" , &mjOption::solver) // solver algorithm (mjtSolver)
- .field("iterations" , &mjOption::iterations) // maximum number of main solver iterations
- .field("noslip_iterations"   , &mjOption::noslip_iterations) // maximum number of noslip solver iterations
- .field("mpr_iterations" , &mjOption::mpr_iterations)    // maximum number of MPR solver iterations
- .field("disableflags" , &mjOption::disableflags) // bit flags for disabling standard features
- .field("enableflags" , &mjOption::enableflags); // bit flags for enabling optional features
 
   register_vector<mjContact>("vector<mjContact>");
 }

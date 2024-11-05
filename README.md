@@ -20,6 +20,21 @@ These projects provided foundational insights and methodologies that have been a
 
 Before proceeding with the installation and build process, ensure you have the [Emscripten](https://emscripten.org/index.html) compiler installed and the EMSDK environment variable set.
 
+```bash
+git clone https://github.com/emscripten-core/emsdk.git
+cd emsdk/
+git pull
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+```
+
+Append a command at the end of your `.bash_profile` to source EMSDK automatically.
+
+```bash
+source "/path-ro-emsdk//emsdk_env.sh"
+```
+
 ## Installation
 
 In the root folder, execute the following commands:
