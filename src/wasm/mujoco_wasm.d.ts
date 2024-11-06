@@ -2,8 +2,8 @@
 import { EmscriptenModule } from "emscripten";
 
 export class Model {
-  constructor(filename: string): Model;
-  load_from_xml(str: string): Model;
+  constructor(path: string): Model;
+  static load_from_xml(str: string): Model;
   /** Free the memory associated with the model */
   free(): void;
   /** Retrive various parameters of the current simulation */
@@ -33,7 +33,7 @@ export class Simulation {
     flg_paused: number): void;
 }
 
-export interface MujocoModule extends EmscriptenModule {
+export declare interface MujocoModule extends EmscriptenModule {
   FS: typeof FS;
   MEMFS: typeof MEMFS;
   Model: typeof Model;
@@ -41,6 +41,8 @@ export interface MujocoModule extends EmscriptenModule {
   Simulation: typeof Simulation;
 }
 
+// Please note that the wasm.js file does not include Model, State and
+// Simulation types.
 declare module "./mujoco_wasm" {
   const load_mujoco: EmscriptenModuleFactory<MujocoModule>;
   export default load_mujoco;

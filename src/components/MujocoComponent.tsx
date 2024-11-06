@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import load_mujoco, { MujocoModule } from "../wasm/mujoco_wasm";
+import { useEffect, useRef, useState } from "react";
+import { getMujocoModule } from "./mujocoLoader";
+import { MujocoModule, Simulation } from "../wasm/mujoco_wasm";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -12,17 +13,38 @@ export interface MujocoComponentProps {
 }
 
 export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
+  const mujocoModuleRef = useRef<MujocoModule | null>(null);
+  const simulationRef = useRef<Simulation | null>(null);
+
   const [mujocoLoaded, setMujocoLoaded] = useState(false);
-  const [mujocoModule, setMujocoModule] = useState<MujocoModule | null>(null);
   const [error, setError] = useState<boolean>(false);
 
   // Load MuJoCo WASM when the component mounts.
   useEffect(() => {
-    const initialize = async () => {
+    const loadModule = async () => {
       try {
-        const mujocoModule = await load_mujoco();
-        if (!mujocoModule) {
+        const mujocoModule = await getMujocoModule();
+        if (mujocoModule) {
+          console.log("MuJoCo WASM module loaded successfully.");
+        } else {
           throw new Error("MuJoCo WASM module failed to load.");
+        }
+        mujocoModuleRef.current = mujocoModule;
+      } catch (error: unknown) {
+        console.error(error);
+        setError(true);
+      }
+    };
+    loadModule();
+  }, []);
+
+  // Load MuJoCo WASM when the component mounts.
+  useEffect(() => {
+    const initializeSimulation = async () => {
+      try {
+        const mujocoModule = mujocoModuleRef.current;
+        if (!mujocoModule) {
+          return;
         }
 
         // Set up Emscripten's Virtual File System.
@@ -49,20 +71,21 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         // );
 
         const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
-
         const state = new mujocoModule.State(model);
         const simulation = new mujocoModule.Simulation(model, state);
 
+        simulationRef.current = simulation;
+
         console.log("MuJoCo model and simulation initialized successfully.");
 
-        setMujocoModule(mujocoModule);
+        // setMujocoModule(mujocoModule);
         setMujocoLoaded(true);
       } catch (error: unknown) {
         console.error(error as string);
         setError(true);
       }
     };
-    initialize();
+    initializeSimulation();
   }, [sceneUrl]);
 
   return (
