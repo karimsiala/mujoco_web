@@ -16,7 +16,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
   const mujocoModuleRef = useRef<MujocoModule | null>(null);
   const simulationRef = useRef<Simulation | null>(null);
 
-  const [mujocoLoaded, setMujocoLoaded] = useState(false);
+  const [mujocoModuleLoaded, setMujocoModuleLoaded] = useState(false);
   const [error, setError] = useState<boolean>(false);
 
   // Load MuJoCo WASM when the component mounts.
@@ -26,10 +26,11 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         const mujocoModule = await getMujocoModule();
         if (mujocoModule) {
           console.log("MuJoCo WASM module loaded successfully.");
+          mujocoModuleRef.current = mujocoModule;
+          setMujocoModuleLoaded(true);
         } else {
           throw new Error("MuJoCo WASM module failed to load.");
         }
-        mujocoModuleRef.current = mujocoModule;
       } catch (error: unknown) {
         console.error(error);
         setError(true);
@@ -38,7 +39,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
     loadModule();
   }, []);
 
-  // Load MuJoCo WASM when the component mounts.
+  // Start the simulation afterr MuJoCo WASM is loaded.
   useEffect(() => {
     const initializeSimulation = async () => {
       try {
@@ -48,7 +49,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         }
 
         // Set up Emscripten's Virtual File System.
-        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+        mujocoModule!.FS.mkdir(VIRTUAL_FILE_SYSTEM);
         mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
 
         // Fetch and write the initial scene file.
@@ -77,16 +78,15 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         simulationRef.current = simulation;
 
         console.log("MuJoCo model and simulation initialized successfully.");
-
-        // setMujocoModule(mujocoModule);
-        setMujocoLoaded(true);
       } catch (error: unknown) {
         console.error(error as string);
         setError(true);
       }
     };
-    initializeSimulation();
-  }, [sceneUrl]);
+    if (mujocoModuleLoaded) {
+      initializeSimulation();
+    }
+  }, [mujocoModuleLoaded, sceneUrl]);
 
   return (
     <div>
