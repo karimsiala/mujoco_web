@@ -7,7 +7,7 @@
 # cmake --install build
 
 cmake_minimum_required(VERSION 3.22)
-project(mujoco_web)
+project(mujoco_wasm)
 
 # Check if EMSDK environment variable is defined.
 if(NOT DEFINED ENV{EMSDK})
@@ -15,7 +15,7 @@ if(NOT DEFINED ENV{EMSDK})
 endif()
 
 # Get EMSDK path from environment variable
-set(EMSDK_PATH $ENV{EMSDK})
+set(EMSDK_PATH $ENV{EMSDK} CACHE PATH "Path to Emscripten SDK")
 
 # Verify that EMSDK_PATH exists and contains necessary directories
 if(NOT EXISTS "${EMSDK_PATH}/upstream/emscripten")

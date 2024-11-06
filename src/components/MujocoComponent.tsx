@@ -1,32 +1,33 @@
 import { useEffect, useState } from "react";
-import load_mujoco from "./wasm/mujoco_wasm";
+import load_mujoco from '../../public/wasm/mujoco_wasm.js';
+import type { MujocoModule } from '../types/mujoco_wasm'; 
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
-const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
 
+// Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
 
-export interface MujocoProps {
+export interface MujocoComponentProps {
   sceneUrl: string;
 }
 
-export const Mujoco = ({ sceneUrl }: MujocoProps) => {
+export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
   const [mujocoLoaded, setMujocoLoaded] = useState(false);
-  const [error, setError] = useState<string>("");
+  const [mujocoModule, setMujocoModule] = useState<MujocoModule|null>(null);
 
   // Load MuJoCo WASM when the component mounts.
   useEffect(() => {
     const initialize = async () => {
       try {
-        const mujoco = await load_mujoco();
-        if (!mujoco) {
+        const mujocoModule = await load_mujoco();
+        if (!mujocoModule) {
           throw new Error("MuJoCo WASM module failed to load.");
         }
 
         // Set up Emscripten's Virtual File System.
-        mujoco.FS.mkdir(VIRTUAL_FILE_SYSTEM);
-        mujoco.FS.mount(mujoco.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
 
         // Fetch and write the initial scene file.
         const sceneResponse = await fetch(sceneUrl);
@@ -37,7 +38,8 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
         }
 
         const sceneText = await sceneResponse.text();
-        mujoco.FS.writeFile(
+
+        mujocoModule.FS.writeFile(
           `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`,
           sceneText
         );
@@ -45,28 +47,24 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
         // TODO: update the c++ code to handle the situation where
         // the model is not loaded, e.g. with a global error state.
 
-        const model = new mujoco.Model(
+        const model = new mujocoModule.Model(
           `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`
         );
-        const state = new mujoco.State(model);
-        const simulation = new mujoco.Simulation(model, state);
+
+        const state = new mujocoModule.State(model);
+        // const simulation = new mujocoModule.Simulation(model, state);
 
         console.log("MuJoCo model and simulation initialized successfully.");
+
+        setMujocoModule(mujocoModule);
         setMujocoLoaded(true);
+        
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          const errorMessage = error.message;
-          console.error(errorMessage);
-          setError(errorMessage);
-        } else {
-          const errorMessage = "An unexpected error occurred.";
-          console.error(errorMessage);
-          setError(errorMessage);
-        }
+        console.error(error as string)
       }
     };
     initialize();
   }, [sceneUrl]);
 
-  return <div>{error}</div>;
+  return <div>Test</div>;
 };

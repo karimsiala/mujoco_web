@@ -1,4 +1,4 @@
-# This is a CMakeLists.txt file for building the mujoco_web project.
+# This is a CMakeLists.txt file for building the mujoco_wasm project.
 # 
 # First, it checks if Emscripten is installed by inspecting the  EMSDK
 # environment variable.
@@ -90,7 +90,7 @@ FetchContent_Populate(mujoco)
 add_subdirectory(${mujoco_SOURCE_DIR} ${mujoco_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 ###############################################################################
-# mujoco_web
+# mujoco_wasm
 #
 
 # C++17
@@ -103,21 +103,23 @@ add_compile_options(-pthread)
 set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] -s EXPORT_NAME=load_mujoco -s EXCEPTION_CATCHING_ALLOWED=['load_from_xml']")
 set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
 
-# Define Emscripten include directories using EMSDK_PATH
-set(EMSCRIPTEN_SYSROOT_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/cache/sysroot/include")
-set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSCRIPTEN_SYSROOT_INCLUDE_DIR}/emscripten")
-
 # Add the executable target.
-add_executable(mujoco_web src/main.cpp)
-set_target_properties(mujoco_web PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
+add_executable(mujoco_wasm src/main.cpp)
+set_target_properties(mujoco_wasm PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
 
-target_include_directories(mujoco_web PUBLIC
+set(EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/cache/sysroot/include")
+set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSCRIPTEN_INCLUDE_DIR}/emscripten")
+
+message(STATUS "EMSCRIPTEN_INCLUDE_DIR: ${EMSCRIPTEN_INCLUDE_DIR}")
+message(STATUS "EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR: ${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}")
+
+target_include_directories(mujoco_wasm PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
     "${EMSCRIPTEN_INCLUDE_DIR}"
     "${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}"
 )
-target_link_libraries(mujoco_web PRIVATE
+target_link_libraries(mujoco_wasm PRIVATE
   ccd
   elasticity
   lodepng

@@ -18,8 +18,8 @@
     {
       "label": "CMake build",
       "type": "shell",
-      "command": "cmake",
-      "args": ["--build", "build"],
+      "command": "emmake",
+      "args": ["cmake", "--build", "build"],
       "options": {
         "cwd": "${workspaceFolder}",
         "env": {}

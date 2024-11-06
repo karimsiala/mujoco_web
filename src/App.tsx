@@ -1,5 +1,5 @@
 import "./App.css";
-import { Mujoco } from "./Mujoco";
+import { MujocoComponent } from "./components/MujocoComponent";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -86,7 +86,7 @@ const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
 const App = () => {
   return (
     <>
-      <Mujoco sceneUrl={`${BASE_URL}/examples/scenes/${INITIAL_SCENE}`} />
+      <MujocoComponent sceneUrl={`${BASE_URL}/examples/scenes/${INITIAL_SCENE}`} />
       {/* <Canvas
         shadows
         // only re-render when props changed or when requested.
