@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import load_mujoco from "../../public/wasm/mujoco_wasm.js";
-import type { MujocoModule } from "../types/mujoco_wasm";
+import load_mujoco, { MujocoModule } from "../wasm/mujoco_wasm";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";

@@ -12,10 +12,12 @@ build
 dist
 dist-ssr
 *.local
-public/wasm/
 .cache
 .mypy_cache
 .pytest_cache
+/src/wasm/mujoco_wasm.js
+/src/wasm/mujoco_wasm.wasm
+
 
 # Editor directories and files
 !.vscode/extensions.json

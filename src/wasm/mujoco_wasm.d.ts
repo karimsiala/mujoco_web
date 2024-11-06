@@ -31,13 +31,14 @@ export interface Simulation {
 }
 
 export interface MujocoModule extends EmscriptenModule {
+  FS: typeof FS;
+  MEMFS: typeof MEMFS;
   Model: Model;
   State: State;
   Simulation: Simulation;
 }
 
-declare module "../../public/wasm/mujoco_wasm.js" {
+declare module "./mujoco_wasm" {
   const load_mujoco: EmscriptenModuleFactory<MujocoModule>;
   export default load_mujoco;
 }
-
