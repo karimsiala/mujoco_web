@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import load_mujoco from '../../public/wasm/mujoco_wasm.js';
-import type { MujocoModule } from '../types/mujoco_wasm'; 
+import load_mujoco from "../../public/wasm/mujoco_wasm.js";
+import type { MujocoModule } from "../types/mujoco_wasm";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -14,7 +14,8 @@ export interface MujocoComponentProps {
 
 export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
   const [mujocoLoaded, setMujocoLoaded] = useState(false);
-  const [mujocoModule, setMujocoModule] = useState<MujocoModule|null>(null);
+  const [mujocoModule, setMujocoModule] = useState<MujocoModule | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
   // Load MuJoCo WASM when the component mounts.
   useEffect(() => {
@@ -39,32 +40,33 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
 
         const sceneText = await sceneResponse.text();
 
-        mujocoModule.FS.writeFile(
-          `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`,
-          sceneText
-        );
+        mujocoModule.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`, sceneText);
 
         // TODO: update the c++ code to handle the situation where
         // the model is not loaded, e.g. with a global error state.
 
-        const model = new mujocoModule.Model(
-          `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`
-        );
+        const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
 
         const state = new mujocoModule.State(model);
-        // const simulation = new mujocoModule.Simulation(model, state);
+        const simulation = new mujocoModule.Simulation(model, state);
 
         console.log("MuJoCo model and simulation initialized successfully.");
 
         setMujocoModule(mujocoModule);
         setMujocoLoaded(true);
-        
       } catch (error: unknown) {
-        console.error(error as string)
+        console.error(error as string);
+        setError(true);
       }
     };
     initialize();
   }, [sceneUrl]);
 
-  return <div>Test</div>;
+  return (
+    <div>
+      {error
+        ? "Unfortunately there was an error. Check the console."
+        : "MuJoCo model and simulation initialized successfully."}
+    </div>
+  );
 };
