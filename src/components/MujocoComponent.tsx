@@ -44,6 +44,10 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         // TODO: update the c++ code to handle the situation where
         // the model is not loaded, e.g. with a global error state.
 
+        // const model1 = mujocoModule.Model.load_from_xml(
+        //   `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`
+        // );
+
         const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
 
         const state = new mujocoModule.State(model);

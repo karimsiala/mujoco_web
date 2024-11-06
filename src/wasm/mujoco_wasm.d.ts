@@ -1,7 +1,8 @@
 // Standard types from https://github.com/DefinitelyTyped/DefinitelyTyped
 import { EmscriptenModule } from "emscripten";
 
-export interface Model {
+export class Model {
+  constructor(filename: string): Model;
   load_from_xml(str: string): Model;
   /** Free the memory associated with the model */
   free(): void;
@@ -9,12 +10,14 @@ export interface Model {
   getOptions(): unknown;
 }
 
-export interface State {
+export class State {
+  constructor(model: Model): State;
   /** Free the memory associated with the state */
   free(): void;
 }
 
-export interface Simulation {
+export class Simulation {
+  constructor(model: Model, state: State): Simulation;
   state(): State;
   model(): Model;
   /** Free the memory associated with both the model and the state in the simulation */
@@ -33,9 +36,9 @@ export interface Simulation {
 export interface MujocoModule extends EmscriptenModule {
   FS: typeof FS;
   MEMFS: typeof MEMFS;
-  Model: Model;
-  State: State;
-  Simulation: Simulation;
+  Model: typeof Model;
+  State: typeof State;
+  Simulation: typeof Simulation;
 }
 
 declare module "./mujoco_wasm" {
