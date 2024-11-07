@@ -1,5 +1,7 @@
+import { Canvas } from "@react-three/fiber";
 import "./App.css";
-import { MujocoComponent } from "./components/MujocoComponent";
+import { Mujoco } from "./components/Mujoco";
+import { AdaptiveDpr, OrbitControls } from "@react-three/drei";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -86,15 +88,14 @@ const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
 const App = () => {
   return (
     <>
-      <MujocoComponent sceneUrl={`${BASE_URL}/examples/scenes/${INITIAL_SCENE}`} />
-      {/* <Canvas
+      <Canvas
         shadows
         // only re-render when props changed or when requested.
         // frameloop="demand"
         style={{
           backgroundColor: "#192635",
           borderRadius: "inherit",
-          margin: "0 auto", // Center horizontally.
+          margin: "0 auto" // Center horizontally.
         }}
       >
         <AdaptiveDpr />
@@ -106,8 +107,9 @@ const App = () => {
           decay={0}
           intensity={3.14}
         />
-        <AddBodies />
-      </Canvas> */}
+        <Mujoco sceneUrl={`${BASE_URL}/examples/scenes/${INITIAL_SCENE}`} />
+        <OrbitControls />
+      </Canvas>
     </>
   );
 };

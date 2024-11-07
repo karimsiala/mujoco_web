@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { getMujocoModule } from "./mujocoLoader";
 import { MujocoModule, Simulation } from "../wasm/mujoco_wasm";
+import { useFrame, useThree } from "@react-three/fiber";
+import { loadScene } from "./sceneLoader";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -8,16 +10,17 @@ const INITIAL_SCENE = "humanoid.xml";
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
 
-export interface MujocoComponentProps {
+export interface MujocoProps {
   sceneUrl: string;
 }
 
-export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
+export const Mujoco = ({ sceneUrl }: MujocoProps) => {
+  const { scene } = useThree();
+
   const mujocoModuleRef = useRef<MujocoModule | null>(null);
   const simulationRef = useRef<Simulation | null>(null);
 
   const [mujocoModuleLoaded, setMujocoModuleLoaded] = useState(false);
-  const [error, setError] = useState<boolean>(false);
 
   // Load MuJoCo WASM when the component mounts.
   useEffect(() => {
@@ -33,7 +36,6 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         }
       } catch (error: unknown) {
         console.error(error);
-        setError(true);
       }
     };
     loadModule();
@@ -78,21 +80,31 @@ export const MujocoComponent = ({ sceneUrl }: MujocoComponentProps) => {
         simulationRef.current = simulation;
 
         console.log("MuJoCo model and simulation initialized successfully.");
+
+        loadScene(model, scene);
       } catch (error: unknown) {
-        console.error(error as string);
-        setError(true);
+        console.error(error);
       }
     };
     if (mujocoModuleLoaded) {
       initializeSimulation();
     }
-  }, [mujocoModuleLoaded, sceneUrl]);
+  }, [mujocoModuleLoaded, scene, sceneUrl]);
 
-  return (
-    <div>
-      {error
-        ? "Unfortunately there was an error. Check the console."
-        : "MuJoCo model and simulation initialized successfully."}
-    </div>
-  );
+  // To keep the R3F scene in sync with the MuJoCo simulation, use the useFrame
+  // hook to update positions, rotations, and other properties on each renderframe.
+  useFrame(() => {
+    if (mujocoModuleRef.current) {
+      //   mujoCoRef.current.stepSimulation(); // Advance the simulation
+      //   // Update geometries based on simulation
+      //   const updatedGeometries = mujoCoRef.current.getUpdatedGeometries();
+      //   updatedGeometries.forEach((geom: any, index: number) => {
+      //     const mesh = mujocoSceneRef.current.children[index] as THREE.Mesh;
+      //     mesh.position.set(geom.x, geom.y, geom.z);
+      //     mesh.rotation.set(geom.rotX, geom.rotY, geom.rotZ);
+      //   });
+    }
+  });
+
+  return null; // This component doesn't render anything directly
 };
