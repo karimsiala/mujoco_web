@@ -1,6 +1,12 @@
 /**
  * Types definition for Mujoco Model, State, and Simulation.
+ * 
  * This is all hand-written code, no tool has been used to generate it.
+ * 
+ * The file should contains all the types that are used in the Model, State,
+ * and Simulation classes. If some types are missing, incorrect, or
+ * incomplete, it only impacts the ability of Typescript to infer the types
+ * but only when they are actually used.
  */
 
 // Standard types from https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -14,7 +20,8 @@ export class Model {
   /** Retrive various parameters of the current simulation */
   getOptions(): unknown;
 
-  // MODEL_INTERFACE
+  // MODEL INTERFACE
+
   /** number of generalized coordinates = dim(qpos)*/
   nq: number;
   /** number of degrees of freedom = dim(qvel)*/
