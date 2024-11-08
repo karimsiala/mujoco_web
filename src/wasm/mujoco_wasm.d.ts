@@ -915,8 +915,8 @@ export class Model {
   tex_width: Int32Array;
   /** address in rgb                           (ntex x 1)*/
   tex_adr: Int32Array;
-  /** rgb (alpha = 1)                          (ntexdata x 1)*/
-  tex_rgb: Uint8Array;
+  /** data (alpha = 1)                         (ntexdata x 1)*/
+  tex_data: Uint8Array;
   /** texture id; -1: none                     (nmat x 1)*/
   mat_texid: Int32Array;
   /** make texture cube uniform                (nmat x 1)*/

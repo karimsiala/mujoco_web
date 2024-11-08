@@ -81,7 +81,7 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
 
         console.log("MuJoCo model and simulation initialized successfully.");
 
-        loadScene(model, scene);
+        loadScene(mujocoModule, model, scene);
       } catch (error: unknown) {
         console.error(error);
       }
