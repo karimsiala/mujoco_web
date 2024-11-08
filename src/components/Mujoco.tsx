@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getMujocoModule } from "./mujocoLoader";
 import { MujocoModule, Simulation } from "../wasm/mujoco_wasm";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { loadScene } from "./sceneLoader";
 
 // Define the initial scene
@@ -24,10 +24,12 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
 
   // Load MuJoCo WASM when the component mounts.
   useEffect(() => {
+    let isMounted = true;
+
     const loadModule = async () => {
       try {
         const mujocoModule = await getMujocoModule();
-        if (mujocoModule) {
+        if (mujocoModule && isMounted) {
           console.log("MuJoCo WASM module loaded successfully.");
           mujocoModuleRef.current = mujocoModule;
           setMujocoModuleLoaded(true);
@@ -39,6 +41,10 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
       }
     };
     loadModule();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Start the simulation afterr MuJoCo WASM is loaded.
@@ -86,25 +92,11 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
         console.error(error);
       }
     };
+
     if (mujocoModuleLoaded) {
       initializeSimulation();
     }
   }, [mujocoModuleLoaded, scene, sceneUrl]);
-
-  // To keep the R3F scene in sync with the MuJoCo simulation, use the useFrame
-  // hook to update positions, rotations, and other properties on each renderframe.
-  useFrame(() => {
-    if (mujocoModuleRef.current) {
-      //   mujoCoRef.current.stepSimulation(); // Advance the simulation
-      //   // Update geometries based on simulation
-      //   const updatedGeometries = mujoCoRef.current.getUpdatedGeometries();
-      //   updatedGeometries.forEach((geom: any, index: number) => {
-      //     const mesh = mujocoSceneRef.current.children[index] as THREE.Mesh;
-      //     mesh.position.set(geom.x, geom.y, geom.z);
-      //     mesh.rotation.set(geom.rotX, geom.rotY, geom.rotZ);
-      //   });
-    }
-  });
 
   return null; // This component doesn't render anything directly
 };

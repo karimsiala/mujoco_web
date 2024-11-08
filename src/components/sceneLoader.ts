@@ -90,6 +90,8 @@ export const loadScene = (mujocoModule: MujocoModule, model: Model, scene: THREE
     let material = new THREE.MeshPhysicalMaterial();
     material.color = new THREE.Color(1, 1, 1);
 
+    console.log(`model.ngeom${model.ngeom}`);
+
     // Loop through the MuJoCo geoms and recreate them in three.js.
     for (let g = 0; g < model.ngeom; g++) {
         // Only visualize geom groups up to 2 (same default behavior as simulate).
