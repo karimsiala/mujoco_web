@@ -7,22 +7,22 @@ import { setupGUI, downloadExampleScenesFolder, loadSceneFromURL, getPosition, g
 import   load_mujoco        from '../dist/mujoco_wasm.js';
 
 // Load the MuJoCo Module
-const mujoco = await load_mujoco();
+const mujocoModule = await load_mujoco();
 
 // Set up Emscripten's Virtual File System
 var initialScene = "humanoid.xml";
-mujoco.FS.mkdir('/working');
-mujoco.FS.mount(mujoco.MEMFS, { root: '.' }, '/working');
-mujoco.FS.writeFile("/working/" + initialScene, await(await fetch("./examples/scenes/" + initialScene)).text());
+mujocoModule.FS.mkdir('/working');
+mujocoModule.FS.mount(mujocoModule.MEMFS, { root: '.' }, '/working');
+mujocoModule.FS.writeFile("/working/" + initialScene, await(await fetch("./examples/scenes/" + initialScene)).text());
 
 export class MuJoCoDemo {
   constructor() {
-    this.mujoco = mujoco;
+    this.mujocoModule = mujocoModule;
 
     // Load in the state from XML
-    this.model      = new mujoco.Model("/working/" + initialScene);
-    this.state      = new mujoco.State(this.model);
-    this.simulation = new mujoco.Simulation(this.model, this.state);
+    this.model      = new mujocoModule.Model("/working/" + initialScene);
+    this.state      = new mujocoModule.State(this.model);
+    this.simulation = new mujocoModule.Simulation(this.model, this.state);
 
     // Define Random State Variables
     this.params = { scene: initialScene, paused: false, help: false, ctrlnoiserate: 0.0, ctrlnoisestd: 0.0, keyframeNumber: 0 };
@@ -76,11 +76,11 @@ export class MuJoCoDemo {
 
   async init() {
     // Download the the examples to MuJoCo's virtual file system
-    await downloadExampleScenesFolder(mujoco);
+    await downloadExampleScenesFolder(mujocoModule);
 
     // Initialize the three.js Scene using the .xml Model in initialScene
     [this.model, this.state, this.simulation, this.bodies, this.lights] =  
-      await loadSceneFromURL(mujoco, initialScene, this);
+      await loadSceneFromURL(mujocoModule, initialScene, this);
 
     this.gui = new GUI();
     setupGUI(this);

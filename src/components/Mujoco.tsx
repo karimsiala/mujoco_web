@@ -1,8 +1,10 @@
+import * as THREE from "three";
 import { useEffect, useRef, useState } from "react";
 import { getMujocoModule } from "./mujocoLoader";
-import { MujocoModule, Simulation } from "../wasm/mujoco_wasm";
-import { useThree } from "@react-three/fiber";
-import { loadScene } from "./sceneLoader";
+import { Model, MujocoModule, Simulation } from "../wasm/mujoco_wasm";
+import { useFrame, useThree } from "@react-three/fiber";
+import { loadScene, updateScene } from "./sceneLoader";
+import { Body } from "./mujocoDemo";
 
 // Define the initial scene
 const INITIAL_SCENE = "humanoid.xml";
@@ -18,7 +20,13 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
   const { scene } = useThree();
 
   const mujocoModuleRef = useRef<MujocoModule | null>(null);
+  const mujocoTimeRef = useRef(0);
+  const modelRef = useRef<Model | null>(null);
   const simulationRef = useRef<Simulation | null>(null);
+  const bodiesRef = useRef<{ [key: number]: Body }>({})
+  const lightsRef = useRef<THREE.Light[]>([]);
+  const cylindersRef = useRef<THREE.InstancedMesh<THREE.CylinderGeometry>>();
+  const spheresRef = useRef<THREE.InstancedMesh<THREE.SphereGeometry>>();
 
   const [mujocoModuleLoaded, setMujocoModuleLoaded] = useState(false);
 
@@ -51,14 +59,13 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
   useEffect(() => {
     const initializeSimulation = async () => {
       try {
-        const mujocoModule = mujocoModuleRef.current;
-        if (!mujocoModule) {
+        if (!mujocoModuleRef.current) {
           return;
         }
 
         // Set up Emscripten's Virtual File System.
-        mujocoModule!.FS.mkdir(VIRTUAL_FILE_SYSTEM);
-        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+        mujocoModuleRef.current!.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+        mujocoModuleRef.current.FS.mount(mujocoModuleRef.current.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
 
         // Fetch and write the initial scene file.
         const sceneResponse = await fetch(sceneUrl);
@@ -70,7 +77,7 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
 
         const sceneText = await sceneResponse.text();
 
-        mujocoModule.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`, sceneText);
+        mujocoModuleRef.current.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`, sceneText);
 
         // TODO: update the c++ code to handle the situation where
         // the model is not loaded, e.g. with a global error state.
@@ -79,15 +86,20 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
         //   `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`
         // );
 
-        const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
-        const state = new mujocoModule.State(model);
-        const simulation = new mujocoModule.Simulation(model, state);
-
-        simulationRef.current = simulation;
-
+        modelRef.current = new mujocoModuleRef.current.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
+        const state = new mujocoModuleRef.current.State(modelRef.current);
+        simulationRef.current = new mujocoModuleRef.current.Simulation(modelRef.current, state);
+  
         console.log("MuJoCo model and simulation initialized successfully.");
 
-        loadScene(mujocoModule, model, scene);
+        const result = loadScene(mujocoModuleRef.current, modelRef.current, scene);
+        bodiesRef.current = result.bodies;
+        lightsRef.current = result.lights;
+        cylindersRef.current = result.cylinders;
+        spheresRef.current = result.spheres;
+
+        updateScene(modelRef.current, simulationRef.current, bodiesRef.current, lightsRef.current, cylindersRef.current, spheresRef.current);
+
       } catch (error: unknown) {
         console.error(error);
       }
@@ -97,6 +109,29 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
       initializeSimulation();
     }
   }, [mujocoModuleLoaded, scene, sceneUrl]);
+
+  useFrame(({ clock }) => {
+    if (!modelRef.current || !simulationRef.current) {
+      return;
+    }
+
+    const timeMS = clock.getElapsedTime() * 1000; // Convert time to milliseconds
+    const timestep = modelRef.current.getOptions().timestep;
+
+    if (timeMS - mujocoTimeRef.current > 35.0) {
+      mujocoTimeRef.current = timeMS; // Update mujoco_time if it’s been over 35 ms
+    }
+    while (mujocoTimeRef.current < timeMS) {
+      simulationRef.current.step();
+      mujocoTimeRef.current += timestep * 1000; 
+    }
+
+    if (!cylindersRef.current || !spheresRef.current) {
+      return;
+    }
+    updateScene(modelRef.current, simulationRef.current, bodiesRef.current, lightsRef.current, cylindersRef.current, spheresRef.current)
+  });
+
 
   return null; // This component doesn't render anything directly
 };

@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { Mujoco } from "./components/Mujoco";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { Color, Fog } from "three";
 
 import "./App.css";
 import "./index.css";
@@ -19,7 +18,10 @@ const App = () => {
         style={{
           backgroundColor: "#192635",
           borderRadius: "inherit",
-          margin: "0 auto" // Center horizontally.
+          margin: "0 auto", // Center horizontally.
+          width:800,
+          height:600
+
         }}
       >
         {/* <AdaptiveDpr /> */}
