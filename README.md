@@ -1,13 +1,16 @@
 # MuJoCo Web
 
-MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within web browsers. This project is tailored for Linux Ubuntu 22.04 environments and aims to facilitate interactive physics simulations directly in the browser.
+MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within a React web application. 
+
+This project is tailored for Linux Ubuntu 22.04 environments and aims to facilitate interactive physics simulations directly in the browser.
 
 ## Status
 
-MuJoCo 3.2.4 building currectly into WASM with patches.
-React application loading sample Mujoco scene and running simulation.
-
 <img src="docs/example.gif" width="600"/>
+
+MuJoCo 3.2.4 builds currectly into WASM with patches.
+
+The React application loads a sample Mujoco scene and run the simulation.
 
 ## Inspiration
 
