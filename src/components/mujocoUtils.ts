@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import load_mujoco, { Model, MujocoModule, Simulation, State } from '../wasm/mujoco_wasm';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { mjtGeom } from "../wasm/mujoco_enums";
+import { mjtGeom } from "../wasm/mujoco_model_enums";
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
