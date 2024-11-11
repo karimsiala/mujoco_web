@@ -7,7 +7,7 @@ MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics w
 MuJoCo 3.2.4 building currectly into WASM with patches.
 React application loading sample Mujoco scene and running simulation.
 
-![Peek 2024-11-11 18-22](https://github.com/user-attachments/assets/3f0f64c4-1874-4534-b298-120ebac82ecb)
+<img src="docs/example.gif" width="600"/>
 
 ## Inspiration
 
