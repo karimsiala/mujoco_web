@@ -10,7 +10,7 @@ This project is tailored for Linux Ubuntu 22.04 environments and aims to facilit
 
 MuJoCo 3.2.4 builds currectly into WASM with patches.
 
-The React application loads a sample Mujoco scene and run the simulation.
+The React application loads a sample Mujoco scene and runs the simulation.
 
 ## Inspiration
 
