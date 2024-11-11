@@ -443,7 +443,8 @@ export const updateThreeScene = (
     bodies: { [key: number]: Body },
     lights: THREE.Light[],
     cylinders: THREE.InstancedMesh<THREE.CylinderGeometry> | null,
-    spheres: THREE.InstancedMesh<THREE.SphereGeometry> | null
+    spheres: THREE.InstancedMesh<THREE.SphereGeometry> | null,
+    tmpVec: THREE.Vector3
 ): void => {
     // Update body transforms.
 
@@ -457,31 +458,31 @@ export const updateThreeScene = (
 
     // Update light transforms.
 
-    // for (let l = 0; l < model.nlight; l++) {
-    //   if (lights[l]) {
-    //     getPosition(simulation.light_xpos, l, lights[l].position);
-    //     getPosition(simulation.light_xdir, l, this.tmpVec);
-    //     lights[l].lookAt(this.tmpVec.add(lights[l].position));
-    //   }
-    // }
+    for (let l = 0; l < model.nlight; l++) {
+        if (lights[l]) {
+            getPosition(simulation.light_xpos, l, lights[l].position);
+            getPosition(simulation.light_xdir, l, tmpVec);
+            lights[l].lookAt(tmpVec.add(lights[l].position));
+        }
+    }
 
     // Update tendon transforms.
 
     let numWraps = 0;
     if (cylinders && spheres) {
-        let mat = new THREE.Matrix4();
+        const mat = new THREE.Matrix4();
         for (let t = 0; t < model.ntendon; t++) {
-            let startW = simulation.ten_wrapadr[t];
-            let r = model.tendon_width[t];
+            const startW = simulation.ten_wrapadr[t];
+            const r = model.tendon_width[t];
             for (let w = startW; w < startW + simulation.ten_wrapnum[t] - 1; w++) {
-                let tendonStart = getPosition(simulation.wrap_xpos, w, new THREE.Vector3());
-                let tendonEnd = getPosition(simulation.wrap_xpos, w + 1, new THREE.Vector3());
-                let tendonAvg = new THREE.Vector3()
+                const tendonStart = getPosition(simulation.wrap_xpos, w, new THREE.Vector3());
+                const tendonEnd = getPosition(simulation.wrap_xpos, w + 1, new THREE.Vector3());
+                const tendonAvg = new THREE.Vector3()
                     .addVectors(tendonStart, tendonEnd)
                     .multiplyScalar(0.5);
 
-                let validStart = tendonStart.length() > 0.01;
-                let validEnd = tendonEnd.length() > 0.01;
+                const validStart = tendonStart.length() > 0.01;
+                const validEnd = tendonEnd.length() > 0.01;
 
                 if (validStart) {
                     spheres.setMatrixAt(

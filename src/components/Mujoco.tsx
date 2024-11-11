@@ -25,6 +25,7 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
   const lightsRef = useRef<THREE.Light[]>([]);
   const cylindersRef = useRef<THREE.InstancedMesh<THREE.CylinderGeometry>>();
   const spheresRef = useRef<THREE.InstancedMesh<THREE.SphereGeometry>>();
+  const tmpVecRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
 
   const [mujocoModule, setMujocoModule] = useState<MujocoModule | null>(null);
   const [simulation, setSimulation] = useState<Simulation | null>(null);
@@ -116,7 +117,8 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
       bodiesRef.current,
       lightsRef.current,
       cylindersRef.current,
-      spheresRef.current
+      spheresRef.current,
+      tmpVecRef.current
     );
   });
 
