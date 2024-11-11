@@ -76,8 +76,8 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
   useEffect(() => {
     const setupThreeScene = async () => {
       try {
-        if (mujocoModule && model) {
-          const result = await loadThreeScene(mujocoModule, model, scene);
+        if (model) {
+          const result = await loadThreeScene(model, scene);
           bodiesRef.current = result.bodies;
           lightsRef.current = result.lights;
           cylindersRef.current = result.cylinders;
@@ -90,7 +90,7 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
     if (model) {
       setupThreeScene();
     }
-  }, [model, mujocoModule, scene, simulation]);
+  }, [model, simulation, scene]);
 
   useFrame(({ clock }) => {
     if (!model || !simulation) {

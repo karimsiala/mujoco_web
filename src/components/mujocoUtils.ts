@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import load_mujoco, { Model, MujocoModule, Simulation, State } from '../wasm/mujoco_wasm';
 import { Reflector } from 'three/addons/objects/Reflector.js';
+import { mjtGeom } from "../wasm/mujoco_enums";
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
@@ -144,7 +145,6 @@ export const loadMujocoScene = async (mujocoModule: MujocoModule, sceneUrl: stri
  * @returns Pointers to newly created geometries.
  */
 export const loadThreeScene = (
-    mujocoModule: MujocoModule,
     model: Model,
     scene: THREE.Scene
 ): {
@@ -198,21 +198,21 @@ export const loadThreeScene = (
         // Set the default geometry. In MuJoCo, this is a sphere.
         let geometry: THREE.BufferGeometry = new THREE.SphereGeometry(size[0] * 0.5);
 
-        if (type === mujocoModule.mjtGeom.mjGEOM_PLANE.value) {
+        if (type === mjtGeom.mjGEOM_PLANE) {
             // Special handling for plane later.
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_HFIELD.value) {
+        } else if (type === mjtGeom.mjGEOM_HFIELD) {
             // TODO: Implement this.
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_SPHERE.value) {
+        } else if (type === mjtGeom.mjGEOM_SPHERE) {
             geometry = new THREE.SphereGeometry(size[0]);
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_CAPSULE.value) {
+        } else if (type === mjtGeom.mjGEOM_CAPSULE) {
             geometry = new THREE.CapsuleGeometry(size[0], size[1] * 2.0, 20, 20);
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_ELLIPSOID.value) {
+        } else if (type === mjtGeom.mjGEOM_ELLIPSOID) {
             geometry = new THREE.SphereGeometry(1); // Stretch this below
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_CYLINDER.value) {
+        } else if (type === mjtGeom.mjGEOM_CYLINDER) {
             geometry = new THREE.CylinderGeometry(size[0], size[0], size[1] * 2.0);
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_BOX.value) {
+        } else if (type === mjtGeom.mjGEOM_BOX) {
             geometry = new THREE.BoxGeometry(size[0] * 2.0, size[2] * 2.0, size[1] * 2.0);
-        } else if (type === mujocoModule.mjtGeom.mjGEOM_MESH.value) {
+        } else if (type === mjtGeom.mjGEOM_MESH) {
             const meshID = model.geom_dataid[g];
 
             if (!(meshID in meshes)) {
