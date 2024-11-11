@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { Mujoco } from "./components/Mujoco";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
+import { Color, Fog } from "three";
 
 import "./App.css";
 import "./index.css";
@@ -13,15 +14,17 @@ const App = () => {
   return (
     <div className="w-full h-full border-4 border-blue-500">
       <Canvas
-        shadows
-        // only re-render when props changed or when requested.
+        shadows="soft"
+        dpr={window.devicePixelRatio}
         style={{
-          backgroundColor: "#192635",
           borderRadius: "inherit",
           margin: "0 auto", // Center horizontally.
-          width:800,
-          height:600
-
+          width: 800,
+          height: 600
+        }}
+        onCreated={(state) => {
+          state.scene.background = new Color(0.15, 0.25, 0.35); // Set background color
+          state.scene.fog = new Fog(state.scene.background, 15, 25.5); // Add fog
         }}
       >
         {/* <AdaptiveDpr /> */}

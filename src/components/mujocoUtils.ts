@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import load_mujoco, { Model, MujocoModule, Simulation, State } from '../wasm/mujoco_wasm';
+import { Reflector } from 'three/addons/objects/Reflector.js';
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
@@ -345,7 +346,16 @@ export const loadThreeScene = (
         let mesh = new BodyMesh();
         if (type == 0) {
             // TODO: change to reflector.
-            mesh = new THREE.Mesh(new THREE.PlaneGeometry(100, 100));
+
+            const geometry = new THREE.CircleGeometry(40, 64);
+            const groundMirror = new Reflector(geometry, {
+                clipBias: 0.003,
+                textureWidth: window.innerWidth * window.devicePixelRatio,
+                textureHeight: window.innerHeight * window.devicePixelRatio,
+                color: 0xb5b5b5
+            });
+
+            mesh = groundMirror;
             mesh.rotateX(-Math.PI / 2);
         } else {
             mesh = new THREE.Mesh(geometry, material);
