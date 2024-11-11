@@ -108,8 +108,10 @@ export const loadMujocoScene = async (mujocoModule: MujocoModule, sceneUrl: stri
     simulation: Simulation;
 }> => {
     // Set up Emscripten's Virtual File System.
-    mujocoModule!.FS.mkdir(VIRTUAL_FILE_SYSTEM);
-    mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+    if (!mujocoModule.FS.analyzePath(VIRTUAL_FILE_SYSTEM).exists) {
+        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+    }
 
     // Fetch and write the initial scene file.
     const sceneResponse = await fetch(sceneUrl);

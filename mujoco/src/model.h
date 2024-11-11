@@ -50,7 +50,8 @@ private:
   }
 
 public:
-  Model() { m = NULL; }
+  Model() { m = nullptr; }
+
   Model(const std::string filename) {
     if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
       char error[1000] = "Could not load mjb model";
@@ -67,9 +68,24 @@ public:
     }
   }
 
+  ~Model() {
+    if (m) {
+      mj_deleteModel(m);
+    }
+  }
+
+  /**
+   * Load a new Model.
+   * Before using this function, make sure to delete the previous model.
+   */
   static Model load_from_xml(const std::string filename) {
     return Model(filename);
   }
+
+  /**
+   * Load a new Model.
+   * Before using this function, make sure to delete the previous model.
+   */
   static Model load_from_mjb(const std::string filename) {
     return Model(filename);
   }
@@ -77,6 +93,10 @@ public:
   mjModel *ptr() { return m; }
   mjModel getVal() { return *m; }
   mjOption getOptions() { return (*m).opt; }
+
+  /**
+   * Free the memory allocated for the MuJoCo model.
+   */
   void free() { return mju_free(m); }
 
   // clang-format off

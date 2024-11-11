@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import * as THREE from "three";
 
@@ -17,7 +17,11 @@ export interface MujocoProps {
   sceneUrl: string;
 }
 
-export const Mujoco = ({ sceneUrl }: MujocoProps) => {
+export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
+  // The 35ms threshold acts as a safeguard to prevent the simulation from
+  // accumulating too much lag, which could degrade performance or accuracy.
+  const MAX_SIMULATION_LAG_MS = 35.0;
+
   const { scene } = useThree();
 
   const mujocoTimeRef = useRef(0);
@@ -97,17 +101,24 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
       return;
     }
 
-    const timeMS = clock.getElapsedTime() * 1000; // Convert time to milliseconds
+    const timeMS = clock.getElapsedTime() * 1000;
     const timestep = model.getOptions().timestep;
 
-    if (timeMS - mujocoTimeRef.current > 35.0) {
-      mujocoTimeRef.current = timeMS; // Update mujoco_time if it’s been over 35 ms
+    // If the real elapsed time (timeMS) has advanced more than 35 milliseconds
+    // beyond the simulation's current time, the simulation time is reset to
+    // match the real time. This prevents the simulation from falling too far
+    // behind real time, which could happen if the rendering or simulation steps lag.
+    if (timeMS - mujocoTimeRef.current > MAX_SIMULATION_LAG_MS) {
+      mujocoTimeRef.current = timeMS;
     }
+    // This while loop ensures that the simulation progresses in fixed timesteps
+    // until it catches up with the real elapsed time.
     while (mujocoTimeRef.current < timeMS) {
       simulation.step();
       mujocoTimeRef.current += timestep * 1000;
     }
 
+    // Update the three.js scene with the current state of the simulation.
     if (!cylindersRef.current || !spheresRef.current) {
       return;
     }
@@ -122,5 +133,8 @@ export const Mujoco = ({ sceneUrl }: MujocoProps) => {
     );
   });
 
-  return null; // This component doesn't render anything directly
+  return null; // This component doesn't render anything directly.
 };
+
+// Memoize the named component
+export const Mujoco = memo(MujocoComponent);
