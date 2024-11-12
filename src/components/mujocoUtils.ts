@@ -6,8 +6,8 @@ import { mjtGeom } from "../wasm/mujoco_model_enums";
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
 
-// Define the initial scene
-const INITIAL_SCENE = "scene.xml";
+// The folder containing all examples.
+const EXAMPLES_FOLDER = "./examples/scenes/";
 
 /**
  * Add a body ID to the Mesh object.
@@ -98,6 +98,102 @@ export const loadMujocoModule = async (): Promise<MujocoModule> => {
 };
 
 /**
+ * Copy over all necessary files to the MuJoCo WASM module's virtual file
+ * system.
+ * @param mujocoModule The MuJoCo WASM module.
+ */
+export async function copyMujocoModuleAssets(mujocoModule: MujocoModule) {
+    const allFiles = [
+        "22_humanoids.xml",
+        "adhesion.xml",
+        "agility_cassie/assets/achilles-rod.obj",
+        "agility_cassie/assets/cassie-texture.png",
+        "agility_cassie/assets/foot-crank.obj",
+        "agility_cassie/assets/foot.obj",
+        "agility_cassie/assets/heel-spring.obj",
+        "agility_cassie/assets/hip-pitch.obj",
+        "agility_cassie/assets/hip-roll.obj",
+        "agility_cassie/assets/hip-yaw.obj",
+        "agility_cassie/assets/knee-spring.obj",
+        "agility_cassie/assets/knee.obj",
+        "agility_cassie/assets/pelvis.obj",
+        "agility_cassie/assets/plantar-rod.obj",
+        "agility_cassie/assets/shin.obj",
+        "agility_cassie/assets/tarsus.obj",
+        "agility_cassie/cassie.xml",
+        "agility_cassie/scene.xml",
+        "arm26.xml",
+        "balloons.xml",
+        "flag.xml",
+        "hammock.xml",
+        "humanoid.xml",
+        "humanoid_body.xml",
+        "mug.obj",
+        "mug.png",
+        "mug.xml",
+        "scene.xml",
+        "shadow_hand/assets/f_distal_pst.obj",
+        "shadow_hand/assets/f_knuckle.obj",
+        "shadow_hand/assets/f_middle.obj",
+        "shadow_hand/assets/f_proximal.obj",
+        "shadow_hand/assets/forearm_0.obj",
+        "shadow_hand/assets/forearm_1.obj",
+        "shadow_hand/assets/forearm_collision.obj",
+        "shadow_hand/assets/lf_metacarpal.obj",
+        "shadow_hand/assets/mounting_plate.obj",
+        "shadow_hand/assets/palm.obj",
+        "shadow_hand/assets/th_distal_pst.obj",
+        "shadow_hand/assets/th_middle.obj",
+        "shadow_hand/assets/th_proximal.obj",
+        "shadow_hand/assets/wrist.obj",
+        "shadow_hand/left_hand.xml",
+        "shadow_hand/right_hand.xml",
+        "shadow_hand/scene_left.xml",
+        "shadow_hand/scene_right.xml",
+        "simple.xml",
+        "slider_crank.xml",
+        "model_with_tendon.xml",
+    ];
+
+    const requests = allFiles.map((url) => fetch(`${EXAMPLES_FOLDER}${url}`));
+    const responses = await Promise.all(requests);
+    for (let i = 0; i < responses.length; i++) {
+        const split = allFiles[i].split("/");
+        let working = `${VIRTUAL_FILE_SYSTEM}/`;
+        // Create the directory structure if it doesn't exist.
+        for (let f = 0; f < split.length - 1; f++) {
+            working += split[f];
+            if (!mujocoModule.FS.analyzePath(working).exists) {
+                mujocoModule.FS.mkdir(working);
+            }
+            working += "/";
+        }
+        if (allFiles[i].endsWith(".png") || allFiles[i].endsWith(".stl") || allFiles[i].endsWith(".skn")) {
+            const data = new Uint8Array(await responses[i].arrayBuffer());
+            mujocoModule.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/` + allFiles[i], data);
+        } else {
+            const text = await responses[i].text()
+            mujocoModule.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/` + allFiles[i], text);
+        }
+    }
+}
+
+/**
+ * Initialize the MuJoCo WASM module file system and copy over all necessary files.
+ * @param mujocoModule The MuJoCo WASM module to initialize.
+ */
+export const initMujocoModule = async (mujocoModule: MujocoModule) => {
+    try {
+        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+        await copyMujocoModuleAssets(mujocoModule);
+    } catch (error: unknown) {
+        console.error(error);
+        throw new Error(`MuJoCo WASM module failed to initialize: ${error}`);
+    }
+};
+
+/**
  * Load a MuJoCo scene from the given URL.
  * @param sceneUrl The URL of the scene to load.
  * @throws {Error} If the scene fails to load.
@@ -107,31 +203,7 @@ export const loadMujocoScene = async (mujocoModule: MujocoModule, sceneUrl: stri
     state: State;
     simulation: Simulation;
 }> => {
-    // Set up Emscripten's Virtual File System.
-    if (!mujocoModule.FS.analyzePath(VIRTUAL_FILE_SYSTEM).exists) {
-        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
-        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
-    }
-
-    // Fetch and write the initial scene file.
-    const sceneResponse = await fetch(sceneUrl);
-    if (!sceneResponse.ok) {
-        throw new Error(
-            `Failed to fetch scene file: ${sceneResponse.status} ${sceneResponse.statusText}`
-        );
-    }
-
-    const sceneText = await sceneResponse.text();
-    mujocoModule.FS.writeFile(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`, sceneText);
-
-    // TODO: update the c++ code to handle the situation where
-    // the model is not loaded, e.g. with a global error state.
-
-    // const model1 = mujocoModule.Model.load_from_xml(
-    //   `${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`
-    // );
-
-    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${INITIAL_SCENE}`);
+    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/simple.xml`);
     const state = new mujocoModule.State(model);
     const simulation = new mujocoModule.Simulation(model, state);
 

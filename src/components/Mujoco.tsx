@@ -7,6 +7,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Model, MujocoModule, Simulation } from "../wasm/mujoco_wasm";
 import {
   Body,
+  initMujocoModule,
   loadMujocoModule,
   loadMujocoScene,
   loadThreeScene,
@@ -57,6 +58,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
     const setupMujocoScene = async () => {
       try {
         if (mujocoModule) {
+          await initMujocoModule(mujocoModule);
           const { model: model, simulation: simulation } = await loadMujocoScene(
             mujocoModule,
             sceneUrl

@@ -52,7 +52,7 @@ private:
 public:
   Model() { m = nullptr; }
 
-  Model(const std::string filename) {
+  Model(const std::string &filename) {
     if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
       char error[1000] = "Could not load mjb model";
       m = mj_loadModel(filename.c_str(), 0);
@@ -72,7 +72,7 @@ public:
    * Load a new Model.
    * Before using this function, make sure to delete the previous model.
    */
-  static Model load_from_xml(const std::string filename) {
+  static Model load_from_xml(const std::string &filename) {
     return Model(filename);
   }
 
@@ -80,7 +80,7 @@ public:
    * Load a new Model.
    * Before using this function, make sure to delete the previous model.
    */
-  static Model load_from_mjb(const std::string filename) {
+  static Model load_from_mjb(const std::string &filename) {
     return Model(filename);
   }
 
