@@ -68,12 +68,6 @@ public:
     }
   }
 
-  ~Model() {
-    if (m) {
-      mj_deleteModel(m);
-    }
-  }
-
   /**
    * Load a new Model.
    * Before using this function, make sure to delete the previous model.

@@ -105,19 +105,16 @@ set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
 
 # Add the executable target.
 add_executable(mujoco_wasm src/main.cpp)
+
+# The following two lines solve this issue: https://github.com/clangd/clangd/issues/1621
+set(EMSCRIPTEN_SYSROOT "${EMSDK_PATH}/upstream/emscripten/cache/sysroot")
+set_target_properties(mujoco_wasm PROPERTIES COMPILE_FLAGS "-target wasm32-unknown-emscripten --sysroot=${EMSCRIPTEN_SYSROOT}")
+
 set_target_properties(mujoco_wasm PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
-
-set(EMSCRIPTEN_INCLUDE_DIR "${EMSDK_PATH}/upstream/emscripten/cache/sysroot/include")
-set(EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR "${EMSCRIPTEN_INCLUDE_DIR}/emscripten")
-
-message(STATUS "EMSCRIPTEN_INCLUDE_DIR: ${EMSCRIPTEN_INCLUDE_DIR}")
-message(STATUS "EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR: ${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}")
 
 target_include_directories(mujoco_wasm PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    "${EMSCRIPTEN_INCLUDE_DIR}"
-    "${EMSCRIPTEN_EMSCRIPTEN_INCLUDE_DIR}"
 )
 target_link_libraries(mujoco_wasm PRIVATE
   ccd
