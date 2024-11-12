@@ -38,7 +38,7 @@ const App = () => {
         />
         <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
         <OrbitControls makeDefault />
-        <Mujoco sceneUrl={`${BASE_URL}/examples/scenes/${INITIAL_SCENE}`} />
+        <Mujoco sceneUrl={"simple.xml"} />
       </Canvas>
     </div>
   );

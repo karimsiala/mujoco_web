@@ -198,12 +198,12 @@ export const initMujocoModule = async (mujocoModule: MujocoModule) => {
  * @param sceneUrl The URL of the scene to load.
  * @throws {Error} If the scene fails to load.
  */
-export const loadMujocoScene = async (mujocoModule: MujocoModule, sceneUrl: string): Promise<{
+export const loadMujocoScene = async (mujocoModule: MujocoModule, scene: string): Promise<{
     model: Model;
     state: State;
     simulation: Simulation;
 }> => {
-    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/simple.xml`);
+    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${scene}`);
     const state = new mujocoModule.State(model);
     const simulation = new mujocoModule.Simulation(model, state);
 
