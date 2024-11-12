@@ -4,8 +4,9 @@ import * as THREE from "three";
 
 import { useFrame, useThree } from "@react-three/fiber";
 
-import { Body, loadMujocoModule, loadScene, updateThreeScene } from "./mujocoUtils";
+import { UpdateProps } from "./UpdateProps";
 import { MujocoContainer } from "./MujocoContainer";
+import { loadMujocoModule, loadScene, updateThreeScene } from "./mujocoUtils";
 
 export interface MujocoProps {
   sceneUrl: string;
@@ -21,13 +22,12 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
   // This is to block the scene rendering until the scene has been loaded.
   const loadingScene = useRef<boolean>(false);
 
+  // Variables used to update the ThreeJS scene.
   const mujocoTimeRef = useRef(0);
-  const bodiesRef = useRef<{ [key: number]: Body }>({});
-  const lightsRef = useRef<THREE.Light[]>([]);
-  const cylindersRef = useRef<THREE.InstancedMesh<THREE.CylinderGeometry>>();
-  const spheresRef = useRef<THREE.InstancedMesh<THREE.SphereGeometry>>();
+  const updatePropsRef = useRef<UpdateProps>();
   const tmpVecRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
 
+  // The container of the MuJoCo module, model, state and simulation.
   const [mujocoContainer, setMujocoContainer] = useState<MujocoContainer | null>(null);
 
   // Load MuJoCo WASM with a default empty scene when the component mounts.
@@ -50,11 +50,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
     const setupMujocoScene = async () => {
       try {
         if (mujocoContainer) {
-          const result = await loadScene(mujocoContainer, sceneUrl, scene);
-          bodiesRef.current = result.bodies;
-          lightsRef.current = result.lights;
-          cylindersRef.current = result.cylinders;
-          spheresRef.current = result.spheres;
+          updatePropsRef.current = await loadScene(mujocoContainer, sceneUrl, scene);
         }
       } catch (error: unknown) {
         console.error(error);
@@ -98,18 +94,10 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
       mujocoTimeRef.current += timestep * 1000;
     }
 
-    // Update the three.js scene with the current state of the simulation.
-    if (!cylindersRef.current || !spheresRef.current) {
+    if (!updatePropsRef.current) {
       return;
     }
-    updateThreeScene(
-      mujocoContainer,
-      bodiesRef.current,
-      lightsRef.current,
-      cylindersRef.current,
-      spheresRef.current,
-      tmpVecRef.current
-    );
+    updateThreeScene(mujocoContainer, updatePropsRef.current, tmpVecRef.current);
   });
 
   return null; // This component doesn't render anything directly.

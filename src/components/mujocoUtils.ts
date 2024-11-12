@@ -3,6 +3,7 @@ import load_mujoco, { MujocoModule } from '../wasm/mujoco_wasm';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mjtGeom } from "../wasm/mujoco_model_enums";
 import { MujocoContainer } from "./MujocoContainer";
+import { UpdateProps } from "./UpdateProps";
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
@@ -33,7 +34,7 @@ export class Body extends THREE.Group {
  * Access the vector at index, swizzle for three.js, and apply to the target
  * THREE.Vector3
  */
-export const getPosition = (
+const getPosition = (
     buffer: Float32Array | Float64Array,
     index: number,
     target: THREE.Vector3,
@@ -58,7 +59,7 @@ export const getPosition = (
  * Access the quaternion at index, swizzle for three.js, and apply to the
  * target THREE.Quaternion.
  */
-export const getQuaternion = (
+const getQuaternion = (
     buffer: Float32Array | Float64Array,
     index: number,
     target: THREE.Quaternion,
@@ -240,12 +241,7 @@ export const loadScene = (
     mujocoContainer: MujocoContainer,
     sceneUrl: string,
     scene: THREE.Scene
-): {
-    bodies: { [key: number]: Body };
-    lights: THREE.Light[];
-    cylinders: THREE.InstancedMesh<THREE.CylinderGeometry>;
-    spheres: THREE.InstancedMesh<THREE.SphereGeometry>;
-} => {
+): UpdateProps => {
 
     // Load the Mujoco scene inside the MuJoCo WASM module.
     loadMujocoScene(mujocoContainer, sceneUrl);
@@ -550,20 +546,22 @@ export const loadScene = (
         }
     }
 
-    return { bodies, lights, cylinders, spheres };
+    return new UpdateProps(bodies, lights, cylinders, spheres);
 };
 
 export const updateThreeScene = (
     mujocoContainer: MujocoContainer,
-    bodies: { [key: number]: Body },
-    lights: THREE.Light[],
-    cylinders: THREE.InstancedMesh<THREE.CylinderGeometry> | null,
-    spheres: THREE.InstancedMesh<THREE.SphereGeometry> | null,
+    updateProps: UpdateProps,
     tmpVec: THREE.Vector3
 ): void => {
 
     const simulation = mujocoContainer.getSimulation();
     const model = simulation.model()
+
+    const bodies = updateProps.getBodies();
+    const lights = updateProps.getLights();
+    const cylinders = updateProps.getCylinders();
+    const spheres = updateProps.getSpheres();
 
     // Update body transforms.
     for (let b = 0; b < model.nbody; b++) {
