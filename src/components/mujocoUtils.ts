@@ -1,13 +1,17 @@
 import * as THREE from "three";
-import load_mujoco, { Model, MujocoModule, Simulation, State } from '../wasm/mujoco_wasm';
+import load_mujoco, { MujocoModule } from '../wasm/mujoco_wasm';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mjtGeom } from "../wasm/mujoco_model_enums";
+import { MujocoContainer } from "./MujocoContainer";
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
 
 // The folder containing all examples.
 const EXAMPLES_FOLDER = "./examples/scenes/";
+
+// The name of ThreeJS group which contains the whole MuJoCo scene.
+const ROOT_OBJECT_NAME = "MuJoCo Root";
 
 /**
  * Add a body ID to the Mesh object.
@@ -78,30 +82,10 @@ export const getQuaternion = (
 };
 
 /**
- * Loads the MuJoCo WASM module or throws an exception if it fails to load.
- * @return The MuJoCo WASM module.
- * @throws {Error} If the module fails to load.
- */
-export const loadMujocoModule = async (): Promise<MujocoModule> => {
-    try {
-        const mujocoModule = await load_mujoco();
-        if (mujocoModule) {
-            console.log("MuJoCo WASM module loaded successfully.");
-            return mujocoModule;
-        } else {
-            throw new Error("MuJoCo WASM module returned an invalid value.");
-        }
-    } catch (error: unknown) {
-        console.error(error);
-        throw new Error(`MuJoCo WASM module failed to load: ${error}`);
-    }
-};
-
-/**
  * Copy all necessary files to the MuJoCo WASM module's virtual file system.
  * @param mujocoModule The MuJoCo WASM module.
  */
-export async function copyMujocoModuleAssets(mujocoModule: MujocoModule) {
+const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
     const allFiles = [
         "22_humanoids.xml",
         "adhesion.xml",
@@ -182,11 +166,32 @@ export async function copyMujocoModuleAssets(mujocoModule: MujocoModule) {
  * Initialize the MuJoCo WASM module file system and copy over all necessary files.
  * @param mujocoModule The MuJoCo WASM module to initialize.
  */
-export const initMujocoModule = async (mujocoModule: MujocoModule) => {
+export const loadMujocoModule = async (): Promise<MujocoContainer> => {
     try {
+        // Load the WASM module.
+        const mujocoModule = await load_mujoco();
+        if (mujocoModule) {
+            console.log("MuJoCo WASM module loaded successfully.");
+        } else {
+            throw new Error("MuJoCo WASM module returned an invalid value.");
+        }
+
+        // Initialize the file system.
         mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
         mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+
+        // Copy all necessary assets.
         await copyMujocoModuleAssets(mujocoModule);
+        console.log("Successfully copied over all necessary assets.");
+
+        // Create the default simulation.
+        const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/empty.xml`);
+        const state = new mujocoModule.State(model);
+        const simulation = new mujocoModule.Simulation(model, state);
+        console.log("Successfully created the default simulation.");
+
+        return new MujocoContainer(mujocoModule, simulation);
+
     } catch (error: unknown) {
         console.error(error);
         throw new Error(`MuJoCo WASM module failed to initialize: ${error}`);
@@ -198,28 +203,42 @@ export const initMujocoModule = async (mujocoModule: MujocoModule) => {
  * @param sceneUrl The URL of the scene to load.
  * @throws {Error} If the scene fails to load.
  */
-export const loadMujocoScene = async (mujocoModule: MujocoModule, scene: string): Promise<{
-    model: Model;
-    state: State;
-    simulation: Simulation;
-}> => {
-    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${scene}`);
-    const state = new mujocoModule.State(model);
-    const simulation = new mujocoModule.Simulation(model, state);
+const loadMujocoScene = async (mujocoContainer: MujocoContainer, sceneURl: string): Promise<void> => {
 
-    return { model, state, simulation };
+    try {
+        const mujocoModule = mujocoContainer.getMujocoModule();
+        const simulation = mujocoContainer.getSimulation();
+
+        // Free the old simulation.
+        if (simulation != null) {
+            simulation.free();
+        }
+
+        const newModel = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${sceneURl}`);
+        const newState = new mujocoModule.State(newModel);
+        const newSimulation = new mujocoModule.Simulation(newModel, newState);
+
+        mujocoContainer.setSimulation(newSimulation);
+        console.log(`Successfully loaded the scene: ${sceneURl}`);
+
+    } catch (error: unknown) {
+        console.error(error);
+        throw new Error(`MuJoCo WASM module failed to initialize: ${error}`);
+    }
+
 }
 
 /**
  * Read the MuJoCo model and add geometries to the given three.js scene.
  * Return pointers to all newly created geometries.
  * @param mujocoModule The MuJoCo wasm module.
- * @param model The MuJoCo model.
+ * @param simulation The MuJoCo simulation.
  * @param scene The three.js scene.
  * @returns Pointers to newly created geometries.
  */
-export const loadThreeScene = (
-    model: Model,
+export const loadScene = (
+    mujocoContainer: MujocoContainer,
+    sceneUrl: string,
     scene: THREE.Scene
 ): {
     bodies: { [key: number]: Body };
@@ -227,14 +246,19 @@ export const loadThreeScene = (
     cylinders: THREE.InstancedMesh<THREE.CylinderGeometry>;
     spheres: THREE.InstancedMesh<THREE.SphereGeometry>;
 } => {
-    // Decode the null-terminated string names.
-    const textDecoder = new TextDecoder("utf-8");
-    const fullString = textDecoder.decode(model.names);
-    const names = fullString.split(textDecoder.decode(new ArrayBuffer(1)));
 
-    // Create the root object.
+    // Load the Mujoco scene inside the MuJoCo WASM module.
+    loadMujocoScene(mujocoContainer, sceneUrl);
+
+    // Remove the existing root object.
+    const object = scene.getObjectByName(ROOT_OBJECT_NAME);
+    if (object) {
+        scene.remove(object);
+    }
+
+    // Create a new root object.
     const mujocoRoot = new THREE.Group();
-    mujocoRoot.name = "MuJoCo Root";
+    mujocoRoot.name = ROOT_OBJECT_NAME;
     scene.add(mujocoRoot);
 
     const bodies: { [key: number]: Body } = {};
@@ -244,6 +268,14 @@ export const loadThreeScene = (
     // Default material definition.
     let material = new THREE.MeshPhysicalMaterial();
     material.color = new THREE.Color(1, 1, 1);
+
+    const simulation = mujocoContainer.getSimulation()
+    const model = simulation.model();
+
+    // Decode the null-terminated string names.
+    const textDecoder = new TextDecoder("utf-8");
+    const fullString = textDecoder.decode(model.names);
+    const names = fullString.split(textDecoder.decode(new ArrayBuffer(1)));
 
     // Loop through the MuJoCo geoms and recreate them in three.js.
     for (let g = 0; g < model.ngeom; g++) {
@@ -522,16 +554,18 @@ export const loadThreeScene = (
 };
 
 export const updateThreeScene = (
-    model: Model,
-    simulation: Simulation,
+    mujocoContainer: MujocoContainer,
     bodies: { [key: number]: Body },
     lights: THREE.Light[],
     cylinders: THREE.InstancedMesh<THREE.CylinderGeometry> | null,
     spheres: THREE.InstancedMesh<THREE.SphereGeometry> | null,
     tmpVec: THREE.Vector3
 ): void => {
-    // Update body transforms.
 
+    const simulation = mujocoContainer.getSimulation();
+    const model = simulation.model()
+
+    // Update body transforms.
     for (let b = 0; b < model.nbody; b++) {
         if (bodies[b]) {
             getPosition(simulation.xpos, b, bodies[b].position);

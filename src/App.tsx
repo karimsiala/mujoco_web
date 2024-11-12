@@ -6,10 +6,6 @@ import { Color, Fog } from "three";
 import "./App.css";
 import "./index.css";
 
-// Define the initial scene
-const INITIAL_SCENE = "humanoid.xml";
-const BASE_URL = `${window.location.origin}${import.meta.env.BASE_URL}`;
-
 const App = () => {
   return (
     <div className="w-full h-full border-4 border-blue-500">
@@ -38,7 +34,7 @@ const App = () => {
         />
         <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
         <OrbitControls makeDefault />
-        <Mujoco sceneUrl={"simple.xml"} />
+        <Mujoco sceneUrl={"humanoid.xml"} />
       </Canvas>
     </div>
   );

@@ -4,15 +4,8 @@ import * as THREE from "three";
 
 import { useFrame, useThree } from "@react-three/fiber";
 
-import { Model, MujocoModule, Simulation } from "../wasm/mujoco_wasm";
-import {
-  Body,
-  initMujocoModule,
-  loadMujocoModule,
-  loadMujocoScene,
-  loadThreeScene,
-  updateThreeScene
-} from "./mujocoUtils";
+import { Body, loadMujocoModule, loadScene, updateThreeScene } from "./mujocoUtils";
+import { MujocoContainer } from "./MujocoContainer";
 
 export interface MujocoProps {
   sceneUrl: string;
@@ -25,6 +18,9 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
 
   const { scene } = useThree();
 
+  // This is to block the scene rendering until the scene has been loaded.
+  const loadingScene = useRef<boolean>(false);
+
   const mujocoTimeRef = useRef(0);
   const bodiesRef = useRef<{ [key: number]: Body }>({});
   const lightsRef = useRef<THREE.Light[]>([]);
@@ -32,58 +28,29 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
   const spheresRef = useRef<THREE.InstancedMesh<THREE.SphereGeometry>>();
   const tmpVecRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 0));
 
-  const [mujocoModule, setMujocoModule] = useState<MujocoModule | null>(null);
-  const [simulation, setSimulation] = useState<Simulation | null>(null);
-  const [model, setModel] = useState<Model | null>(null);
+  const [mujocoContainer, setMujocoContainer] = useState<MujocoContainer | null>(null);
 
-  // Load MuJoCo WASM when the component mounts.
+  // Load MuJoCo WASM with a default empty scene when the component mounts.
   useEffect(() => {
     const setupMujocoModule = async () => {
       try {
-        const mujocoModule = await loadMujocoModule();
-        if (mujocoModule) {
-          setMujocoModule(mujocoModule);
+        const mujocoContainer = await loadMujocoModule();
+        if (mujocoContainer) {
+          setMujocoContainer(mujocoContainer);
         }
       } catch (error: unknown) {
         console.error(error);
       }
     };
-    if (!mujocoModule) {
-      setupMujocoModule();
-    }
-  }, [mujocoModule]);
+    setupMujocoModule();
+  }, []);
 
-  // Start the simulation after MuJoCo WASM is loaded.
+  // Load a scene each time the scene URL changes.
   useEffect(() => {
     const setupMujocoScene = async () => {
       try {
-        if (mujocoModule) {
-          await initMujocoModule(mujocoModule);
-          const { model: model, simulation: simulation } = await loadMujocoScene(
-            mujocoModule,
-            sceneUrl
-          );
-          if (model) {
-            setModel(model);
-          }
-          if (simulation) {
-            setSimulation(simulation);
-          }
-        }
-      } catch (error: unknown) {
-        console.error(error);
-      }
-    };
-    if (mujocoModule) {
-      setupMujocoScene();
-    }
-  }, [mujocoModule, sceneUrl]);
-
-  useEffect(() => {
-    const setupThreeScene = async () => {
-      try {
-        if (model) {
-          const result = await loadThreeScene(model, scene);
+        if (mujocoContainer) {
+          const result = await loadScene(mujocoContainer, sceneUrl, scene);
           bodiesRef.current = result.bodies;
           lightsRef.current = result.lights;
           cylindersRef.current = result.cylinders;
@@ -93,12 +60,23 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
         console.error(error);
       }
     };
-    if (model) {
-      setupThreeScene();
+    if (mujocoContainer) {
+      try {
+        loadingScene.current = true;
+        setupMujocoScene();
+      } finally {
+        loadingScene.current = false;
+      }
     }
-  }, [model, simulation, scene]);
+  }, [mujocoContainer, scene, sceneUrl]);
 
+  // Update the Three.js scene with information from the MuJoCo simulation.
   useFrame(({ clock }) => {
+    if (!mujocoContainer || loadingScene.current) {
+      return;
+    }
+    const simulation = mujocoContainer.getSimulation();
+    const model = simulation.model();
     if (!model || !simulation) {
       return;
     }
@@ -125,8 +103,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
       return;
     }
     updateThreeScene(
-      model,
-      simulation,
+      mujocoContainer,
       bodiesRef.current,
       lightsRef.current,
       cylindersRef.current,
