@@ -98,8 +98,7 @@ export const loadMujocoModule = async (): Promise<MujocoModule> => {
 };
 
 /**
- * Copy over all necessary files to the MuJoCo WASM module's virtual file
- * system.
+ * Copy all necessary files to the MuJoCo WASM module's virtual file system.
  * @param mujocoModule The MuJoCo WASM module.
  */
 export async function copyMujocoModuleAssets(mujocoModule: MujocoModule) {
@@ -124,6 +123,7 @@ export async function copyMujocoModuleAssets(mujocoModule: MujocoModule) {
         "agility_cassie/scene.xml",
         "arm26.xml",
         "balloons.xml",
+        "empty.xml",
         "flag.xml",
         "hammock.xml",
         "humanoid.xml",
