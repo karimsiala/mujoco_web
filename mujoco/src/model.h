@@ -41,13 +41,13 @@ private:
    * @param m The MuJoCo model to delete, if it was successfully loaded.
    * @return 0 to indicate the function completed successfully.
    */
-  int finish(const char *msg = NULL, mjModel *m = NULL) {
+  int finish(mjModel *m = NULL) {
 
     if (m) {
       mj_deleteModel(m);
     }
-    if (msg) {
-      std::printf("%s\n", msg);
+    if (!error.empty()) {
+      std::cout << error << std::endl;
     }
     std::cout << "Model deleted" << std::endl;
     return 0;
@@ -61,20 +61,21 @@ public:
 
   Model(const std::string &filename) {
     error = "";
-    char error_details[1000] = "";
+    const int buffer_size = 1000;
+    char error_buffer[buffer_size];
     if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
       m = mj_loadModel(filename.c_str(), 0);
       if (!m) {
         error = "Could not load mjb model";
-        std::cout << error << std::endl;
-        finish(error_details, m);
+        finish(m);
       }
     } else {
-      m = mj_loadXML(filename.c_str(), 0, error_details, 1000);
+      m = mj_loadXML(filename.c_str(), 0, error_buffer, buffer_size);
       if (!m) {
-        error = "Could not load xml model";
-        std::cout << error << std::endl;
-        finish(error_details, m);
+        const auto error_details = std::string{error_buffer};
+        error = "Could not load xml model: " +
+                (error_details.empty() ? "reason unknown" : error_details);
+        finish(m);
       }
     }
   }
