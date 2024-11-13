@@ -20,9 +20,10 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
   const { scene } = useThree();
 
   // This is to block the scene rendering until the scene has been loaded.
-  const loadingScene = useRef<boolean>(false);
+  const loadingSceneRef = useRef<boolean>(false);
 
-  const shouldRenderScene = useRef<boolean>(true);
+  // True if the scene fails to load.
+  const errorRef = useRef<boolean>(false);
 
   // Variables used to update the ThreeJS scene.
   const mujocoTimeRef = useRef(0);
@@ -41,7 +42,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
           setMujocoContainer(mujocoContainer);
         }
       } catch (error: unknown) {
-        shouldRenderScene.current = false;
+        errorRef.current = true;
         console.error(error);
       }
     };
@@ -60,25 +61,26 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
           );
         }
       } catch (error: unknown) {
-        shouldRenderScene.current = false;
+        errorRef.current = true;
         console.error(error);
       }
     };
     if (mujocoContainer) {
       try {
-        loadingScene.current = true;
+        loadingSceneRef.current = true;
         setupMujocoScene();
       } finally {
-        loadingScene.current = false;
+        loadingSceneRef.current = false;
       }
     }
   }, [mujocoContainer, scene, sceneUrl]);
 
   // Update the Three.js scene with information from the MuJoCo simulation.
   useFrame(({ clock }) => {
-    if (!mujocoContainer || loadingScene.current || !shouldRenderScene.current) {
+    if (!mujocoContainer || loadingSceneRef.current || errorRef.current) {
       return;
     }
+
     const simulation = mujocoContainer.getSimulation();
     const model = simulation.model();
     if (!model || !simulation) {
