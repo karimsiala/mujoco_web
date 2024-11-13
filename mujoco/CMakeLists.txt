@@ -56,7 +56,7 @@ add_subdirectory(${libccd_SOURCE_DIR} ${libccd_BINARY_DIR} EXCLUDE_FROM_ALL)
 #
 
 # Define the version of mujoco.
-set(MUJOCO_VERSION 3.2.4)
+set(MUJOCO_VERSION 3.2.5)
 
 # Append default compiler flags
 set(DEFAULT_CXX_FLAGS "-Wno-int-in-bool-context -Wno-newline-eof")

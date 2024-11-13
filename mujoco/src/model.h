@@ -347,7 +347,7 @@ public:
   val flex_shell() const { return val(typed_memory_view(m->nflexshelldata * 1, m->flex_shell)); }
   val flex_evpair() const { return val(typed_memory_view(m->nflexevpair * 2, m->flex_evpair)); }
   val flex_vert() const { return val(typed_memory_view(m->nflexvert * 3, m->flex_vert)); }
-  val flex_xvert0() const { return val(typed_memory_view(m->nflexvert * 3, m->flex_xvert0)); }
+  val flex_xvert0() const { return val(typed_memory_view(m->nflexvert * 3, m->flex_vert0)); }
   val flexedge_length0() const { return val(typed_memory_view(m->nflexedge * 1, m->flexedge_length0)); }
   val flexedge_invweight0() const { return val(typed_memory_view(m->nflexedge * 1, m->flexedge_invweight0)); }
   val flex_radius() const { return val(typed_memory_view(m->nflex * 1, m->flex_radius)); }
