@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import load_mujoco, { MujocoModule } from '../wasm/mujoco_wasm';
-import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mjtGeom } from "../wasm/mujoco_model_enums";
 import { MujocoContainer } from "./MujocoContainer";
 import { UpdateProps } from "./UpdateProps";
+import { createMirrotCheckerboard } from "./threeUtils";
 
 // Virtual Filesystem used by the WASM container.
 const VIRTUAL_FILE_SYSTEM = "/working";
@@ -17,7 +17,7 @@ const ROOT_OBJECT_NAME = "MuJoCo Root";
 /**
  * Add a body ID to the Mesh object.
  */
-export class BodyMesh extends THREE.Mesh {
+export class BodyMesh extends THREE.Object3D {
     bodyID?: number;
 }
 
@@ -25,7 +25,7 @@ export class BodyMesh extends THREE.Mesh {
  * Add a body ID to the Group object and a boolean to indicate if the mesh has
  * been customized.
  */
-export class Body extends THREE.Group {
+export class Body extends THREE.Object3D {
     bodyID?: number;
     has_custom_mesh?: boolean;
 }
@@ -447,18 +447,9 @@ export const loadScene = (
 
         let mesh = new BodyMesh();
         if (type == 0) {
-            // TODO: change to reflector.
-
-            const geometry = new THREE.CircleGeometry(40, 64);
-            const groundMirror = new Reflector(geometry, {
-                clipBias: 0.003,
-                textureWidth: window.innerWidth * window.devicePixelRatio,
-                textureHeight: window.innerHeight * window.devicePixelRatio,
-                color: 0xb5b5b5
-            });
-
+            const groundMirror = createMirrotCheckerboard(texture);
+            groundMirror.rotateX(-Math.PI / 2);
             mesh = groundMirror;
-            mesh.rotateX(-Math.PI / 2);
         } else {
             mesh = new THREE.Mesh(geometry, material);
         }

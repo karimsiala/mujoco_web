@@ -1,11 +1,11 @@
 import { Canvas } from "@react-three/fiber";
 import { Mujoco } from "./components/Mujoco";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { Color, Fog } from "three";
+import * as THREE from "three";
 
 import "./App.css";
 import "./index.css";
-
+import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
 const App = () => {
   return (
     <div className="w-full h-full border-4 border-blue-500">
@@ -19,8 +19,7 @@ const App = () => {
           height: 600
         }}
         onCreated={(state) => {
-          state.scene.background = new Color(0.15, 0.25, 0.35); // Set background color
-          state.scene.fog = new Fog(state.scene.background, 15, 25.5); // Add fog
+          state.scene.background = new THREE.Color(0x264059);
         }}
       >
         {/* <AdaptiveDpr /> */}
@@ -35,6 +34,16 @@ const App = () => {
         <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
         <OrbitControls makeDefault />
         <Mujoco sceneUrl={"humanoid.xml"} />
+
+        {/* Post-Processing Effects */}
+        <EffectComposer>
+          <DepthOfField
+            focusDistance={0}
+            focalLength={0.02}
+            bokehScale={2}
+            height={480}
+          />
+        </EffectComposer>
       </Canvas>
     </div>
   );
