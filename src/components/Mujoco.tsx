@@ -17,12 +17,12 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
   // accumulating too much lag, which could degrade performance or accuracy.
   const MAX_SIMULATION_LAG_MS = 35.0;
 
-  let shouldRenderScene = true;
-
   const { scene } = useThree();
 
   // This is to block the scene rendering until the scene has been loaded.
   const loadingScene = useRef<boolean>(false);
+
+  const shouldRenderScene = useRef<boolean>(true);
 
   // Variables used to update the ThreeJS scene.
   const mujocoTimeRef = useRef(0);
@@ -41,6 +41,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
           setMujocoContainer(mujocoContainer);
         }
       } catch (error: unknown) {
+        shouldRenderScene.current = false;
         console.error(error);
       }
     };
@@ -59,6 +60,7 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
           );
         }
       } catch (error: unknown) {
+        shouldRenderScene.current = false;
         console.error(error);
       }
     };
@@ -74,22 +76,13 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
 
   // Update the Three.js scene with information from the MuJoCo simulation.
   useFrame(({ clock }) => {
-    if (!shouldRenderScene) {
-      return;
-    }
-
-    if (!mujocoContainer || loadingScene.current) {
+    if (!mujocoContainer || loadingScene.current || !shouldRenderScene.current) {
       return;
     }
     const simulation = mujocoContainer.getSimulation();
     const model = simulation.model();
     if (!model || !simulation) {
       return;
-    }
-
-    // Stop rendering the scene if the model has an error.
-    if (model.getError() != "") {
-      shouldRenderScene = false;
     }
 
     const timeMS = clock.getElapsedTime() * 1000;
