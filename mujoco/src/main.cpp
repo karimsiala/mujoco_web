@@ -73,6 +73,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
       .function("free", &Model::free)
       .function("getVal", &Model::getVal)
       .function("getOptions", &Model::getOptions)
+      .function("getError", &Model::getError)
 
       // MJMODEL_BINDINGS
 

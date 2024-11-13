@@ -33,7 +33,7 @@ const App = () => {
         />
         <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
         <OrbitControls makeDefault />
-        <Mujoco sceneUrl={"humanoid.xml"} />
+        <Mujoco sceneUrl={"spot/spot.xml"} />
 
         {/* Post-Processing Effects */}
         <EffectComposer>

@@ -124,15 +124,15 @@ const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
         "agility_cassie/cassie.xml",
         "agility_cassie/scene.xml",
         "arm26.xml",
-        "balloons.xml",
+        "balloons/balloons.xml",
+        "car.xml",
         "empty.xml",
-        "flag.xml",
         "hammock.xml",
         "humanoid.xml",
         "humanoid_body.xml",
-        "mug.obj",
-        "mug.png",
-        "mug.xml",
+        "mug/mug.obj",
+        "mug/mug.png",
+        "mug/mug.xml",
         "scene.xml",
         "shadow_hand/assets/f_distal_pst.obj",
         "shadow_hand/assets/f_knuckle.obj",
@@ -155,6 +155,67 @@ const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
         "simple.xml",
         "slider_crank.xml",
         "model_with_tendon.xml",
+        "spot/meshes/arm/collision/arm_link_el0.obj",
+        "spot/meshes/arm/collision/arm_link_el1_lip.obj",
+        "spot/meshes/arm/collision/arm_link_el1_main.obj",
+        "spot/meshes/arm/collision/arm_link_sh0_base.obj",
+        "spot/meshes/arm/collision/arm_link_sh0_left_motor.obj",
+        "spot/meshes/arm/collision/arm_link_sh0_right_motor.obj",
+        "spot/meshes/arm/collision/arm_link_sh1.obj",
+        "spot/meshes/arm/collision/arm_link_wr0.obj",
+        "spot/meshes/arm/collision/arm_link_wr1.obj",
+        "spot/meshes/arm/visual/arm_link_el0.obj",
+        "spot/meshes/arm/visual/arm_link_el1_0.obj",
+        "spot/meshes/arm/visual/arm_link_el1_1.obj",
+        "spot/meshes/arm/visual/arm_link_sh0.obj",
+        "spot/meshes/arm/visual/arm_link_sh1_0.obj",
+        "spot/meshes/arm/visual/arm_link_sh1_1.obj",
+        "spot/meshes/arm/visual/arm_link_wr0_0.obj",
+        "spot/meshes/arm/visual/arm_link_wr0_1.obj",
+        "spot/meshes/arm/visual/arm_link_wr1_0.obj",
+        "spot/meshes/arm/visual/arm_link_wr1_1.obj",
+        "spot/meshes/base/collision/body_collision.obj",
+        "spot/meshes/base/collision/left_lower_leg_collision.obj",
+        "spot/meshes/base/collision/left_upper_leg_collision.obj",
+        "spot/meshes/base/collision/right_lower_leg_collision.obj",
+        "spot/meshes/base/collision/right_upper_leg_collision.obj",
+        "spot/meshes/base/visual/body_0.obj",
+        "spot/meshes/base/visual/body_1.obj",
+        "spot/meshes/base/visual/front_left_hip.obj",
+        "spot/meshes/base/visual/front_left_lower_leg.obj",
+        "spot/meshes/base/visual/front_left_upper_leg_0.obj",
+        "spot/meshes/base/visual/front_left_upper_leg_1.obj",
+        "spot/meshes/base/visual/front_right_hip.obj",
+        "spot/meshes/base/visual/front_right_lower_leg.obj",
+        "spot/meshes/base/visual/front_right_upper_leg_0.obj",
+        "spot/meshes/base/visual/front_right_upper_leg_1.obj",
+        "spot/meshes/base/visual/rear_left_hip.obj",
+        "spot/meshes/base/visual/rear_left_lower_leg.obj",
+        "spot/meshes/base/visual/rear_left_upper_leg_0.obj",
+        "spot/meshes/base/visual/rear_left_upper_leg_1.obj",
+        "spot/meshes/base/visual/rear_right_hip.obj",
+        "spot/meshes/base/visual/rear_right_lower_leg.obj",
+        "spot/meshes/base/visual/rear_right_upper_leg_0.obj",
+        "spot/meshes/base/visual/rear_right_upper_leg_1.obj",
+        "spot/meshes/gripper/collision/front_jaw.obj",
+        "spot/meshes/gripper/collision/jaw_tooth.obj",
+        "spot/meshes/gripper/collision/left_finger.obj",
+        "spot/meshes/gripper/collision/left_hinge.obj",
+        "spot/meshes/gripper/collision/left_tooth.obj",
+        "spot/meshes/gripper/collision/middle_jaw.obj",
+        "spot/meshes/gripper/collision/right_finger.obj",
+        "spot/meshes/gripper/collision/right_hinge.obj",
+        "spot/meshes/gripper/collision/right_tooth.obj",
+        "spot/meshes/gripper/visual/arm_link_fngr_0.obj",
+        "spot/meshes/gripper/visual/arm_link_fngr_1.obj",
+        "spot/spot_components/actuators_sensors.xml",
+        "spot/spot_components/arm.xml",
+        "spot/spot_components/assets.xml",
+        "spot/spot_components/contact.xml",
+        "spot/spot_components/legs.xml",
+        "spot/spot_components/params_and_default.xml",
+        "spot/textures/bdaii_spot_wrap.png",
+        "spot/spot.xml"
     ];
 
     const requests = allFiles.map((url) => fetch(`${EXAMPLES_FOLDER}${url}`));
@@ -188,35 +249,36 @@ const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
  * @throws Throws an error if the module fails to load or initialize.
  */
 export const loadMujocoModule = async (): Promise<MujocoContainer> => {
-    try {
-        // Load the WASM module.
-        const mujocoModule = await load_mujoco();
-        if (mujocoModule) {
-            console.log("MuJoCo WASM module loaded successfully.");
-        } else {
-            throw new Error("MuJoCo WASM module returned an invalid value.");
-        }
 
-        // Initialize the file system.
-        mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
-        mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
-
-        // Copy all necessary assets.
-        await copyMujocoModuleAssets(mujocoModule);
-        console.log("Successfully copied over all necessary assets.");
-
-        // Create the default simulation.
-        const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/empty.xml`);
-        const state = new mujocoModule.State(model);
-        const simulation = new mujocoModule.Simulation(model, state);
-        console.log("Successfully created the default simulation.");
-
-        return new MujocoContainer(mujocoModule, simulation);
-
-    } catch (error: unknown) {
-        console.error(error);
-        throw new Error(`MuJoCo WASM module failed to initialize: ${error}`);
+    // Load the WASM module.
+    const mujocoModule = await load_mujoco();
+    if (mujocoModule) {
+        console.log("MuJoCo WASM module loaded successfully.");
+    } else {
+        throw new Error("MuJoCo WASM module returned an invalid value.");
     }
+
+    // Initialize the file system.
+    mujocoModule.FS.mkdir(VIRTUAL_FILE_SYSTEM);
+    mujocoModule.FS.mount(mujocoModule.MEMFS, { root: "." }, VIRTUAL_FILE_SYSTEM);
+
+    // Copy all necessary assets.
+    await copyMujocoModuleAssets(mujocoModule);
+    console.log("Successfully copied over all necessary assets.");
+
+    // Create the default simulation.
+    const model = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/empty.xml`);
+
+    // Check for errors in the MuJoCo model.
+    if (model.getError() != "") {
+        throw new Error(`Could not load the default model: ${model.getError()}`);
+    }
+
+    const state = new mujocoModule.State(model);
+    const simulation = new mujocoModule.Simulation(model, state);
+    console.log("Successfully created the default simulation.");
+
+    return new MujocoContainer(mujocoModule, simulation);
 };
 
 /**
@@ -229,29 +291,27 @@ export const loadMujocoModule = async (): Promise<MujocoContainer> => {
  * @returns A promise that resolves when the scene has been successfully loaded.
  * @throws Throws an error if the scene fails to load or initialize.
  */
-const loadMujocoScene = async (mujocoContainer: MujocoContainer, sceneURl: string): Promise<void> => {
+const loadMujocoScene = (mujocoContainer: MujocoContainer, sceneURl: string): void => {
 
-    try {
-        const mujocoModule = mujocoContainer.getMujocoModule();
-        const simulation = mujocoContainer.getSimulation();
+    const mujocoModule = mujocoContainer.getMujocoModule();
+    const simulation = mujocoContainer.getSimulation();
 
-        // Free the old simulation.
-        if (simulation != null) {
-            simulation.free();
-        }
-
-        const newModel = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${sceneURl}`);
-        const newState = new mujocoModule.State(newModel);
-        const newSimulation = new mujocoModule.Simulation(newModel, newState);
-
-        mujocoContainer.setSimulation(newSimulation);
-        console.log(`Successfully loaded the scene: ${sceneURl}`);
-
-    } catch (error: unknown) {
-        console.error(error);
-        throw new Error(`MuJoCo WASM module failed to initialize: ${error}`);
+    // Free the old simulation.
+    if (simulation != null) {
+        simulation.free();
     }
 
+    const newModel = new mujocoModule.Model(`${VIRTUAL_FILE_SYSTEM}/${sceneURl}`);
+    const newState = new mujocoModule.State(newModel);
+    const newSimulation = new mujocoModule.Simulation(newModel, newState);
+
+    // Check for errors in the MuJoCo model.
+    if (newModel.getError() != "") {
+        throw new Error(`Could not load the model "${sceneURl}": ${newModel.getError()}`);
+    }
+
+    mujocoContainer.setSimulation(newSimulation);
+    console.log(`Successfully loaded the scene: ${sceneURl}`);
 }
 
 /**
@@ -265,11 +325,11 @@ const loadMujocoScene = async (mujocoContainer: MujocoContainer, sceneURl: strin
  * @returns An object containing references to bodies, lights, and tendon meshes for updates.
  * @throws Throws an error if loading the MuJoCo scene fails.
  */
-export const buildThreeScene = (
+export const buildThreeScene = async (
     mujocoContainer: MujocoContainer,
     sceneUrl: string,
     scene: THREE.Scene
-): UpdateProps => {
+): Promise<UpdateProps> => {
 
     // Load the Mujoco scene inside the MuJoCo WASM module.
     loadMujocoScene(mujocoContainer, sceneUrl);

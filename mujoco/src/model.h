@@ -7,6 +7,8 @@
 
 #include "mujoco/mujoco.h"
 
+#include <iostream>
+
 using namespace emscripten;
 
 /**
@@ -15,14 +17,14 @@ using namespace emscripten;
  * The `Model` class provides functionality to load MuJoCo models from
  * binary (.mjb) or XML (.xml) files. It encapsulates the `mjModel` pointer
  * and offers methods to access various model parameters. The class handles
- * error checking during model loading and integrates with Emscripten for
+ * err checking during model loading and integrates with Emscripten for
  * JavaScript bindings.
  * ## Usage Example:
  *
  * ```cpp
  * Model model("path/to/model.xml");
  * if (!model.ptr()) {
- * // Handle loading error
+ * // Handle loading err
  * }
  */
 class Model {
@@ -31,39 +33,48 @@ private:
   /**
    * @brief Cleans up and deletes a MuJoCo model.
    *
-   * This function is used to handle errors that occur during the loading of a
+   * This function is used to handle errs that occur during the loading of a
    * MuJoCo model. It will delete the model if it was successfully loaded, and
-   * print an error message if provided.
+   * print an err message if provided.
    *
-   * @param msg An optional error message to print.
+   * @param msg An optional err message to print.
    * @param m The MuJoCo model to delete, if it was successfully loaded.
    * @return 0 to indicate the function completed successfully.
    */
   int finish(const char *msg = NULL, mjModel *m = NULL) {
+
     if (m) {
       mj_deleteModel(m);
     }
     if (msg) {
       std::printf("%s\n", msg);
     }
+    std::cout << "Model deleted" << std::endl;
     return 0;
   }
 
 public:
-  Model() { m = nullptr; }
+  Model() {
+    m = nullptr;
+    error = "";
+  }
 
   Model(const std::string &filename) {
+    error = "";
+    char error_details[1000] = "";
     if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
-      char error[1000] = "Could not load mjb model";
       m = mj_loadModel(filename.c_str(), 0);
       if (!m) {
-        finish(error, m);
+        error = "Could not load mjb model";
+        std::cout << error << std::endl;
+        finish(error_details, m);
       }
     } else {
-      char error[1000] = "Could not load xml model";
-      m = mj_loadXML(filename.c_str(), 0, error, 1000);
+      m = mj_loadXML(filename.c_str(), 0, error_details, 1000);
       if (!m) {
-        finish(error, m);
+        error = "Could not load xml model";
+        std::cout << error << std::endl;
+        finish(error_details, m);
       }
     }
   }
@@ -87,6 +98,7 @@ public:
   mjModel *ptr() { return m; }
   mjModel getVal() { return *m; }
   mjOption getOptions() { return (*m).opt; }
+  std::string getError() { return error; }
 
   /**
    * Free the memory allocated for the MuJoCo model.
@@ -557,7 +569,10 @@ public:
   val name_tupleadr() const { return val(typed_memory_view(m->ntuple * 1, m->name_tupleadr)); }
   val name_keyadr() const { return val(typed_memory_view(m->nkey * 1, m->name_keyadr)); }
   val name_pluginadr() const { return val(typed_memory_view(m->nplugin * 1, m->name_pluginadr)); }
-  val names() const { return val(typed_memory_view(m->nnames * 1, m->names)); }
+  val names() const { 
+    std::cout << "nnames: " << m->nnames << ", names pointer: " << static_cast<void*>(m->names) << std::endl;
+    return val(typed_memory_view(m->nnames * 1, m->names)); 
+  }
   val names_map() const { return val(typed_memory_view(m->nnames_map * 1, m->names_map)); }
   val paths() const { return val(typed_memory_view(m->npaths * 1, m->paths)); }
 
@@ -565,4 +580,5 @@ public:
 
 private:
   mjModel *m;
+  std::string error;
 };

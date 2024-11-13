@@ -17,6 +17,8 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
   // accumulating too much lag, which could degrade performance or accuracy.
   const MAX_SIMULATION_LAG_MS = 35.0;
 
+  let shouldRenderScene = true;
+
   const { scene } = useThree();
 
   // This is to block the scene rendering until the scene has been loaded.
@@ -72,6 +74,10 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
 
   // Update the Three.js scene with information from the MuJoCo simulation.
   useFrame(({ clock }) => {
+    if (!shouldRenderScene) {
+      return;
+    }
+
     if (!mujocoContainer || loadingScene.current) {
       return;
     }
@@ -79,6 +85,11 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
     const model = simulation.model();
     if (!model || !simulation) {
       return;
+    }
+
+    // Stop rendering the scene if the model has an error.
+    if (model.getError() != "") {
+      shouldRenderScene = false;
     }
 
     const timeMS = clock.getElapsedTime() * 1000;

@@ -28,6 +28,8 @@ export class Model {
   free(): void;
   /** Retrive various parameters of the current simulation */
   getOptions(): ModelOptions;
+  /** Retrieve an error message, if any */
+  getError(): string;
 
   // MODEL INTERFACE
 

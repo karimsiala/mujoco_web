@@ -100,7 +100,21 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Compile flags
 add_compile_options(-pthread)
-set(EMCC_LINKER_FLAGS "-s ASSERTIONS=1 --bind -g -s ALLOW_MEMORY_GROWTH=1 -s EXPORT_ES6=1 -s MODULARIZE=1 -s FORCE_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] -s EXPORT_NAME=load_mujoco -s EXCEPTION_CATCHING_ALLOWED=['load_from_xml']")
+set(EMCC_LINKER_FLAGS "")
+string(APPEND EMCC_LINKER_FLAGS 
+  "--bind "                                           # Automatically bind C++ classes and functions to JavaScript
+  "-g "                                               # Enable debug information for easier debugging
+  # "-s STACK_OVERFLOW_CHECK "
+  # "-s STACK_SIZE=5MB "                                            
+  "-s ASSERTIONS=2 "                                  # Enable runtime assertions for catching common errors
+  "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed
+  "-s EXPORT_ES6=1 "                                  # Export the WebAssembly module in ES6 format
+  "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
+  "-s FORCE_FILESYSTEM=1 "                            # Include the virtual filesystem (VFS) for file operations
+  "-s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] "       # Export 'FS' and 'MEMFS' for in-memory file operations
+  "-s EXPORT_NAME=load_mujoco "                       # Set the export name of the module to 'load_mujoco'
+  "-s EXCEPTION_CATCHING_ALLOWED=['load_from_xml'] "  # Allow exception catching only in 'load_from_xml'
+)
 set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
 
 # Add the executable target.
