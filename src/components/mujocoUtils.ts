@@ -15,15 +15,15 @@ const EXAMPLES_FOLDER = "./examples/scenes/";
 const ROOT_OBJECT_NAME = "MuJoCo Root";
 
 /**
- * Add a body ID to the Mesh object.
+ * Represents a Three.js Mesh object with an optional body ID.
  */
 export class BodyMesh extends THREE.Object3D {
     bodyID?: number;
 }
 
 /**
- * Add a body ID to the Group object and a boolean to indicate if the mesh has
- * been customized.
+ * Represents a Three.js Group object with an optional body ID and a flag indicating
+ * if the mesh has been customized.
  */
 export class Body extends THREE.Object3D {
     bodyID?: number;
@@ -31,8 +31,15 @@ export class Body extends THREE.Object3D {
 }
 
 /**
- * Access the vector at index, swizzle for three.js, and apply to the target
- * THREE.Vector3
+ * Retrieves the position vector from a buffer at a specified index, applies optional
+ * swizzling to match Three.js coordinate system, and sets it to the target Vector3.
+ * 
+ * @function getPosition
+ * @param buffer The buffer containing position data.
+ * @param index The index of the vector in the buffer.
+ * @param target The target Vector3 to set the position.
+ * @param swizzle Whether to swizzle the coordinates for Three.js.
+ * @returns The updated target Vector3 with the position set.
  */
 const getPosition = (
     buffer: Float32Array | Float64Array,
@@ -56,8 +63,14 @@ const getPosition = (
 };
 
 /**
- * Access the quaternion at index, swizzle for three.js, and apply to the
- * target THREE.Quaternion.
+ * Retrieves the quaternion from a buffer at a specified index, applies optional
+ * swizzling to match Three.js coordinate system, and sets it to the target Quaternion.
+ * 
+ * @param buffer The buffer containing quaternion data.
+ * @param index The index of the quaternion in the buffer.
+ * @param target The target Quaternion to set the orientation.
+ * @param swizzle Whether to swizzle the coordinates for Three.js.
+ * @returns The updated target Quaternion with the orientation set.
  */
 const getQuaternion = (
     buffer: Float32Array | Float64Array,
@@ -83,8 +96,12 @@ const getQuaternion = (
 };
 
 /**
- * Copy all necessary files to the MuJoCo WASM module's virtual file system.
- * @param mujocoModule The MuJoCo WASM module.
+ * Copies all necessary asset files to the MuJoCo WASM module's virtual filesystem.
+ * This includes XML models, textures, and mesh data required for simulations.
+ * 
+ * @param mujocoModule The loaded MuJoCo WASM module.
+ * @returns A promise that resolves when all assets have been copied.
+ * @throws Throws an error if fetching or writing any file fails.
  */
 const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
     const allFiles = [
@@ -164,8 +181,11 @@ const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
 }
 
 /**
- * Initialize the MuJoCo WASM module file system and copy over all necessary files.
- * @param mujocoModule The MuJoCo WASM module to initialize.
+ * Initializes the MuJoCo WASM module by loading it, setting up the virtual filesystem,
+ * copying necessary assets, and creating a default simulation.
+ * 
+ * @returns A promise that resolves to a MujocoContainer containing the loaded module and simulation.
+ * @throws Throws an error if the module fails to load or initialize.
  */
 export const loadMujocoModule = async (): Promise<MujocoContainer> => {
     try {
@@ -200,9 +220,14 @@ export const loadMujocoModule = async (): Promise<MujocoContainer> => {
 };
 
 /**
- * Load a MuJoCo scene from the given URL.
- * @param sceneUrl The URL of the scene to load.
- * @throws {Error} If the scene fails to load.
+ * Loads a MuJoCo scene from a specified URL into the provided MujocoContainer.
+ * This involves freeing any existing simulation, loading the new model and state,
+ * and initializing a new simulation.
+ * 
+ * @param mujocoContainer The container holding the MuJoCo module and simulation.
+ * @param sceneURL The URL path to the MuJoCo scene XML file to load.
+ * @returns A promise that resolves when the scene has been successfully loaded.
+ * @throws Throws an error if the scene fails to load or initialize.
  */
 const loadMujocoScene = async (mujocoContainer: MujocoContainer, sceneURl: string): Promise<void> => {
 
@@ -230,14 +255,17 @@ const loadMujocoScene = async (mujocoContainer: MujocoContainer, sceneURl: strin
 }
 
 /**
- * Read the MuJoCo model and add geometries to the given three.js scene.
- * Return pointers to all newly created geometries.
- * @param mujocoModule The MuJoCo wasm module.
- * @param simulation The MuJoCo simulation.
- * @param scene The three.js scene.
- * @returns Pointers to newly created geometries.
+ * Builds a Three.js scene based on the MuJoCo simulation data. It parses the MuJoCo
+ * model, creates corresponding Three.js geometries and materials, sets up lighting,
+ * and organizes objects into a hierarchical structure.
+ * 
+ * @param mujocoContainer The container holding the MuJoCo module and simulation.
+ * @param sceneUrl The URL path to the MuJoCo scene XML file to load.
+ * @param scene The Three.js scene to which objects will be added.
+ * @returns An object containing references to bodies, lights, and tendon meshes for updates.
+ * @throws Throws an error if loading the MuJoCo scene fails.
  */
-export const loadScene = (
+export const buildThreeScene = (
     mujocoContainer: MujocoContainer,
     sceneUrl: string,
     scene: THREE.Scene
@@ -447,7 +475,7 @@ export const loadScene = (
 
         let mesh = new BodyMesh();
         if (type == 0) {
-            const groundMirror = createMirrotCheckerboard(texture);
+            const groundMirror = createMirrotCheckerboard();
             groundMirror.rotateX(-Math.PI / 2);
             mesh = groundMirror;
         } else {
@@ -540,6 +568,17 @@ export const loadScene = (
     return new UpdateProps(bodies, lights, cylinders, spheres);
 };
 
+/**
+ * Updates the Three.js scene based on the latest MuJoCo simulation state. This involves
+ * updating the positions and orientations of bodies, lights, and tendons to reflect
+ * the current state of the simulation.
+ * 
+ * @param mujocoContainer The container holding the MuJoCo module and simulation.
+ * @param updateProps An object containing references to bodies, lights, and tendon meshes.
+ * @param tmpVec A temporary Vector3 used for calculations.
+ * @returns This function does not return a value.
+ * @throws Throws an error if the simulation fails to step.
+ */
 export const updateThreeScene = (
     mujocoContainer: MujocoContainer,
     updateProps: UpdateProps,

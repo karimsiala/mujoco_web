@@ -1,6 +1,9 @@
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import * as THREE from "three";
 
+// Typescript module to create different types of Three.js objects.
+
+// Vertex shader that computes the fog depth based on camera distance.
 const vertexShader = `
     varying float vFogDepth;
     varying vec2 vUv;
@@ -17,6 +20,7 @@ const vertexShader = `
     }
 `;
 
+// Fragment shader that creates a checkerboard pattern and applies fog effects.
 const fragmentShader = `
     uniform vec3 color1;
     uniform vec3 color2;
@@ -51,7 +55,7 @@ const fragmentShader = `
     }
 `;
 
-// Create the Shader Material with Fog Support
+// Creates a shader material that supports checkerboard patterns and fog.
 export const createCheckerMaterial = (
     color1: THREE.Color,
     color2: THREE.Color,
@@ -79,6 +83,7 @@ export const createCheckerMaterial = (
     return material;
 };
 
+// Creates a ground mirror object using the Reflector class.
 export const createGroundMirror = (): THREE.Object3D => {
     const geometry = new THREE.CircleGeometry(40, 64);
     const groundMirror = new Reflector(geometry, {
@@ -90,6 +95,7 @@ export const createGroundMirror = (): THREE.Object3D => {
     return groundMirror;
 }
 
+// Creates a checkerboard object with the specified parameters.
 export const createChekerboard = (color1: THREE.Color, color2: THREE.Color, scale: number, opacity: number, fogColor: THREE.Color, fogNear: number, fogFar: number): THREE.Object3D => {
     const geometry = new THREE.CircleGeometry(40, 64);
     const checkerMaterial = createCheckerMaterial(color1, color2, scale, opacity, fogColor, fogNear, fogFar);
@@ -97,6 +103,7 @@ export const createChekerboard = (color1: THREE.Color, color2: THREE.Color, scal
     return checkerboard;
 }
 
+// Creates a reflective checkerboard.
 export const createMirrotCheckerboard = (): THREE.Object3D => {
     const color1 = new THREE.Color(0x597BA1);
     const color2 = new THREE.Color(0x000000);

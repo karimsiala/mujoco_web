@@ -6,7 +6,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 
 import { UpdateProps } from "./UpdateProps";
 import { MujocoContainer } from "./MujocoContainer";
-import { loadMujocoModule, loadScene, updateThreeScene } from "./mujocoUtils";
+import { loadMujocoModule, buildThreeScene, updateThreeScene } from "./mujocoUtils";
 
 export interface MujocoProps {
   sceneUrl: string;
@@ -50,7 +50,11 @@ export const MujocoComponent = ({ sceneUrl }: MujocoProps) => {
     const setupMujocoScene = async () => {
       try {
         if (mujocoContainer) {
-          updatePropsRef.current = await loadScene(mujocoContainer, sceneUrl, scene);
+          updatePropsRef.current = await buildThreeScene(
+            mujocoContainer,
+            sceneUrl,
+            scene
+          );
         }
       } catch (error: unknown) {
         console.error(error);
