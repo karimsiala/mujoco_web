@@ -42,7 +42,6 @@ private:
    * @return 0 to indicate the function completed successfully.
    */
   int finish(mjModel *m = NULL) {
-
     if (m) {
       mj_deleteModel(m);
     }
@@ -66,34 +65,18 @@ public:
     if (0 == filename.compare(filename.length() - 3, 3, "mjb")) {
       m = mj_loadModel(filename.c_str(), 0);
       if (!m) {
-        error = "Could not load mjb model";
+        error = "Error loading mjb file";
         finish(m);
       }
     } else {
       m = mj_loadXML(filename.c_str(), 0, error_buffer, buffer_size);
       if (!m) {
         const auto error_details = std::string{error_buffer};
-        error = "Could not load xml model: " +
+        error = "Error loading xml file: " +
                 (error_details.empty() ? "reason unknown" : error_details);
         finish(m);
       }
     }
-  }
-
-  /**
-   * Load a new Model.
-   * Before using this function, make sure to delete the previous model.
-   */
-  static Model load_from_xml(const std::string &filename) {
-    return Model(filename);
-  }
-
-  /**
-   * Load a new Model.
-   * Before using this function, make sure to delete the previous model.
-   */
-  static Model load_from_mjb(const std::string &filename) {
-    return Model(filename);
   }
 
   mjModel *ptr() { return m; }
@@ -570,10 +553,7 @@ public:
   val name_tupleadr() const { return val(typed_memory_view(m->ntuple * 1, m->name_tupleadr)); }
   val name_keyadr() const { return val(typed_memory_view(m->nkey * 1, m->name_keyadr)); }
   val name_pluginadr() const { return val(typed_memory_view(m->nplugin * 1, m->name_pluginadr)); }
-  val names() const { 
-    std::cout << "nnames: " << m->nnames << ", names pointer: " << static_cast<void*>(m->names) << std::endl;
-    return val(typed_memory_view(m->nnames * 1, m->names)); 
-  }
+  val names() const { return val(typed_memory_view(m->nnames * 1, m->names)); }
   val names_map() const { return val(typed_memory_view(m->nnames_map * 1, m->names_map)); }
   val paths() const { return val(typed_memory_view(m->npaths * 1, m->paths)); }
 

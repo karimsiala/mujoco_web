@@ -66,9 +66,7 @@ EMSCRIPTEN_BINDINGS(mujoco_wasm) {
       .field("sdf_iterations", &mjOption::sdf_iterations);
 
   class_<Model>("Model")
-      .constructor<>(&Model::load_from_xml)
-      .class_function("load_from_xml", &Model::load_from_xml)
-      .class_function("load_from_mjb", &Model::load_from_mjb)
+      .constructor<std::string>() // Bind the constructor
       .function("ptr", &Model::ptr, allow_raw_pointers())
       .function("free", &Model::free)
       .function("getVal", &Model::getVal)

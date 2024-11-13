@@ -112,8 +112,8 @@ string(APPEND EMCC_LINKER_FLAGS
   "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
   "-s FORCE_FILESYSTEM=1 "                            # Include the virtual filesystem (VFS) for file operations
   "-s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] "       # Export 'FS' and 'MEMFS' for in-memory file operations
+  "-s DISABLE_EXCEPTION_CATCHING=0 "                  # Enable exception catching
   "-s EXPORT_NAME=load_mujoco "                       # Set the export name of the module to 'load_mujoco'
-  "-s EXCEPTION_CATCHING_ALLOWED=['load_from_xml'] "  # Allow exception catching only in 'load_from_xml'
 )
 set(CMAKE_REQUIRED_FLAGS "${EMCC_LINKER_FLAGS}")
 

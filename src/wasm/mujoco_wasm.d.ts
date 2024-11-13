@@ -23,7 +23,6 @@ export interface ModelOptions {
 
 export class Model {
   constructor(path: string): Model;
-  static load_from_xml(str: string): Model;
   /** Free the memory associated with the model */
   free(): void;
   /** Retrive various parameters of the current simulation */
