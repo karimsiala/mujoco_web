@@ -108,12 +108,15 @@ string(APPEND EMCC_LINKER_FLAGS
   "-s INITIAL_MEMORY=134217728 "                      # Set initial memory (128MB as an example)
   "-s MAXIMUM_MEMORY=536870912 "                      # Set maximum memory (512MB as an example) 
   "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed                                         
-  "-pthread "                                         # Enable pthreads
-  "-s USE_PTHREADS=1 "                                # Enable pthreads
-  "-s PTHREAD_POOL_SIZE=0 "                           # Allow the thread pool size to be set at runtime
+  "-s USE_PTHREADS=1 "                                # Generate additional .worker js file.
+  "-s ENVIRONMENT=web,worker "
+  "-s PTHREAD_POOL_SIZE=16 "                           # Allow the thread pool size to be set at runtime
+  "-sENVIRONMENT=web,worker "
+  "-o mujoco_wasm.js "
   "-s ASSERTIONS=2 "                                  # Enable runtime assertions for catching common errors
-  "-s EXPORT_ES6=1 "                                  # Export the WebAssembly module in ES6 format
-  "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
+  #"-s USE_ES6_IMPORT_META=0 "
+  "-s EXPORT_ES6=1 "                              # Export the WebAssembly module in ES6 format
+  # "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
   "-s FORCE_FILESYSTEM=1 "                            # Include the virtual filesystem (VFS) for file operations
   "-s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] "       # Export 'FS' and 'MEMFS' for in-memory file operations
   "-s DISABLE_EXCEPTION_CATCHING=0 "                  # Enable exception catching
@@ -141,3 +144,14 @@ target_link_libraries(mujoco_wasm PRIVATE
   tinyxml2
   qhullstatic_r
 )
+
+# Invoking a custom command to fix an issue in thew generated wasm .js file.
+set(GENERATED_FILE ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mujoco_wasm.js)
+add_custom_command(
+    TARGET mujoco_wasm
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -Dfilepath="${GENERATED_FILE}" -P "${CMAKE_CURRENT_LIST_DIR}/cmake/fixWasm.cmake"
+)
+
+
+
