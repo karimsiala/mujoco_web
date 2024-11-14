@@ -8,7 +8,6 @@
 - [Inspiration](#inspiration)
 - [Project layout](#project-layout)
 
-
 ## Introduction
 
 MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within a React web application.
@@ -17,7 +16,7 @@ This project is tailored for Linux Ubuntu 22.04 and 24.04 environments and aims 
 
 ## Status
 
-<video src="docs/sim.mp4" width="600" height="400" controls></video>
+https://github.com/user-attachments/assets/853c743b-16cb-4e99-8fb8-01997c3cdfc4
 
 MuJoCo 3.2.5 builds currectly into WebAssembly with patches and pthread support.
 
