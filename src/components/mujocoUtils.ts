@@ -289,13 +289,15 @@ export const loadMujocoModule = async (): Promise<MujocoContainer> => {
  * Loads a MuJoCo scene from a specified URL into the provided MujocoContainer.
  * This involves freeing any existing simulation, loading the new model and state,
  * and initializing a new simulation.
+ * 
+ * IMPORTANT: this can be a very time-consuming computation.
  *
  * @param mujocoContainer The container holding the MuJoCo module and simulation.
  * @param sceneURL The URL path to the MuJoCo scene XML file to load.
  * @returns A promise that resolves when the scene has been successfully loaded.
  * @throws Throws an error if the scene fails to load or initialize.
  */
-const loadMujocoScene = (mujocoContainer: MujocoContainer, sceneURl: string): void => {
+export const loadMujocoScene = (mujocoContainer: MujocoContainer, sceneURl: string): void => {
   const mujocoModule = mujocoContainer.getMujocoModule();
   const simulation = mujocoContainer.getSimulation();
 
@@ -330,11 +332,8 @@ const loadMujocoScene = (mujocoContainer: MujocoContainer, sceneURl: string): vo
  */
 export const buildThreeScene = async (
   mujocoContainer: MujocoContainer,
-  sceneUrl: string,
   scene: THREE.Scene
 ): Promise<UpdateProps> => {
-  // Load the Mujoco scene inside the MuJoCo WASM module.
-  loadMujocoScene(mujocoContainer, sceneUrl);
 
   // Remove the existing root object.
   const object = scene.getObjectByName(ROOT_OBJECT_NAME);

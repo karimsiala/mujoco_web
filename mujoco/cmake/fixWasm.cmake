@@ -4,6 +4,11 @@
 # [vite:worker-import-meta-url] Vite is unable to parse the worker options as
 # the value is not static.To ignore this error, please use /* @vite-ignore */
 # in the worker options.
+#
+# From experiments, this appears to be an issue on Ubuntu 24.04 but not on
+# Ubuntu 22.04.
+# On Ubuntu 22.04, Emscript produces an additional file .worker.mjs which is
+# not generated on Ubuntu 24.04.
 # 
 # The issue is describer in detail here:
 # https://github.com/emscripten-core/emscripten/issues/22394

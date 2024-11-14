@@ -17,7 +17,7 @@ dist-ssr
 .pytest_cache
 /src/wasm/mujoco_wasm.js
 /src/wasm/mujoco_wasm.wasm
-
+/src/wasm/mujoco_wasm.worker.mjs
 
 # Editor directories and files
 !.vscode/extensions.json
