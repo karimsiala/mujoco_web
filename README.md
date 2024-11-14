@@ -3,13 +3,13 @@
 ## Table of Contents <!-- omit from toc -->
 
 - [Introduction](#introduction)
-  - [Status](#status)
-  - [Installation](#installation)
-  - [Inspiration](#inspiration)
-  - [Project layout](#project-layout)
+- [Status](#status)
+- [Installation](#installation)
+- [Inspiration](#inspiration)
+- [Project layout](#project-layout)
 
 
-# Introduction
+## Introduction
 
 MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within a React web application.
 
