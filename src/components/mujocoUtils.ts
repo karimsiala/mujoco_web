@@ -211,6 +211,7 @@ const copyMujocoModuleAssets = async (mujocoModule: MujocoModule) => {
         "spot/spot_components/actuators_sensors.xml",
         "spot/spot_components/arm.xml",
         "spot/spot_components/assets.xml",
+        "spot/spot_components/cartire.xml",
         "spot/spot_components/contact.xml",
         "spot/spot_components/legs.xml",
         "spot/spot_components/params_and_default.xml",

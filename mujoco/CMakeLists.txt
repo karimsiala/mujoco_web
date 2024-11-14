@@ -99,13 +99,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Compile flags
-add_compile_options(-pthread)
+# add_compile_options(-pthread)
 set(EMCC_LINKER_FLAGS "")
 string(APPEND EMCC_LINKER_FLAGS 
   "--bind "                                           # Automatically bind C++ classes and functions to JavaScript
   "-g "                                               # Enable debug information for easier debugging
   # "-s STACK_OVERFLOW_CHECK "
-  # "-s STACK_SIZE=5MB "                                            
+  "-s STACK_SIZE=5MB "  
+  "-s INITIAL_MEMORY=134217728 "                      # Set initial memory (128MB as an example)
+  "-s MAXIMUM_MEMORY=536870912 "                      # Set maximum memory (512MB as an example)                                          
+  "-s USE_PTHREADS=0 "                                # Disable pthreads (no threads)
   "-s ASSERTIONS=2 "                                  # Enable runtime assertions for catching common errors
   "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed
   "-s EXPORT_ES6=1 "                                  # Export the WebAssembly module in ES6 format
