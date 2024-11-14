@@ -13,21 +13,15 @@
 
 MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics with Contact) into WebAssembly (WASM) for seamless execution within a React web application.
 
-This project is tailored for Linux Ubuntu 22.04 environments and aims to facilitate interactive physics simulations directly in the browser.
+This project is tailored for Linux Ubuntu 22.04 and 24.04 environments and aims to facilitate interactive physics simulations directly in the browser.
 
 ## Status
 
-MuJoCo 3.2.5 builds currectly into WASM with patches.
+<video src="docs/sim.mp4" width="600" height="400" controls></video>
 
-The React application loads a sample Mujoco scene and runs the simulation.
+MuJoCo 3.2.5 builds currectly into WebAssembly with patches and pthread support.
 
-There are two main issues to be solved:
-
-* Make MuJoCo correctly work with multi-threading (pthread), as it only works for some scenes, but not for all - HIGH priority.
-
-* Vite fails to parse worker options when they are stored in a variable: https://github.com/vitejs/vite/issues/18651 - HIGH priority.
-
-* Find a way to load png textures - LOW PRIORITY.
+The React application can load a Mujoco scene and run the simulation. PNG textures are not yet supported.
 
 ## Installation
 

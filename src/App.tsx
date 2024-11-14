@@ -15,8 +15,8 @@ const App = () => {
         style={{
           borderRadius: "inherit",
           margin: "0 auto", // Center horizontally.
-          width: 800,
-          height: 600
+          width: 600,
+          height: 400
         }}
         onCreated={(state) => {
           state.scene.background = new THREE.Color(0x264059);
