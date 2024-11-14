@@ -1,5 +1,7 @@
 # MuJoCo Web <!-- omit from toc -->
 
+https://github.com/user-attachments/assets/853c743b-16cb-4e99-8fb8-01997c3cdfc4
+
 ## Table of Contents <!-- omit from toc -->
 
 - [Introduction](#introduction)
@@ -15,8 +17,6 @@ MuJoCo Web is a repository dedicated to compiling MuJoCo (Multi-Joint dynamics w
 This project is tailored for Linux Ubuntu 22.04 and 24.04 environments and aims to facilitate interactive physics simulations directly in the browser.
 
 ## Status
-
-https://github.com/user-attachments/assets/853c743b-16cb-4e99-8fb8-01997c3cdfc4
 
 MuJoCo 3.2.5 builds currectly into WebAssembly with patches and pthread support.
 
