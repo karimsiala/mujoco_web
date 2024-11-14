@@ -58,9 +58,9 @@ add_subdirectory(${libccd_SOURCE_DIR} ${libccd_BINARY_DIR} EXCLUDE_FROM_ALL)
 # Define the version of mujoco.
 set(MUJOCO_VERSION 3.2.5)
 
-# Append default compiler flags
-set(DEFAULT_CXX_FLAGS "-Wno-int-in-bool-context -Wno-newline-eof")
-set(DEFAULT_C_FLAGS "-Wno-int-in-bool-context -Wno-newline-eof")
+# Set global compiler flags.
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread")
 
 # Define default build options for MuJoCo
 option(MUJOCO_BUILD_EXAMPLES "Build MuJoCo examples" OFF)
@@ -98,19 +98,20 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Compile flags
-# add_compile_options(-pthread)
+# Linker flags
 set(EMCC_LINKER_FLAGS "")
-string(APPEND EMCC_LINKER_FLAGS 
+string(APPEND EMCC_LINKER_FLAGS
   "--bind "                                           # Automatically bind C++ classes and functions to JavaScript
   "-g "                                               # Enable debug information for easier debugging
   # "-s STACK_OVERFLOW_CHECK "
   "-s STACK_SIZE=5MB "  
   "-s INITIAL_MEMORY=134217728 "                      # Set initial memory (128MB as an example)
-  "-s MAXIMUM_MEMORY=536870912 "                      # Set maximum memory (512MB as an example)                                          
-  "-s USE_PTHREADS=0 "                                # Disable pthreads (no threads)
+  "-s MAXIMUM_MEMORY=536870912 "                      # Set maximum memory (512MB as an example) 
+  "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed                                         
+  "-pthread "                                         # Enable pthreads
+  "-s USE_PTHREADS=1 "                                # Enable pthreads
+  "-s PTHREAD_POOL_SIZE=0 "                           # Allow the thread pool size to be set at runtime
   "-s ASSERTIONS=2 "                                  # Enable runtime assertions for catching common errors
-  "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed
   "-s EXPORT_ES6=1 "                                  # Export the WebAssembly module in ES6 format
   "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
   "-s FORCE_FILESYSTEM=1 "                            # Include the virtual filesystem (VFS) for file operations
@@ -126,7 +127,6 @@ add_executable(mujoco_wasm src/main.cpp)
 # The following two lines solve this issue: https://github.com/clangd/clangd/issues/1621
 set(EMSCRIPTEN_SYSROOT "${EMSDK_PATH}/upstream/emscripten/cache/sysroot")
 set_target_properties(mujoco_wasm PROPERTIES COMPILE_FLAGS "-target wasm32-unknown-emscripten --sysroot=${EMSCRIPTEN_SYSROOT}")
-
 set_target_properties(mujoco_wasm PROPERTIES LINK_FLAGS "${EMCC_LINKER_FLAGS}")
 
 target_include_directories(mujoco_wasm PUBLIC
