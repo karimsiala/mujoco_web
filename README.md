@@ -24,6 +24,9 @@ The React application loads a sample Mujoco scene and runs the simulation.
 There are two main issues to be solved:
 
 * Make MuJoCo correctly work with multi-threading (pthread), as it only works for some scenes, but not for all - HIGH priority.
+
+* Vite fails to parse worker options when they are stored in a variable: https://github.com/vitejs/vite/issues/18651 - HIGH priority.
+
 * Find a way to load png textures - LOW PRIORITY.
 
 ## Installation
