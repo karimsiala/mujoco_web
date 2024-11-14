@@ -6,8 +6,6 @@
 
     <material name="black" rgba="0.2 0.2 0.2 1"/>
     <material name="yellow" rgba="1 0.8 0.03 1"/>
-    <texture name="bdai_texture" type="2d" file="../textures/bdaii_spot_wrap.png"/>
-    <material name="bdai" texture="bdai_texture" specular="1" shininess="11"/>
     <material name="object" rgba=".7 .5 .3 1"/>
 
     <texture name="chess_texture" type="2d" builtin="checker" width="1024" height="1024" rgb1="1.0 0.27 0.1" rgb2="1.0 0.84 0.0"/>
