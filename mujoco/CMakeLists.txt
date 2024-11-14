@@ -59,8 +59,8 @@ add_subdirectory(${libccd_SOURCE_DIR} ${libccd_BINARY_DIR} EXCLUDE_FROM_ALL)
 set(MUJOCO_VERSION 3.2.5)
 
 # Set global compiler flags.
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context -Wno-newline-eof -pthread -O3")
 
 # Define default build options for MuJoCo
 option(MUJOCO_BUILD_EXAMPLES "Build MuJoCo examples" OFF)
@@ -103,20 +103,18 @@ set(EMCC_LINKER_FLAGS "")
 string(APPEND EMCC_LINKER_FLAGS
   "--bind "                                           # Automatically bind C++ classes and functions to JavaScript
   "-g "                                               # Enable debug information for easier debugging
-  # "-s STACK_OVERFLOW_CHECK "
+  "-s WASM=1 "                                        # Generate WebAssembly output
+  "-s STACK_OVERFLOW_CHECK "
   "-s STACK_SIZE=5MB "  
   "-s INITIAL_MEMORY=134217728 "                      # Set initial memory (128MB as an example)
   "-s MAXIMUM_MEMORY=536870912 "                      # Set maximum memory (512MB as an example) 
   "-s ALLOW_MEMORY_GROWTH=1 "                         # Allow WebAssembly memory to grow dynamically if needed                                         
   "-s USE_PTHREADS=1 "                                # Generate additional .worker js file.
   "-s ENVIRONMENT=web,worker "
-  "-s PTHREAD_POOL_SIZE=16 "                           # Allow the thread pool size to be set at runtime
-  "-sENVIRONMENT=web,worker "
-  "-o mujoco_wasm.js "
+  "-s PTHREAD_POOL_SIZE=16 "                          # Allow the thread pool size to be set at runtime
   "-s ASSERTIONS=2 "                                  # Enable runtime assertions for catching common errors
-  #"-s USE_ES6_IMPORT_META=0 "
-  "-s EXPORT_ES6=1 "                              # Export the WebAssembly module in ES6 format
-  # "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
+  "-s EXPORT_ES6=1 "                                  # Export the WebAssembly module in ES6 format
+  "-s MODULARIZE=1 "                                  # Wrap the WebAssembly module in a function for encapsulation
   "-s FORCE_FILESYSTEM=1 "                            # Include the virtual filesystem (VFS) for file operations
   "-s EXPORTED_RUNTIME_METHODS=['FS','MEMFS'] "       # Export 'FS' and 'MEMFS' for in-memory file operations
   "-s DISABLE_EXCEPTION_CATCHING=0 "                  # Enable exception catching
