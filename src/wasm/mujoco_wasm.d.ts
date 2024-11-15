@@ -134,6 +134,8 @@ export class Model {
   nuser_sensor: number;
   /** number of chars in all names*/
   nnames: number;
+  /** number of chars in all paths */
+  npaths: number;
   /** number of non-zeros in sparse inertia matrix*/
   nM: number;
   /** number of non-zeros in sparse derivative matrix*/
@@ -458,10 +460,14 @@ export class Model {
   tex_height: Int32Array;
   /** number of columns in texture image       (ntex x 1)*/
   tex_width: Int32Array;
+  /** number of channels in texture image     (ntex x 1) */
+  tex_nchannel: Int32Array;
   /** address in rgb                           (ntex x 1)*/
   tex_adr: Int32Array;
   /** data (alpha = 1)                         (ntexdata x 1)*/
   tex_data: Uint8Array;
+  /** address of texture asset path; -1: none  (ntex x 1) */
+  tex_pathadr: Int32Array;
   /** texture id; -1: none                     (nmat x 1)*/
   mat_texid: Int32Array;
   /** make texture cube uniform                (nmat x 1)*/
@@ -724,6 +730,8 @@ export class Model {
   name_pluginadr: Int32Array;
   /** names of all objects, 0-terminated       (nnames x 1)*/
   names: Uint8Array;
+  /** paths to assets, 0-terminated            (npaths x 1)*/
+  paths: Uint8Array;
 }
 
 export class State {
