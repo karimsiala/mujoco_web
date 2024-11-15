@@ -459,6 +459,7 @@ export const buildThreeScene = async (
           vertex_buffer[v + 1] = vertex_buffer[v + 2];
           vertex_buffer[v + 2] = -temp;
         }
+        geometry.setAttribute("position", new THREE.BufferAttribute(vertex_buffer, 3));
 
         const normal_buffer = model.mesh_normal.subarray(
           model.mesh_vertadr[meshID] * 3,
@@ -470,18 +471,18 @@ export const buildThreeScene = async (
           normal_buffer[v + 1] = normal_buffer[v + 2];
           normal_buffer[v + 2] = -temp;
         }
+        geometry.setAttribute("normal", new THREE.BufferAttribute(normal_buffer, 3));
 
         const uv_buffer = model.mesh_texcoord.subarray(
           model.mesh_texcoordadr[meshID] * 2,
           (model.mesh_texcoordadr[meshID] + model.mesh_vertnum[meshID]) * 2
         );
+        geometry.setAttribute("uv", new THREE.BufferAttribute(uv_buffer, 2));
+
         const triangle_buffer = model.mesh_face.subarray(
           model.mesh_faceadr[meshID] * 3,
           (model.mesh_faceadr[meshID] + model.mesh_facenum[meshID]) * 3
         );
-        geometry.setAttribute("position", new THREE.BufferAttribute(vertex_buffer, 3));
-        geometry.setAttribute("normal", new THREE.BufferAttribute(normal_buffer, 3));
-        geometry.setAttribute("uv", new THREE.BufferAttribute(uv_buffer, 2));
         geometry.setIndex(Array.from(triangle_buffer));
 
         // Step 1: Retrieve texture data from model
