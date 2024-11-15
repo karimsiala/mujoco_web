@@ -50,6 +50,31 @@ FetchContent_Populate(libccd)
 add_subdirectory(${libccd_SOURCE_DIR} ${libccd_BINARY_DIR} EXCLUDE_FROM_ALL)
 
 ###############################################################################
+# lodepng
+#
+
+message(STATUS "Fetching lodepng...")
+FetchContent_Declare(
+  lodepng
+  GIT_REPOSITORY https://github.com/lvandeve/lodepng.git
+)
+FetchContent_Populate(lodepng)
+
+# Create cmake folder.
+file(MAKE_DIRECTORY "${lodepng_SOURCE_DIR}/cmake")
+
+# Copy CMakeLists.txt
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/lodepng/CMakeLists.txt" 
+DESTINATION "${lodepng_SOURCE_DIR}/")
+
+# Copy lodepngConfig.cmake.in
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/lodepng/cmake/lodepngConfig.cmake.in" 
+DESTINATION "${lodepng_SOURCE_DIR}/cmake")
+
+# Manually add the subdirectory with EXCLUDE_FROM_ALL
+add_subdirectory(${lodepng_SOURCE_DIR} ${lodepng_BINARY_DIR} EXCLUDE_FROM_ALL)
+
+###############################################################################
 # mujoco
 #
 
@@ -72,7 +97,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/google-deepmind/mujoco.git
   GIT_TAG ${MUJOCO_VERSION}
   PATCH_COMMAND
-    git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch" &&
+  #  git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch" &&
     git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0004-time.patch" &&
     git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0005-no-ccd-fetch.patch"
   #   git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0006-private-lodepng.patch"
