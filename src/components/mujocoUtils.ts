@@ -400,7 +400,7 @@ export const buildThreeScene = async (
   const model = simulation.model();
 
   const names = decode(model.names.buffer, model.names.length, model.names.byteOffset, model.names.byteLength);
-  const paths = decode(model.paths.buffer, model.paths.length, model.paths.byteOffset, model.paths.byteLength);
+  // const paths = decode(model.paths.buffer, model.paths.length, model.paths.byteOffset, model.paths.byteLength);
 
   // Loop through the MuJoCo geometries and recreate them in three.js.
   for (let g = 0; g < model.ngeom; g++) {
