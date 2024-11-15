@@ -19,6 +19,10 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 # Generate the compile_commands.json that can be used to configure clangd.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Include FetchContent module
+include(FetchContent)
+
+
 ###############################################################################
 # libccd
 #
@@ -32,11 +36,7 @@ set(CCD_HIDE_ALL_SYMBOLS ON CACHE BOOL "Hide all symbols in CCD" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
 set(BUILD_TESTING OFF CACHE BOOL "Build testing" FORCE)
 
-# Include FetchContent module
-include(FetchContent)
-
-# Declare the external project with FetchContent
-message(STATUS "Fetching  libccd ${LIBCCD_VERSION}...")
+message(STATUS "Fetching libccd ${LIBCCD_VERSION}...")
 FetchContent_Declare(
   libccd
   GIT_REPOSITORY https://github.com/danfis/libccd.git
@@ -44,8 +44,6 @@ FetchContent_Declare(
   PATCH_COMMAND
     git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/libccd-${LIBCCD_VERSION}/0001-no-libm.patch"
 )
-
-# Fetch the content
 FetchContent_Populate(libccd)
 
 # Manually add the subdirectory with EXCLUDE_FROM_ALL
@@ -68,22 +66,17 @@ option(MUJOCO_BUILD_SIMULATE "Build MuJoCo simulate" OFF)
 option(MUJOCO_BUILD_TESTS "Build MuJoCo tests" OFF)
 option(MUJOCO_TEST_PYTHON_UTIL "Build MuJoCo Python util tests" OFF)
 
-# Include FetchContent module
-include(FetchContent)
-
-# Declare the external project with FetchContent
 message(STATUS "Fetching  mujoco ${MUJOCO_VERSION}...")
 FetchContent_Declare(
   mujoco
   GIT_REPOSITORY https://github.com/google-deepmind/mujoco.git
   GIT_TAG ${MUJOCO_VERSION}
   PATCH_COMMAND
-    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch" &&
-    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0004-time.patch" &&
-    git apply "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0005-no-ccd-fetch.patch"
+    git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0001-no-png.patch" &&
+    git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0004-time.patch" &&
+    git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0005-no-ccd-fetch.patch"
+  #   git apply --verbose "${CMAKE_CURRENT_SOURCE_DIR}/patches/mujoco-${MUJOCO_VERSION}/0006-private-lodepng.patch"
 )
-
-# Fetch the content
 FetchContent_Populate(mujoco)
 
 # Manually add the subdirectory with EXCLUDE_FROM_ALL
@@ -135,12 +128,7 @@ target_include_directories(mujoco_wasm PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
 )
 target_link_libraries(mujoco_wasm PRIVATE
-  ccd
-  elasticity
-  lodepng
   mujoco
-  tinyxml2
-  qhullstatic_r
 )
 
 # Invoking a custom command to fix an issue in thew generated wasm .js file.
