@@ -96,6 +96,46 @@ const getQuaternion = (
 };
 
 /**
+ * Decodes null-terminated strings from a specified segment of a buffer.
+ * 
+ * This function is useful for extracting null-terminated strings from a 
+ * WebAssembly memory buffer or other binary data sources. It handles cases
+ * where the buffer might be a `SharedArrayBuffer`, which is incompatible 
+ * with `TextDecoder.decode()` due to specification restrictions.
+ * 
+ * The function creates a copy of the relevant segment of the buffer to a 
+ * non-shared `Uint8Array`, decodes it as UTF-8, and splits it into an array
+ * of strings using the null character (`\0`) as the delimiter.
+ * 
+ * @param buffer The memory buffer containing binary data, typically a 
+ *               `SharedArrayBuffer` or `ArrayBuffer`.
+ * @param length The total length of the buffer in bytes.
+ * @param byteOffset The byte offset within the buffer to start reading from.
+ * @param byteLength The number of bytes to read starting from `byteOffset`.
+ * @returns An array of decoded strings extracted from the specified segment 
+ *          of the buffer.
+ */
+const decode = (buffer: ArrayBufferLike, length: number, byteOffset: number, byteLength: number): string[] => {
+  const textDecoder = new TextDecoder("utf-8");
+
+  // When using WebAssembly threads (pthreads) with Emscripten, the memory is
+  // shared between threads using SharedArrayBuffer.
+  // The model.names buffer is a view on a SharedArrayBuffer.
+  // According to the specification, TextDecoder.decode() cannot be used with
+  // SharedArrayBuffer or views on it.
+
+  // Create a non-shared buffer by copying data from the shared buffer.
+  const nonSharedBuffer = new Uint8Array(length);
+  nonSharedBuffer.set(
+    new Uint8Array(buffer, byteOffset, byteLength)
+  );
+
+  // Decode the non-shared buffer and split it using the null character.
+  const values = textDecoder.decode(nonSharedBuffer).split("\0");
+  return values;
+}
+
+/**
  * Copies all necessary asset files to the MuJoCo WASM module's virtual filesystem.
  * This includes XML models, textures, and mesh data required for simulations.
  *
@@ -319,6 +359,8 @@ export const loadMujocoScene = (mujocoContainer: MujocoContainer, sceneURl: stri
   console.log(`Successfully loaded the scene: ${sceneURl}`);
 };
 
+
+
 /**
  * Builds a Three.js scene based on the MuJoCo simulation data. It parses the MuJoCo
  * model, creates corresponding Three.js geometries and materials, sets up lighting,
@@ -357,25 +399,10 @@ export const buildThreeScene = async (
   const simulation = mujocoContainer.getSimulation();
   const model = simulation.model();
 
-  // Decode the null-terminated string names.
-  const textDecoder = new TextDecoder("utf-8");
+  const names = decode(model.names.buffer, model.names.length, model.names.byteOffset, model.names.byteLength);
+  const paths = decode(model.paths.buffer, model.paths.length, model.paths.byteOffset, model.paths.byteLength);
 
-  // When using WebAssembly threads (pthreads) with Emscripten, the memory is
-  // shared between threads using SharedArrayBuffer.
-  // The model.names buffer is a view on a SharedArrayBuffer.
-  // According to the specification, TextDecoder.decode() cannot be used with
-  // SharedArrayBuffer or views on it.
-
-  // Create a non-shared buffer by copying data from the shared buffer.
-  const nonSharedBuffer = new Uint8Array(model.names.length);
-  nonSharedBuffer.set(
-    new Uint8Array(model.names.buffer, model.names.byteOffset, model.names.byteLength)
-  );
-
-  // Decode the non-shared buffer and split tit using the null character.
-  const names = textDecoder.decode(nonSharedBuffer).split("\0");
-
-  // Loop through the MuJoCo geoms and recreate them in three.js.
+  // Loop through the MuJoCo geometries and recreate them in three.js.
   for (let g = 0; g < model.ngeom; g++) {
     // Only visualize geom groups up to 2 (same default behavior as simulate).
     if (!(model.geom_group[g] < 3)) {
@@ -456,6 +483,18 @@ export const buildThreeScene = async (
         geometry.setAttribute("normal", new THREE.BufferAttribute(normal_buffer, 3));
         geometry.setAttribute("uv", new THREE.BufferAttribute(uv_buffer, 2));
         geometry.setIndex(Array.from(triangle_buffer));
+
+        // Step 1: Retrieve texture data from model
+        // const textureAddress = model.tex_adr[meshID];
+        // const texturePathAddress = model.tex_pathadr[meshID];
+        // const textureData = model.tex_data[meshID];
+        // const textureWidth = model.tex_width[meshID];
+        // const textureHeight = model.tex_height[meshID];
+        // const textureChannels = model.tex_nchannel[meshID];
+        // const path = paths[meshID];
+
+        // console.log(`path: ${path}, texturePathAddress: ${texturePathAddress}, textureWidth: ${textureWidth}, textureHeight: ${textureHeight}, textureChannels: ${textureChannels}`)
+
         meshes[meshID] = geometry;
       } else {
         geometry = meshes[meshID];
