@@ -1,51 +1,44 @@
-import { Canvas } from "@react-three/fiber";
-import { Mujoco } from "./components/Mujoco";
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import * as THREE from "three";
+import { useState } from "react";
+import SceneSelector from "./components/SceneSelector";
+import Scene from "./components/Scene";
 
 import "./App.css";
 import "./index.css";
-import { DepthOfField, EffectComposer } from "@react-three/postprocessing";
-const App = () => {
-  return (
-    <div className="w-full h-full border-4 border-blue-500">
-      <Canvas
-        shadows="soft"
-        dpr={window.devicePixelRatio}
-        style={{
-          borderRadius: "inherit",
-          margin: "0 auto", // Center horizontally.
-          width: 1920,
-          height: 1080
-        }}
-        onCreated={(state) => {
-          state.scene.background = new THREE.Color(0x264059);
-        }}
-      >
-        {/* <AdaptiveDpr /> */}
-        <ambientLight color={0xffffff} intensity={0.1} />
-        <spotLight
-          position={[0, 2, 2]}
-          angle={0.15}
-          penumbra={1}
-          decay={1}
-          intensity={3.14}
-        />
-        <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
-        <OrbitControls makeDefault />
-        <Mujoco sceneUrl={"humanoid.xml"} />
 
-        {/* Post-Processing Effects */}
-        <EffectComposer>
-          <DepthOfField
-            focusDistance={0}
-            focalLength={0.02}
-            bokehScale={2}
-            height={480}
-          />
-        </EffectComposer>
-      </Canvas>
+const App = () => {
+  const scenes = [
+    "22_humanoids.xml",
+    "adhesion.xml",
+    "arm26.xml",
+    "car.xml",
+    "empty.xml",
+    "hammock.xml",
+    "humanoid.xml",
+    "humanoid_body.xml",
+    "model_with_tendon.xml",
+    "scene.xml",
+    "simple.xml",
+    "slider_crank.xml",
+    "balloons/balloons.xml",
+    "agility_cassie/scene.xml",
+    "shadow_hand/scene_left.xml"
+  ];
+  const [selectedScene, setSelectedScene] = useState("humanoid.xml");
+
+  return (
+    <div className="relative h-screen">
+      {/* 3D Scene component */}
+      <Scene selectedScene={selectedScene} />
+      {/* Overlay SceneSelector on top of the scene */}
+      <div className="absolute top-0 left-0 z-10 p-4">
+        <SceneSelector
+          scenes={scenes}
+          selectedScene={selectedScene}
+          onSceneChange={setSelectedScene}
+        />
+      </div>
     </div>
   );
 };
+
 export default App;
