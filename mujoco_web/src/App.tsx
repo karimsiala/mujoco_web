@@ -15,8 +15,8 @@ const App = () => {
         style={{
           borderRadius: "inherit",
           margin: "0 auto", // Center horizontally.
-          width: 600,
-          height: 400
+          width: 1920,
+          height: 1080
         }}
         onCreated={(state) => {
           state.scene.background = new THREE.Color(0x264059);
@@ -33,7 +33,7 @@ const App = () => {
         />
         <PerspectiveCamera makeDefault position={[2.0, 1.7, 1.7]} fov={45} />
         <OrbitControls makeDefault />
-        <Mujoco sceneUrl={"agility_cassie/scene.xml"} />
+        <Mujoco sceneUrl={"humanoid.xml"} />
 
         {/* Post-Processing Effects */}
         <EffectComposer>
