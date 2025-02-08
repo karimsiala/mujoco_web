@@ -30,7 +30,7 @@ const App = () => {
       {/* 3D Scene component */}
       <Scene selectedScene={selectedScene} />
       {/* Overlay SceneSelector on top of the scene */}
-      <div className="absolute top-0 left-0 z-10 p-4">
+      <div className="absolute bottom-0 left-0 z-10 p-4">
         <SceneSelector
           scenes={scenes}
           selectedScene={selectedScene}

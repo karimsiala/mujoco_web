@@ -12,7 +12,7 @@ const SceneSelector: React.FC<SceneSelectorProps> = ({
   onSceneChange
 }) => {
   return (
-    <div className="bg-white bg-opacity-75 p-2 flex items-center space-x-2">
+    <div className="bg-white bg-opacity-75 p-2 items-center bottom- 10">
       <label htmlFor="scene-select">Select Scene: </label>
       <select
         id="scene-select"
